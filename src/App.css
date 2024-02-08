@@ -1,38 +1,223 @@
-.App {
-  text-align: center;
-}
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.header {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+  justify-content: space-around;
+  align-items: center !important;
+  padding: 30px;
+}
+
+.header-dropdown {
+  display: flex;
+  justify-content: left;
+  align-items: center !important;
+  padding: 20px;
+}
+
+.white-text {
+  float: left;
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+
+.header_right {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.header_right > img{
+  width: 50%;
+  height: 80px;
+  padding: 5px;
+  border-radius: 5px;
+  margin-right: 5%;
+}
+
+.header_left {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+}
+
+.header_left > img{
+  width: 100%;
+  height: 80px;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+/* Increase the font size of the heading */
+.header h1 {
+  font-size: 40px;
+}
+
+/* Sticky navbar - toggles between relative and fixed, depending on the scroll position. It is positioned relative until a given offset position is met in the viewport - then it "sticks" in place (like position:fixed). The sticky value is not supported in IE or Edge 15 and earlier versions. However, for these versions the navbar will inherit default position */
+.navbar {
+  overflow: hidden;
+  /* display: flex; */
+  background-color: #E44D2A;
+  position: sticky;
+  position: -webkit-sticky;
+  top: 0;
+}
+
+/* Style the navigation bar links */
+.navbar a {
+  float: left;
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 20px;
+  text-decoration: none;
+  background-color: #E44D2A;
+}
+
+
+/* Right-aligned link */
+.navbar a.right {
+  float: right;
+}
+
+/* Change color on hover */
+.navbar a:hover {
+  background-color: #ddd;
+  color: rgb(239, 26, 26);
+}
+
+/* Active/current link */
+.navbar a.active {
+  background-color: #666;
+  color: white;
+}
+
+/* Column container */
+.row {  
+  display: -ms-flexbox; /* IE10 */
+  display: flex;
+  -ms-flex-wrap: wrap; /* IE10 */
+  flex-wrap: wrap;
+}
+
+/* Create two unequal columns that sits next to each other */
+/* Sidebar/left column */
+.side {
+  -ms-flex: 10%; /* IE10 */
+  flex: 10%;
+  background-color: #f1f1f1;
+  padding: 20px;
+}
+
+/* Main column */
+.main {   
+  -ms-flex: 70%; /* IE10 */
+  flex: 70%;
+  background-color: white;
+  padding: 20px;
+}
+
+/* Fake image, just for this example */
+.fakeimg {
+  color: #fff;
+  background-color: #aaa;
+  width: 100%;
+  padding: 20px;
+}
+
+/* Footer */
+.footer {
+  padding: 20px;
+  text-align: center;
+  background: #134277;
+}
+
+/* Responsive layout - when the screen is less than 700px wide, make the two columns stack on top of each other instead of next to each other */
+@media screen and (max-width: 700px) {
+  .row {   
+    flex-direction: column;
   }
-  to {
-    transform: rotate(360deg);
+}
+
+/* Responsive layout - when the screen is less than 400px wide, make the navigation links stack on top of each other instead of next to each other */
+@media screen and (max-width: 400px) {
+  .navbar a {
+    float: none;
+    width: 100%;
   }
+}
+
+
+.button {
+  display: inline-block;
+  padding: 15px 25px;
+  font-size: 20px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  outline: none;
+  color: #fff;
+  background-color: #E44D2A;
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 9px #999;
+}
+
+.button:hover {background-color: #e77009}
+
+.button:active {
+  background-color: #E44D2A;
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
+}
+
+
+.dropdown {
+  width: 400px;
+  margin: 150px auto;
+}
+
+.dropdown .dropdown-btn{
+  position: relative;
+  top: -140px;
+  display: flex;
+  justify-content: space-between;
+  align-items: left;
+  height: 55px;
+  color: #333;
+  font-size: 18px;
+  padding: 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 0 5px rgba(0, 0, 0, .1);
+}
+
+
+/* Tile.css */
+
+.tile {
+  display: flex;
+  border: 1px solid #ddd;
+  width: 100%;
+  max-height: 70%;
+  border-radius: 8px;
+  padding: 16px;
+  margin: 8px;
+  cursor: pointer;
+  transition: box-shadow 0.9s;
+  background-color: #ffebee;
+}
+
+.tile:hover {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.tile-title {
+  font-size: 1.2rem;
+  margin-bottom: 8px;
+}
+
+.tile-content {
+  font-size: 1rem;
+  color: #555;
+  padding-left: 15%;
 }
