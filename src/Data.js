@@ -50,3 +50,11 @@ export const UserData = [
       Low_Birth_weight_babies : 1.3, 
     },
   ];
+
+
+  export const userLoginData = [
+    {
+      username : 'AniSaha',
+      password : 'AniSaha'
+    }
+  ];

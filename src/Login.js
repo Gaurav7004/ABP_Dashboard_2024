@@ -2,7 +2,13 @@ import React, { useState } from 'react';
 import { Button, Form } from 'react-bootstrap';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom'; 
-
+import HMIS_login_abp_dashboard from "./assets/images/HMIS_login_abp_dashboard.png";
+import Logo from "./assets/images/logo.png";
+import digitalIndia from "./assets/images/digital-india.png";
+import g20Logo from "./assets/images/g20-logo.png";
+import hmisLogo from "./assets/images/hmis.png";
+import nrhmLogo from "./assets/images/nrhm-logo.png";
+import footer from "./assets/images/footer_abp_dashboard.png";
 
 
 const Login = () => {
@@ -13,31 +19,6 @@ const Login = () => {
   // const [user_id, getUserID] = useState('');
   const navigate = useNavigate(); // Initialize useHistory
 
-                
-
-//   // Example in Login.js
-//   const handleLogin = async () => {
-//     try {
-//       axios.get('http://localhost:4000/State', { username, password})
-//       .then(navigate('/Home'))
-//       .catch(err => console.log(err));
-
-
-//       console.log(username, password)
-
-//       console.log('@@@@@@@@@@@@@@@@@@@2 TESTED')
-
-//       // console.log('Login successful!');
-//       // navigate('/Home'); // Redirect to the home page
-//     } 
-//     catch (error) {
-//       if (error.response && error.response.data) {
-//         console.error('Login failed:', error.response.data);
-//       } else {
-//         console.error('Login failed. An unexpected error occurred.');
-//       }
-//     }
-//   };
 
 
 const handleLogin = async () => {
@@ -50,7 +31,7 @@ const handleLogin = async () => {
     // Store the token in localStorage or wherever you prefer
     localStorage.setItem('token', token);
 
-    console.log('Login successful!');
+    console.log('Login successful!', response);
 
     // function getResponse() {
     //   return 'This is the response from Login.js';
@@ -71,51 +52,67 @@ const handleLogin = async () => {
   
 
   return (
-    <div className="main">
-        <h4>Sign In</h4>
-      <input className="row"
-        type="text"
-        placeholder="Username"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-      />
-      <input className="row"
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <button className="row" onClick={handleLogin}>Sign in</button>
+
+    <div>
+      <div className="header">
+        <div className="header_left">
+          <h4 style={{ color: 'DodgerBlue', textAlign: 'left', width: '200px' }}>Aspirational Blocks Programme</h4>
+          <img src={Logo} style={{ width: '30%' }} alt="Logo"/>
+        </div>
+
+        <div className="header_right">
+          <img src={hmisLogo} alt="HMIS Logo"/>
+          {/* <img style={{ width: '190px' }} src={g20Logo} alt="G20 Logo" /> */}
+          <img src={digitalIndia} alt="Digital India Logo" />
+          <img src={nrhmLogo} alt="NRHM Logo" />
+        </div> 
+      </div>
+
+
+      <div className="header"> 
+        <div className="tile">
+
+          <div className='header' >
+            <img className='header_left_login' src={HMIS_login_abp_dashboard} alt="HMIS"/>
+          </div>
+
+          <div className="login-form">
+            <div className='centered-container'>
+              <h3 style={{ color: '#006F96', textAlign: 'center', marginBottom: '10px' }}>SIGN IN</h3>
+            </div>
+
+            <div className='centered-container'> 
+
+              <h4 style={{ color: '#006F96', textAlign: 'left', marginBottom: '10px' }}>USER NAME</h4>
+              <input
+                style={{ width: '90%', textAlign: 'left', padding: '10px', marginBottom: '10px', borderRadius: '5px', border: '1px solid #ccc' }}
+                type="text"
+                placeholder="Username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+              />
+
+              <h4 style={{ color: '#006F96', textAlign: 'left', marginBottom: '10px' }}>PASSWORD</h4>
+              <input
+                style={{ width: '90%', textAlign: 'left', padding: '10px', marginBottom: '10px', borderRadius: '5px', border: '1px solid #ccc' }}
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            
+              <Button className='login-button' onClick={handleLogin} >SIGN IN</Button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="footer">
+        <img className="footer-image" src={footer} alt="HMIS Footer"/>
+      </div>
+
     </div>
-
-    // <div className="main">
-    //     <h4>Sign In</h4>
-    //     <form onSubmit={this.handleSubmit}>
-    //       <div>
-    //         <input
-    //             type="text"
-    //             placeholder="Username"
-    //             value={username}
-    //             onChange={(e) => setUsername(e.target.value)}
-    //         />
-    //       </div>
-    //       <div>
-    //         <input
-    //             type="password"
-    //             placeholder="Password"
-    //             value={password}
-    //             onChange={(e) => setPassword(e.target.value)}
-    //         />
-    //       </div>
-    //       <input
-    //         type="submit"
-    //         value="SIGN IN"
-    //         className="btn"
-
-    //       />
-    //     </form>
-    //     <button className='button' onClick={handleLogin}>Login</button>
-    //   </div>
+   
   );
 };
 

@@ -1,0 +1,44 @@
+/* MultipleSelectDropdown.css */
+.dropdown {
+    position: relative;
+    display: inline-block;
+    margin-top: 60px; /* Adjust the margin between dropdowns */
+  }
+
+  .dropdown-arrow {
+    position: relative;
+  }
+
+  .dropdown-toggle {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+  }
+  
+  .popover-content {
+    position: absolute;
+    top: calc(100% + 5px); /* Adjust vertical position */
+    left: 0;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: block;
+    width: 600px;
+  }
+  
+  .dropdown:hover .popover-content {
+    display: block;
+  }
+  
+  .popover input[type='checkbox'] {
+    margin-right: 5px;
+  }
+  
+  .popover label {
+    margin-right: 15px;
+  }
+  

@@ -1,9 +1,118 @@
-
 .header {
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   align-items: center !important;
-  padding: 30px;
+  padding: 1%;
+  @media (max-width: 991px) {
+   flex-direction: column;     
+  }
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: center;
+}
+
+.header-title {
+  color: DodgerBlue;
+  text-align: center;
+  line-height: 1.5;
+  line-height: 0.5;
+}
+
+/* .tile {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 5px;
+  justify-items: center;
+} */
+
+/* ------------------------------------------------------------------------------------------------- */
+
+/* YourComponent.css */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f5f5f5; /* Set your desired background color */
+}
+
+.login-form {
+  background-color: #f1efef;
+  margin-top: 1%;
+  margin-bottom: 1%;
+  /* border-radius: 8px; */
+  padding: 5%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 25%;
+  /* height: 90%; */
+}
+
+.logo img {
+  width: 100px; /* Adjust the logo size as needed */
+  margin-bottom: 20px;
+}
+
+.login-heading {
+  color: #006f96;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.input-field {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.login-button {
+  display: flex;
+  margin-top: 22px; /* Adjust the margin-top value to position the button slightly below */
+  width: 95%;
+  background-color: #006f96;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  padding: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+
+/* Add a hover effect */
+.login-button:hover {
+  background-color: #005a7d;
+}
+
+/* Add a click animation */
+.login-button:active {
+  transform: scale(1.05); /* Slightly larger size on click */
+}
+
+canvas {
+  width: 90% !important;
+}
+
+
+/* ----------------------------------------------------------------------------------------------- */
+
+
+.chart-container {
+  border: 1px solid #ccc;
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+/* Add responsive styles here */
+
+
+.text-center {
+  text-align: center;
 }
 
 .header-dropdown {
@@ -20,31 +129,47 @@
 
 
 .header_right {
+  flex: 1 1;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
   align-items: center;
-
+  @media (max-width: 991px) {
+    flex-direction: column;     
+   }
 }
 
 .header_right > img{
-  width: 50%;
-  height: 80px;
+  /* width: 30%;
+  height: 30%; */
   padding: 5px;
   border-radius: 5px;
   margin-right: 5%;
 }
 
 .header_left {
+  flex: 1;
   display: flex;
-  justify-content: left;
+  justify-content: center;
   align-items: center;
+  margin-right: 2vw;
+  @media (max-width: 991px) {
+    flex-direction: column;     
+   }
 }
 
 .header_left > img{
-  width: 100%;
+  width: 75%;
   height: 80px;
   padding: 5px;
   border-radius: 5px;
+}
+
+.header_left_login {
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  border-radius: 1px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* Increase the font size of the heading */
@@ -54,6 +179,7 @@
 
 /* Sticky navbar - toggles between relative and fixed, depending on the scroll position. It is positioned relative until a given offset position is met in the viewport - then it "sticks" in place (like position:fixed). The sticky value is not supported in IE or Edge 15 and earlier versions. However, for these versions the navbar will inherit default position */
 .navbar {
+  z-index: 1000;
   overflow: hidden;
   /* display: flex; */
   background-color: #E44D2A;
@@ -71,6 +197,7 @@
   padding: 14px 20px;
   text-decoration: none;
   background-color: #E44D2A;
+  position: sticky;
 }
 
 
@@ -126,10 +253,20 @@
 
 /* Footer */
 .footer {
-  padding: 20px;
-  text-align: center;
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  padding: 1%;
   background: #134277;
+  width: 98%;
 }
+
+.footer-image {
+  max-width: 100%; /* Ensure the image doesn't exceed the container width */
+  max-height: 100%; /* Set the image height to match the container */
+}
+
+
 
 /* Responsive layout - when the screen is less than 700px wide, make the two columns stack on top of each other instead of next to each other */
 @media screen and (max-width: 700px) {
@@ -148,19 +285,23 @@
 
 
 .button {
+  display: flex;
   display: inline-block;
   padding: 15px 25px;
   font-size: 20px;
   cursor: pointer;
   text-align: center;
-  text-decoration: none;
+
   outline: none;
   color: #fff;
   background-color: #E44D2A;
   border: none;
-  border-radius: 15px;
-  box-shadow: 0 9px #999;
+  border-radius: 0px;
+  box-shadow: 0 1px #999;
 }
+
+
+.active_tab {background-color: #e77009}
 
 .button:hover {background-color: #e77009}
 
@@ -171,10 +312,7 @@
 }
 
 
-.dropdown {
-  width: 400px;
-  margin: 150px auto;
-}
+
 
 .dropdown .dropdown-btn{
   position: relative;
@@ -195,9 +333,10 @@
 /* Tile.css */
 
 .tile {
+  justify-content: center;
   display: flex;
   border: 1px solid #ddd;
-  width: 100%;
+  width: 96%;
   max-height: 70%;
   border-radius: 8px;
   padding: 16px;
@@ -205,19 +344,208 @@
   cursor: pointer;
   transition: box-shadow 0.9s;
   background-color: #ffebee;
+  background: #ADA996;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #EAEAEA, #DBDBDB, #F2F2F2, #ADA996);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #EAEAEA, #DBDBDB, #F2F2F2, #ADA996); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+}
+
+/* Media Query for Responsive Layout */
+@media screen and (max-width: 768px) {
+  .tile {
+    flex: 0 0 calc(50% - 20px); 
+    max-width: calc(50% - 20px); 
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .tile {
+    flex: 0 0 calc(100% - 20px); /* Set each tile to occupy full width on smaller screens */
+    max-width: calc(100% - 20px); /* Set max-width accordingly */
+  }
 }
 
 .tile:hover {
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 .tile-title {
-  font-size: 1.2rem;
-  margin-bottom: 8px;
+  /* font-size: 1.2rem; */
+  margin-bottom: 8%;
 }
 
 .tile-content {
-  font-size: 1rem;
-  color: #555;
-  padding-left: 15%;
+  display: flex;
+  justify-content: space-around;
+  align-items: right !important;
 }
+
+
+
+
+/* .tile_new {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  border: 1px solid #ddd;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  padding: 1%;
+  margin: 1%;
+  cursor: pointer;
+  transition: box-shadow 0.9s;
+  background-color: #ffebee;
+} */
+
+/* .tile_new:hover {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+} */
+
+/* .title_new {
+  margin-bottom: 5px;
+} */
+
+/* .doughnut-container {
+  display: flex;
+} */
+
+/* .rotate-text {
+  font-size: 1vw;
+  transform: rotate(-20deg);
+  white-space: nowrap; 
+  text-overflow: ellipsis;
+} */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* CSS for Tiles */
+.header_new {
+  row-gap: 24px;
+  display: flex;
+  flex-wrap: wrap; /* Allow tiles to wrap to the next line on smaller screens */
+  justify-content: space-around;
+  align-items: center;
+  padding: 1%;
+}
+
+/* .tile_new {
+  flex: 0 0 calc(47% - 20px); 
+  max-width: calc(47% - 20px); 
+  align-items: center;
+  margin: 5px; 
+  padding: 5px; 
+  border: 1px solid #ddd;
+  border-radius: 16px;
+  background-color: #ffebee;
+  transition: box-shadow 0.6s;
+} */
+
+.tile_new {
+  flex: 0 0 calc(47% - 20px); /* Set each tile to occupy one-third of the container width, with some spacing */
+  max-width: calc(47% - 20px); /* Set max-width to ensure tiles don't exceed one-third of the container width */
+  align-items: center;
+  margin: 5px; /* Adjust margin for spacing between tiles */
+  padding: 5px; /* Add padding for visual appeal */
+  border: 1px solid #ddd;
+  border-radius: 16px;
+  background-color: #ffebee;
+  transition: box-shadow 0.6s;
+  background: #ADA996;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #EAEAEA, #DBDBDB, #F2F2F2, #ADA996);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #EAEAEA, #DBDBDB, #F2F2F2, #ADA996); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+.tile_new:hover {
+  box-shadow: 0 0 40px rgba(40, 37, 36, 0.5);
+  background-color: #eff4e3;
+}
+
+.title_new {
+  margin-bottom: 1%;
+  text-align: center;
+}
+
+.tile_content {
+  flex: 5; /* Fill remaining vertical space */
+  display: flex; /* Use flexbox layout */
+  justify-content: center; /* Center child elements horizontally */
+  align-items: center; /* Center child elements vertically */
+  width: 100%; /* Ensure content fills the entire width */
+  height: 100%;
+}
+
+.doughnut-container {
+  display: flex;
+  justify-content: center; /* Center doughnut chart horizontally */
+}
+
+/* .rotate-text {
+  font-size: 1vw;
+  transform: rotate(-25deg) translateX(-5px);
+  white-space: nowrap; 
+  text-overflow: ellipsis;
+} */
+
+/* Media Query for Responsive Layout */
+@media screen and (max-width: 768px) {
+  .tile_new {
+    flex: 0 0 calc(50% - 20px); 
+    max-width: calc(50% - 20px); 
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .tile_new {
+    flex: 0 0 calc(100% - 20px); /* Set each tile to occupy full width on smaller screens */
+    max-width: calc(100% - 20px); /* Set max-width accordingly */
+  }
+}
+
+.select-class {
+ padding: 4px !important;
+}
+
+.select-option {
+  border-radius: 0px !important;
+  padding: 8px !important;
+  background-color: #ccc !important;
+  color: #dd8c12 !important;
+}
+
+
+
+.select-container {
+  display: flex; /* Use flexbox to align items in a row */
+  gap: 2vw;
+  @media (max-width: 991px) {
+    flex-direction: column;     
+   }
+}
+
+.select-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-right: 1vw; /* Adjust spacing between items */
+  /* margin-left: 5vh; */
+}
+
+/* .select-item- {
+  margin-right: 4vw; /* Adjust spacing between items */
+/* } */ 

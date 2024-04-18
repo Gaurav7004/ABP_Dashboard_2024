@@ -1,49 +1,41 @@
 import React, { useState, useEffect } from 'react';
-import './dropdownBtn.css'; // Import your CSS file for styling
+import './dropdownBtn.css';
 
-const DropdownButton = ({ fetchDataEndpoint, onSelect }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [options, setOptions] = useState([]);
-
-  const toggleDropdown = () => {
-    setIsOpen(!isOpen);
-  };
+const SingleSelectDropdown = ({ options, buttonText, onSelect }) => {
+  const [selectedOption, setSelectedOption] = useState(null);
+  const [showPopover, setShowPopover] = useState(false);
 
   useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
-    try {
-      // Replace the URL with your backend API endpoint that provides dropdown data
-      const response = await fetch(fetchDataEndpoint);
-      const data = await response.json();
-
-      // Assuming the backend response is an array of options, update the state
-      setOptions(data);
-    } catch (error) {
-      console.error('Error fetching data from the backend:', error);
+    if (selectedOption) {
+      onSelect(selectedOption.value); // Call the onSelect function with the selected value
     }
-  };
+  }, [selectedOption, onSelect]);
 
   const handleOptionSelect = (option) => {
-    onSelect(option);
-    setIsOpen(false);
+    setSelectedOption(option === selectedOption ? null : option);
+  };
+
+  const togglePopover = () => {
+    setShowPopover(!showPopover);
   };
 
   return (
-    <div className="dropdown-container">
-      <button className="dropdown-button" onClick={toggleDropdown}>
-        Select an option
-        <div className="dropdown-arrow"></div>
+    <div className="dropdown" onMouseEnter={togglePopover} onMouseLeave={togglePopover}>
+      <button className="dropdown-toggle">
+        {selectedOption ? selectedOption.label : buttonText} 
       </button>
-      {isOpen && (
-        <div className="dropdown-content">
-          {/* Map through the options and render them as dropdown items */}
+      {showPopover && (
+        <div className="popover-content">
           {options.map((option) => (
-            <p key={option.id} onClick={() => handleOptionSelect(option)}>
-              {option.name}
-            </p>
+            <div key={option.value} className="option-container">
+              <input
+                type="radio"
+                id={option.value}
+                checked={option === selectedOption}
+                onChange={() => handleOptionSelect(option)}
+              />
+              <label className="option-label" htmlFor={option.value}>{option.label}</label>
+            </div>
           ))}
         </div>
       )}
@@ -51,4 +43,4 @@ const DropdownButton = ({ fetchDataEndpoint, onSelect }) => {
   );
 };
 
-export default DropdownButton;
+export default SingleSelectDropdown;
