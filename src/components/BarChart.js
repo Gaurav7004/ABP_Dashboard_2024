@@ -1,3 +1,4 @@
+import { color, style } from "@mui/system";
 import React from "react";
 import { Bar } from "react-chartjs-2";
 
@@ -8,7 +9,7 @@ const options = {
     display: true
   },
   animation: {
-    animateScale: true,
+    animateScale: false,
     animateRotate: true
   },
   plugins: {
@@ -28,9 +29,6 @@ function BarChart({ chartData }) {
 }
 
 export default BarChart;
-
-
-
 
 
 

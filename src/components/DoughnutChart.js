@@ -31,11 +31,11 @@ const options = {
 
 const MultiDonutChart = ({ chartData }) => {
   return (
-    <div style={{ display: "flex", justifyContent: "space-around", flexWrap: "wrap" }}>
+    <div style={{ display: "flex", width: "100%", justifyContent: "space-around", flexWrap: "wrap" }}>
       {Object.entries(chartData).map(([key, data], index) => (
-        <div style={{ textAlign: "center", width: "18%", marginBottom: "5px" }} key={key}>
+        <div style={{ textAlign: "center", width: "14%", marginBottom: "5px" }} key={key}>
           <Doughnut data={data} options={options} />
-          <p style={{ color: labelColors[index % labelColors.length], fontSize: "1.2vw" }} className='rotate-text'>
+          <p style={{ color: labelColors[index % labelColors.length], fontSize: "1vw" }} className='rotate-text'>
             {key === "national" ? "India" : `${key}`}
           </p>
         </div>

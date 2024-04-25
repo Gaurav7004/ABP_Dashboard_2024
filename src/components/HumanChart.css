@@ -1,0 +1,41 @@
+/* Responsive styles */
+.svg-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+  
+  .label{
+    margin-bottom: 1%;
+    margin-right: 5%;
+  }
+
+  .percentage {
+    margin-bottom: 1%;
+    margin-left: 5%;
+  }
+  
+  .svg-container {
+    margin-bottom: 10px;
+  }
+  
+  /* Media query for small screens */
+  @media screen and (max-width: 768px) {
+    .svg-row {
+      flex-direction: column;
+    }
+  
+    .label,
+    .percentage {
+      text-align: center;
+    }
+  
+    .svg-container {
+      margin-bottom: 5px;
+    }
+  }
+  
+
+
+
+  

@@ -1,0 +1,25 @@
+
+@keyframes blink {
+  0% {
+    fill: rgba(0, 0, 0, 0.1); 
+  }
+  50% {
+    fill: rgba(255, 0, 0, 0.5); 
+  }
+  100% {
+    fill: rgba(0, 0, 0, 0.1);
+  }
+}
+
+.bar {
+  animation: blink 2s infinite; /* Apply the blink animation */
+}
+
+/* @keyframes blink {
+  0%, 100% {
+    fill: red; 
+  }
+  20%, 80% {
+    fill: rgba(255, 0, 0, 0.5);
+  }
+} */

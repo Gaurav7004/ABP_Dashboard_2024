@@ -8,6 +8,15 @@
   }
 }
 
+.apply-filter-button {
+    background-color: #006f96;
+    color: white;
+    border: none;
+    padding: 10px;
+    width: 10vw;
+    cursor: pointer;
+}
+
 .row {
   display: grid;
   grid-template-columns: 1fr auto;
@@ -73,7 +82,7 @@
 .login-button {
   display: flex;
   margin-top: 22px; /* Adjust the margin-top value to position the button slightly below */
-  width: 95%;
+  width: 100%;
   background-color: #006f96;
   color: #ffffff;
   border: none;
@@ -254,11 +263,9 @@ canvas {
 /* Footer */
 .footer {
   display: flex;
-  justify-content: center; /* Center horizontally */
-  align-items: center; /* Center vertically */
-  padding: 1%;
+  justify-content: center;
+  align-items: center !important; /* Center vertically */
   background: #134277;
-  width: 98%;
 }
 
 .footer-image {
@@ -337,16 +344,30 @@ canvas {
   display: flex;
   border: 1px solid #ddd;
   width: 96%;
+  min-height: 15vh;  
   max-height: 70%;
   border-radius: 8px;
   padding: 16px;
   margin: 8px;
   cursor: pointer;
   transition: box-shadow 0.9s;
-  background-color: #ffebee;
-  background: #ADA996;  /* fallback for old browsers */
-  background: -webkit-linear-gradient(to right, #EAEAEA, #DBDBDB, #F2F2F2, #ADA996);  /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(to right, #EAEAEA, #DBDBDB, #F2F2F2, #ADA996); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background-color: #25B7B7;
+
+}
+
+.tile_tab1_SC {
+  justify-content: center;
+  display: flex;
+  border: 1px solid #ddd;
+  width: 96%;
+  min-height: 15vh; 
+  max-height: 70%;
+  border-radius: 8px;
+  padding: 16px;
+  margin: 8px;
+  cursor: pointer;
+  transition: box-shadow 0.9s;
+  background-color: #d7e6e6;
 
 }
 
@@ -381,59 +402,6 @@ canvas {
 }
 
 
-
-
-/* .tile_new {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  border: 1px solid #ddd;
-  width: 100%;
-  height: 100%;
-  border-radius: 8px;
-  padding: 1%;
-  margin: 1%;
-  cursor: pointer;
-  transition: box-shadow 0.9s;
-  background-color: #ffebee;
-} */
-
-/* .tile_new:hover {
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-} */
-
-/* .title_new {
-  margin-bottom: 5px;
-} */
-
-/* .doughnut-container {
-  display: flex;
-} */
-
-/* .rotate-text {
-  font-size: 1vw;
-  transform: rotate(-20deg);
-  white-space: nowrap; 
-  text-overflow: ellipsis;
-} */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* CSS for Tiles */
 .header_new {
   row-gap: 24px;
@@ -441,35 +409,23 @@ canvas {
   flex-wrap: wrap; /* Allow tiles to wrap to the next line on smaller screens */
   justify-content: space-around;
   align-items: center;
-  padding: 1%;
+  /* padding: 1%; */
 }
 
-/* .tile_new {
-  flex: 0 0 calc(47% - 20px); 
-  max-width: calc(47% - 20px); 
-  align-items: center;
-  margin: 5px; 
-  padding: 5px; 
-  border: 1px solid #ddd;
-  border-radius: 16px;
-  background-color: #ffebee;
-  transition: box-shadow 0.6s;
-} */
 
 .tile_new {
   flex: 0 0 calc(47% - 20px); /* Set each tile to occupy one-third of the container width, with some spacing */
   max-width: calc(47% - 20px); /* Set max-width to ensure tiles don't exceed one-third of the container width */
   align-items: center;
-  margin: 5px; /* Adjust margin for spacing between tiles */
-  padding: 5px; /* Add padding for visual appeal */
+  /* margin: 5px; 
+  padding: 5px;  */
   border: 1px solid #ddd;
-  border-radius: 16px;
-  background-color: #ffebee;
+  /* border-radius: 16px; */
+  background-color: #25B7B7;
   transition: box-shadow 0.6s;
-  background: #ADA996;  /* fallback for old browsers */
-  background: -webkit-linear-gradient(to right, #EAEAEA, #DBDBDB, #F2F2F2, #ADA996);  /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(to right, #EAEAEA, #DBDBDB, #F2F2F2, #ADA996); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background: #fafaf9;  /* fallback for old browsers */
 }
+
 
 .tile_new:hover {
   box-shadow: 0 0 40px rgba(40, 37, 36, 0.5);
@@ -477,7 +433,7 @@ canvas {
 }
 
 .title_new {
-  margin-bottom: 1%;
+  /* margin-bottom: 1%; */
   text-align: center;
 }
 
@@ -532,7 +488,10 @@ canvas {
 
 .select-container {
   display: flex; /* Use flexbox to align items in a row */
-  gap: 2vw;
+  width: 100%;
+  height: 5vh;
+  justify-content: center;
+  /* gap: 1vw; */
   @media (max-width: 991px) {
     flex-direction: column;     
    }
@@ -542,7 +501,7 @@ canvas {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  margin-right: 1vw; /* Adjust spacing between items */
+  margin-right: 0.1vw;
   /* margin-left: 5vh; */
 }
 

@@ -1,20 +1,27 @@
 import { useState, useEffect } from "react";
-import { Link } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import "./App.css";
 import BarChart from "./components/BarChart";
-import VerticalBarChart from "./components/VerticalBarChart";
-import LineChart from "./components/LineChart";
+import MyComponent from "./components/HumanChart";
+import BuildingComponent from "./components/BuildingChart";
 import DoughnutChart from "./components/DoughnutChart";
 import Speedometer from "./components/Speedometer";
+
+import NewLineChart from "./components/NewLineChart";
+import ChildChart from "./components/ChildChart";
+import ProgressBarComponent from "./components/ProgressBarComponent";
+import ThreeDBarChart from "./components/ThreeDBarChart";
+import ProgressGaugeComponent from "./components/ProgressGaugeComponent";
+
+
 import footer from "./assets/images/footer_abp_dashboard.png";
 import Logo from "./assets/images/logo.png";
 import digitalIndia from "./assets/images/digital-india.png";
-import g20Logo from "./assets/images/g20-logo.png";
 import hmisLogo from "./assets/images/hmis.png";
 import nrhmLogo from "./assets/images/nrhm-logo.png";
 import axios from 'axios';
-// import Grid from '@mui/material/Grid'; // Grid version 1
-import { useLocation, useNavigate } from 'react-router-dom';
+
+
 import ReactTable from "./components/ReactTable"; 
 import * as XLSX from "xlsx";
 
@@ -133,14 +140,30 @@ function Home() {
       { id: 7, label:'Treatment success rate (%)'},
     ];
 
-
-    const tableData = [
-      { "1st Trimester Registration (%)": 38.1, "Institutional Delivery (%)": 33.33, "Low Birth Weight (%)": 0, "Percentage Test": 33.33, "Percentage Test": 0  },
-      { "1st Trimester Registration (%)": 80, "Institutional Delivery (%)": null, "Low Birth Weight (%)": null,  "Percentage Test": 33.33, "Percentage Test": 0  },
-      { "1st Trimester Registration (%)": 60, "Institutional Delivery (%)": 0, "Low Birth Weight (%)": 0,  "Percentage Test": 33.33, "Percentage Test": 0  },
-      { "1st Trimester Registration (%)": 80, "Institutional Delivery (%)": 15.15, "Low Birth Weight (%)": 0,  "Percentage Test": 33.33, "Percentage Test": 0  },
-      { "1st Trimester Registration (%)": 67.42, "Institutional Delivery (%)": 53.13, "Low Birth Weight (%)": 6.45,  "Percentage Test": 33.33, "Percentage Test": 0  }
-    ];
+    const newlineChartDataTest = {
+      series: [
+        {
+          name: 'National Avg',
+          data: [12, 20, 30],
+          month: ['1', '2', '3'],
+        },
+        {
+          name: 'State Avg',
+          data: [48, 60, 90],
+          month: ['1', '2', '3'],
+        },
+        {
+          name: 'District Avg',
+          data: [30, 12, 59],
+          month: ['1', '2', '3'],
+        },
+        {
+          name: 'Block Avg',
+          data: [23, 40, 78],
+          month: ['1', '2', '3'],
+        }
+      ]
+    };
 
     const chartDataTab3 = {
       national: {
@@ -211,6 +234,8 @@ function Home() {
   const [trendsDataTab3_6, setTrendsDataTab3_6] = useState(chartDataTab3);
   const [trendsDataTab3_7, setTrendsDataTab3_7] = useState(chartDataTab3);
 
+  const [testnewLineChart, setTestnewLineChart] = useState(newlineChartDataTest);
+
   const [responseTab2Data_block, setresponseTab2Data_block] = useState([]);
   
 
@@ -236,7 +261,7 @@ const handleFilterButtonClick = () => {
 
             // Your mapping logic here
             const updatedUserDataTab4_1 = {
-              labels: responseData.map(item => item.month),
+              labels: responseData.map(item => `${item.month} - ( ${item["1st Trimester Registration (%)"]} ) `),
               state: responseData.map(item => item.state),
               district: responseData.map(item => item.district),
               block: responseData.map(item => item.block),
@@ -244,7 +269,7 @@ const handleFilterButtonClick = () => {
               year: responseData.map(item => item.year),
               datasets: [
                   {
-                      label: " 1st Trimester Registration (%) ",
+                      label: "Percentage of 1st Trimester Registration",
                       data: responseData.map(item => item["1st Trimester Registration (%)"]),
                       backgroundColor: [
                         "rgba(75,192,192,1)",
@@ -490,7 +515,7 @@ useEffect(() => {
             // block: response.data.map(item => item.Block),
             datasets: [
                             {
-                              label: " 1st Trimester Registration (%) ",
+                              label: "Percentage 1st Trimester Registration",
                               data: response.data.top5_1.map(item => item["1st Trimester Registration (%)"]),
                               backgroundColor: [
                                 "rgba(75,192,192,1)",
@@ -535,9 +560,6 @@ useEffect(() => {
         // Your mapping logic here
         const VerticalBarUserDataTop5_3 = {
             labels: response.data.bottom5_3.map(item => item.block), // Update with the appropriate property
-            // state: response.data.map(item => item.State),      // Update with the appropriate property
-            // district: response.data.map(item => item.District), // Update with the appropriate property
-            // block: response.data.map(item => item.Block),
             datasets: [
                             {
                               label: " Low Birth Weight (%) ",
@@ -554,6 +576,8 @@ useEffect(() => {
                             },
                           ],
           };
+          
+          console.log(VerticalBarUserDataTop5_3, '-- VerticalBarUserDataTop5_3 --')
 
           setCommonFilteredDataTop5_3(VerticalBarUserDataTop5_3); 
 
@@ -629,28 +653,49 @@ useEffect(() => {
         };
         setCommonFilteredDataTop5_6(VerticalBarUserDataTop5_6); 
 
+        const VerticalBarUserDataTop5_7 = [
+          {
+            label: response.data.top5_7.map(item => item.block)[0], 
+            percentage: response.data.bottom5_1.map(item => parseFloat(item["1st Trimester Registration (%)"]))[0]
+          },
+          {
+            label: response.data.top5_7.map(item => item.block)[1], 
+            percentage: response.data.bottom5_1.map(item => parseFloat(item["1st Trimester Registration (%)"]))[1]
+          },
+          {
+            label: response.data.top5_7.map(item => item.block)[2], 
+            percentage: response.data.bottom5_1.map(item => parseFloat(item["1st Trimester Registration (%)"]))[2]
+          },
+          {
+            label: response.data.top5_7.map(item => item.block)[3], 
+            percentage: response.data.bottom5_1.map(item => parseFloat(item["1st Trimester Registration (%)"]))[3]
+          }
+          ,
+          {
+            label: response.data.top5_7.map(item => item.block)[4], 
+            percentage: response.data.bottom5_1.map(item => parseFloat(item["1st Trimester Registration (%)"]))[4]
+          }
+        ];
+
         // Your mapping logic here
-        const VerticalBarUserDataTop5_7 = {
-          labels: response.data.top5_7.map(item => item.block), // Update with the appropriate property
-          // state: response.data.map(item => item.State),      // Update with the appropriate property
-          // district: response.data.map(item => item.District), // Update with the appropriate property
-          // block: response.data.map(item => item.Block),
-          datasets: [
-                          {
-                            label: " Treatment success rate (%) ",
-                            data: response.data.top5_7.map(item => item["Treatment success rate (%)"]),
-                            backgroundColor: [
-                              "rgba(75,192,192,1)",
-                              "#ecf0f1",
-                              "#50AF95",
-                              "#f3ba2f",
-                              "#2a71d0",
-                            ],
-                            borderColor: "black",
-                            borderWidth: 2,
-                          },
-                        ],
-        };
+        // const VerticalBarUserDataTop5_7 = {
+        //   labels: response.data.top5_7.map(item => item.block), // Update with the appropriate property
+        //   datasets: [
+        //                   {
+        //                     label: " Treatment success rate (%) ",
+        //                     data: response.data.top5_7.map(item => item["Treatment success rate (%)"]),
+        //                     backgroundColor: [
+        //                       "rgba(75,192,192,1)",
+        //                       "#ecf0f1",
+        //                       "#50AF95",
+        //                       "#f3ba2f",
+        //                       "#2a71d0",
+        //                     ],
+        //                     borderColor: "black",
+        //                     borderWidth: 2,
+        //                   },
+        //                 ],
+        // };
         setCommonFilteredDataTop5_7(VerticalBarUserDataTop5_7); 
 
 
@@ -665,7 +710,7 @@ useEffect(() => {
             // block: response.data.map(item => item.Block),
             datasets: [
                             {
-                              label: " 1st Trimester Registration (%) ",
+                              label: "Percentage 1st Trimester Registration",
                               data: response.data.bottom5_1.map(item => parseFloat(item["1st Trimester Registration (%)"])),
                               backgroundColor: [
                                 "rgba(75,192,192,1)",
@@ -847,7 +892,10 @@ const handleFilterButtonClick_TAB2 = async () => {
 
         let keys_responseTab2Data_block = Object.keys(responseTab2Data_block[0]);
 
-        
+        console.log(responseTab2Data_nat, '--- const responseTab2Data_nat ---');
+        console.log(responseTab2Data_state, '--- const responseTab2Data_state ---');
+        console.log(responseTab2Data_dist, '--- const responseTab2Data_dist ---');
+        console.log(responseTab2Data_block, '--- const responseTab2Data_block ---');
 
         let temp_val = [] 
 
@@ -873,319 +921,206 @@ const handleFilterButtonClick_TAB2 = async () => {
         let temp_trendsDataTab2_7 = {};
 
         if (selectedKPI.includes('1st Trimester Registration (%)')){
-          temp_trendsDataTab2_1 = ({
-            labels: responseTab2Data_block.map(item => item.month),
-            // state: [],
-            // district: [],
-            // block: [],
-            // month: [],
-            // year: [],
-            datasets: [
+          temp_trendsDataTab2_1 = {
+            series: [
               {
-                label: "National Average",
+                name: ["National Average"],
+                // data: [...new Set(responseTab2Data_nat.map(item => parseFloat(item["natAvg 1st Trimester Registration"])))] ,
                 data: responseTab2Data_nat.map(item => parseFloat(item["natAvg 1st Trimester Registration"])) ,
-                fill: false,
-                borderColor: "#4dff4d",
-                borderWidth: 2,
-                tension: 0.1,
+                // month: responseTab2Data_nat.map(item => item["month"]).sort((a, b) => monthNames.indexOf(a) - monthNames.indexOf(b)) ,
+                month: responseTab2Data_nat.map(item => item["month"]) ,
               },
               {
-                label: "State Average",
+                name: ["State Average"],
                 data: responseTab2Data_state.map(item => parseFloat(item["stAvg 1st Trimester Registration"])),
-                fill: false,
-                borderColor: "#ffff00",
-                borderWidth: 2,
-                tension: 0.1,
+                month: responseTab2Data_state.map(item => item["month"]) ,
               },
               {
-                label: "District Average",
+                name: ["District Average"],
                 data: responseTab2Data_dist.map(item => parseFloat(item["distAvg 1st Trimester Registration"])),
-                fill: false,
-                borderColor: "#1338BE",
-                borderWidth: 2,
-                tension: 0.1,
+                month: responseTab2Data_dist.map(item => item["month"]) ,
               },
               {
-                label: "Block Average",
+                name: ["Block Average"],
                 data: responseTab2Data_block.map(item => parseFloat(item["block_avg_1st_tri_reg"])),
-                fill: false,
-                borderColor: "#ff6600",
-                borderWidth: 2,
-                tension: 0.1,
-              },
-            ],
-          });
+                month: responseTab2Data_block.map(item => item["month"]) ,
+              }
+            ]
+          };
         }
 
         if (selectedKPI.includes('Institutional Delivery (%)')){
-           temp_trendsDataTab2_2 = ({
-            labels: responseTab2Data_block.map(item => item.month),
-            // state: [],
-            // district: [],
-            // block: [],
-            // month: [],
-            // year: [],
-            datasets: [
+           temp_trendsDataTab2_2 = {
+            series: [
               {
-                label: "National Average",
-                data: responseTab2Data_nat.map(item => parseFloat(item["natAvg Institutional Delivery"])),
-                fill: false,
-                borderColor: "#4dff4d",
-                borderWidth: 2,
-                tension: 0.1,
+                name: ["National Average"],
+                // data: [...new Set(responseTab2Data_nat.map(item => parseFloat(item["natAvg 1st Trimester Registration"])))] ,
+                data: responseTab2Data_nat.map(item => parseFloat(item["natAvg Institutional Delivery"])) ,
+                // month: responseTab2Data_nat.map(item => item["month"]).sort((a, b) => monthNames.indexOf(a) - monthNames.indexOf(b)) ,
+                month: responseTab2Data_nat.map(item => item["month"]) ,
               },
               {
-                label: "State Average",
+                name: ["State Average"],
                 data: responseTab2Data_state.map(item => parseFloat(item["stAvg Institutional Delivery"])),
-                fill: false,
-                borderColor: "#ffff00",
-                borderWidth: 2,
-                tension: 0.1,
+                month: responseTab2Data_state.map(item => item["month"]) ,
               },
               {
-                label: "District Average",
+                name: ["District Average"],
                 data: responseTab2Data_dist.map(item => parseFloat(item["distAvg Institutional Delivery"])),
-                fill: false,
-                borderColor: "#1338BE",
-                borderWidth: 2,
-                tension: 0.1,
+                month: responseTab2Data_dist.map(item => item["month"]) ,
               },
               {
-                label: "Block Average",
+                name: ["Block Average"],
                 data: responseTab2Data_block.map(item => parseFloat(item["block_avg_inst_delivery"])),
-                fill: false,
-                borderColor: "#ff6600",
-                borderWidth: 2,
-                tension: 0.1,
-              },
-            ],
-          });
+                month: responseTab2Data_block.map(item => item["month"]) ,
+              }
+            ]
+          };
         }
 
         if (selectedKPI.includes('Low Birth Weight (%)')){
-          temp_trendsDataTab2_3 = ({
-            labels: responseTab2Data_block.map(item => item.month),
-            // state: [],
-            // district: [],
-            // block: [],
-            // month: [],
-            // year: [],
-            datasets: [
+          temp_trendsDataTab2_3 = {
+            series: [
               {
-                label: "National Average",
-                data: responseTab2Data_nat.map(item => parseFloat(item["natAvg Low Birth Weight"])),
-                fill: false,
-                borderColor: "#4dff4d",
-                borderWidth: 2,
-                tension: 0.1,
+                name: ["National Average"],
+                // data: [...new Set(responseTab2Data_nat.map(item => parseFloat(item["natAvg 1st Trimester Registration"])))] ,
+                data: responseTab2Data_nat.map(item => parseFloat(item["natAvg Low Birth Weight"])) ,
+                // month: responseTab2Data_nat.map(item => item["month"]).sort((a, b) => monthNames.indexOf(a) - monthNames.indexOf(b)) ,
+                month: responseTab2Data_nat.map(item => item["month"]) ,
               },
               {
-                label: "State Average",
+                name: ["State Average"],
                 data: responseTab2Data_state.map(item => parseFloat(item["stAvg Low Birth Weight"])),
-                fill: false,
-                borderColor: "#ffff00",
-                borderWidth: 2,
-                tension: 0.1,
+                month: responseTab2Data_state.map(item => item["month"]) ,
               },
               {
-                label: "District Average",
+                name: ["District Average"],
                 data: responseTab2Data_dist.map(item => parseFloat(item["distAvg Low Birth Weight"])),
-                fill: false,
-                borderColor: "#1338BE",
-                borderWidth: 2,
-                tension: 0.1,
+                month: responseTab2Data_dist.map(item => item["month"]) ,
               },
               {
-                label: "Block Average",
+                name: ["Block Average"],
                 data: responseTab2Data_block.map(item => parseFloat(item["block_avg_low_birth_wt"])),
-                fill: false,
-                borderColor: "#ff6600",
-                borderWidth: 2,
-                tension: 0.1,
-              },
-            ],
-          });
-
+                month: responseTab2Data_block.map(item => item["month"]) ,
+              }
+            ]
+          };
         }
 
         if (selectedKPI.includes('NQAS certified health facilities (%)')){
-          temp_trendsDataTab2_4 = ({
-            labels: responseTab2Data_block.map(item => item.month),
-            // state: [],
-            // district: [],
-            // block: [],
-            // month: [],
-            // year: [],
-            datasets: [
+          temp_trendsDataTab2_4 = {
+            series: [
               {
-                label: "National Average",
-                data: responseTab2Data_nat.map(item => parseFloat(item["natAvg NQAS"])),
-                fill: false,
-                borderColor: "#4dff4d",
-                borderWidth: 2,
-                tension: 0.1,
+                name: ["National Average"],
+                // data: [...new Set(responseTab2Data_nat.map(item => parseFloat(item["natAvg 1st Trimester Registration"])))] ,
+                data: responseTab2Data_nat.map(item => parseFloat(item["natAvg NQAS"])) ,
+                // month: responseTab2Data_nat.map(item => item["month"]).sort((a, b) => monthNames.indexOf(a) - monthNames.indexOf(b)) ,
+                month: responseTab2Data_nat.map(item => item["month"]) ,
               },
               {
-                label: "State Average",
+                name: ["State Average"],
                 data: responseTab2Data_state.map(item => parseFloat(item["stAvg NQAS"])),
-                fill: false,
-                borderColor: "#ffff00",
-                borderWidth: 2,
-                tension: 0.1,
+                month: responseTab2Data_state.map(item => item["month"]) ,
               },
               {
-                label: "District Average",
+                name: ["District Average"],
                 data: responseTab2Data_dist.map(item => parseFloat(item["distAvg NQAS"])),
-                fill: false,
-                borderColor: "#1338BE",
-                borderWidth: 2,
-                tension: 0.1,
+                month: responseTab2Data_dist.map(item => item["month"]) ,
               },
               {
-                label: "Block Average",
+                name: ["Block Average"],
                 data: responseTab2Data_block.map(item => parseFloat(item["block_avg_NQAS"])),
-                fill: false,
-                borderColor: "#ff6600",
-                borderWidth: 2,
-                tension: 0.1,
-              },
-            ],
-          });
+                month: responseTab2Data_block.map(item => item["month"]) ,
+              }
+            ]
+          };
         }
 
         if (selectedKPI.includes('Person screened for Hypertension (%)')){
-          temp_trendsDataTab2_5 = ({
-            labels: responseTab2Data_block.map(item => item.month),
-            // state: [],
-            // district: [],
-            // block: [],
-            // month: [],
-            // year: [],
-            datasets: [
+          temp_trendsDataTab2_5 = {
+            series: [
               {
-                label: "National Average",
-                data: responseTab2Data_nat.map(item => parseFloat(item["natAvg Hypertension"])),
-                fill: false,
-                borderColor: "#4dff4d",
-                borderWidth: 2,
-                tension: 0.1,
+                name: ["National Average"],
+                // data: [...new Set(responseTab2Data_nat.map(item => parseFloat(item["natAvg 1st Trimester Registration"])))] ,
+                data: responseTab2Data_nat.map(item => parseFloat(item["natAvg Hypertension"])) ,
+                // month: responseTab2Data_nat.map(item => item["month"]).sort((a, b) => monthNames.indexOf(a) - monthNames.indexOf(b)) ,
+                month: responseTab2Data_nat.map(item => item["month"]) ,
               },
               {
-                label: "State Average",
+                name: ["State Average"],
                 data: responseTab2Data_state.map(item => parseFloat(item["stAvg Hypertension"])),
-                fill: false,
-                borderColor: "#ffff00",
-                borderWidth: 2,
-                tension: 0.1,
+                month: responseTab2Data_state.map(item => item["month"]) ,
               },
               {
-                label: "District Average",
+                name: ["District Average"],
                 data: responseTab2Data_dist.map(item => parseFloat(item["distAvg Hypertension"])),
-                fill: false,
-                borderColor: "#1338BE",
-                borderWidth: 2,
-                tension: 0.1,
+                month: responseTab2Data_dist.map(item => item["month"]) ,
               },
               {
-                label: "Block Average",
+                name: ["Block Average"],
                 data: responseTab2Data_block.map(item => parseFloat(item["block_avg_Hypertension"])),
-                fill: false,
-                borderColor: "#ff6600",
-                borderWidth: 2,
-                tension: 0.1,
-              },
-            ],
-          });
+                month: responseTab2Data_block.map(item => item["month"]) ,
+              }
+            ]
+          };
         }
 
         if (selectedKPI.includes('Person screened for Diabetes (%)')){
-          temp_trendsDataTab2_6 = ({
-            labels: responseTab2Data_block.map(item => item.month),
-            // state: [],
-            // district: [],
-            // block: [],
-            // month: [],
-            // year: [],
-            datasets: [
+          temp_trendsDataTab2_6 = {
+            series: [
               {
-                label: "National Average",
-                data: responseTab2Data_nat.map(item => parseFloat(item["natAvg Diabetes "])),
-                fill: false,
-                borderColor: "#4dff4d",
-                borderWidth: 2,
-                tension: 0.1,
+                name: ["National Average"],
+                // data: [...new Set(responseTab2Data_nat.map(item => parseFloat(item["natAvg 1st Trimester Registration"])))] ,
+                data: responseTab2Data_nat.map(item => parseFloat(item["natAvg Diabetes"])) ,
+                // month: responseTab2Data_nat.map(item => item["month"]).sort((a, b) => monthNames.indexOf(a) - monthNames.indexOf(b)) ,
+                month: responseTab2Data_nat.map(item => item["month"]) ,
               },
               {
-                label: "State Average",
-                data: responseTab2Data_state.map(item => parseFloat(item["stAvg Diabetes "])),
-                fill: false,
-                borderColor: "#ffff00",
-                borderWidth: 2,
-                tension: 0.1,
+                name: ["State Average"],
+                data: responseTab2Data_state.map(item => parseFloat(item["stAvg Diabetes"])),
+                month: responseTab2Data_state.map(item => item["month"]) ,
               },
               {
-                label: "District Average",
-                data: responseTab2Data_dist.map(item => parseFloat(item["distAvg Diabetes "])),
-                fill: false,
-                borderColor: "#1338BE",
-                borderWidth: 2,
-                tension: 0.1,
+                name: ["District Average"],
+                data: responseTab2Data_dist.map(item => parseFloat(item["distAvg Diabetes"])),
+                month: responseTab2Data_dist.map(item => item["month"]) ,
               },
               {
-                label: "Block Average",
-                data: responseTab2Data_block.map(item => parseFloat(item["block_avg_Diabetes "])),
-                fill: false,
-                borderColor: "#ff6600",
-                borderWidth: 2,
-                tension: 0.1,
-              },
-            ],
-          });
+                name: ["Block Average"],
+                data: responseTab2Data_block.map(item => parseFloat(item["block_avg_Diabetes"])),
+                month: responseTab2Data_block.map(item => item["month"]) ,
+              }
+            ]
+          };
         }
 
         if (selectedKPI.includes('Treatment success rate (%)')){
-            temp_trendsDataTab2_7 = ({
-            labels: responseTab2Data_block.map(item => item.month),
-            // state: [],
-            // district: [],
-            // block: [],
-            // month: [],
-            // year: [],
-            datasets: [
-              {
-                label: "National Average",
-                data: responseTab2Data_nat.map(item => parseFloat(item["natAvg Treatment success rate"])),
-                fill: false,
-                borderColor: "#4dff4d",
-                borderWidth: 2,
-                tension: 0.1,
-              },
-              {
-                label: "State Average",
-                data: responseTab2Data_state.map(item => parseFloat(item["stAvg Treatment success rate"])),
-                fill: false,
-                borderColor: "#ffff00",
-                borderWidth: 2,
-                tension: 0.1,
-              },
-              {
-                label: "District Average",
-                data: responseTab2Data_dist.map(item => parseFloat(item["distAvg Treatment success rate"])),
-                fill: false,
-                borderColor: "#1338BE",
-                borderWidth: 2,
-                tension: 0.1,
-              },
-              {
-                label: "Block Average",
-                data: responseTab2Data_block.map(item => parseFloat(item["block_avg_treatment_success"])),
-                fill: false,
-                borderColor: "#ff6600",
-                borderWidth: 2,
-                tension: 0.1,
-              },
-            ],
-          });
+            temp_trendsDataTab2_7 = {
+              series: [
+                {
+                  name: ["National Average"],
+                  // data: [...new Set(responseTab2Data_nat.map(item => parseFloat(item["natAvg 1st Trimester Registration"])))] ,
+                  data: responseTab2Data_nat.map(item => parseFloat(item["natAvg Treatment success rate"])) ,
+                  // month: responseTab2Data_nat.map(item => item["month"]).sort((a, b) => monthNames.indexOf(a) - monthNames.indexOf(b)) ,
+                  month: responseTab2Data_nat.map(item => item["month"]) ,
+                },
+                {
+                  name: ["State Average"],
+                  data: responseTab2Data_state.map(item => parseFloat(item["stAvg Treatment success rate"])),
+                  month: responseTab2Data_state.map(item => item["month"]) ,
+                },
+                {
+                  name: ["District Average"],
+                  data: responseTab2Data_dist.map(item => parseFloat(item["distAvg Treatment success rate"])),
+                  month: responseTab2Data_dist.map(item => item["month"]) ,
+                },
+                {
+                  name: ["Block Average"],
+                  data: responseTab2Data_block.map(item => parseFloat(item["block_avg_treatment_success"])),
+                  month: responseTab2Data_block.map(item => item["month"]) ,
+                }
+              ]
+            };
         }
           
           
@@ -1226,50 +1161,27 @@ const handleFilterButtonClick_TAB3 = async () => {
   let temp_trendsDataTab3_7 = {};
 
   
-  temp_trendsDataTab3_1 = {
-    
-    ['India' + ' - ' + responseTab3Data_nat.map(item => parseFloat(item["natAvg 1st Trimester Registration"]))[0] + '%']: {
-      labels: ['National Avg'],
-      datasets: [
-        {
-          data: [responseTab3Data_nat.map(item => parseFloat(item["natAvg 1st Trimester Registration"]))[0], 100 - responseTab3Data_nat.map(item => parseFloat(item["natAvg 1st Trimester Registration"]))[0]],
-          backgroundColor: ['#00e676', '#DDDDDD'],
-          hoverBackgroundColor: ['#00e676', '#DDDDDD']
-        }
-      ]
+  temp_trendsDataTab3_1 = [
+    {
+      label: 'India', 
+      percentage: responseTab3Data_nat.map(item => parseFloat(item["natAvg 1st Trimester Registration"]))[0]
     },
-    [responseTab3Data_block[0].state + ' - ' + responseTab3Data_state.map(item => parseFloat(item["stAvg 1st Trimester Registration"]))[0] + '%']: {
-      labels: ['State Avg'],
-      datasets: [
-        {
-          data: [responseTab3Data_state.map(item => parseFloat(item["stAvg 1st Trimester Registration"]))[0], 100 - responseTab3Data_state.map(item => parseFloat(item["stAvg 1st Trimester Registration"]))[0]],
-          backgroundColor: ['brown', '#DDDDDD'],
-          hoverBackgroundColor: ['brown', '#DDDDDD']
-        }
-      ]
+    {
+      label: responseTab3Data_block[0].state,
+      percentage: responseTab3Data_state.map(item => parseFloat(item["stAvg 1st Trimester Registration"]))[0]
     },
-    [responseTab3Data_block[0].district + ' - ' + responseTab3Data_dist.map(item => parseFloat(item["distAvg 1st Trimester Registration"]))[0] + '%']: {
-      labels: ['District Avg'],
-      datasets: [
-        {
-          data: [responseTab3Data_dist.map(item => parseFloat(item["distAvg 1st Trimester Registration"]))[0], 100 - responseTab3Data_dist.map(item => parseFloat(item["distAvg 1st Trimester Registration"]))[0]],
-          backgroundColor: ['#36A2EB', '#DDDDDD'],
-          hoverBackgroundColor: ['#36A2EB', '#DDDDDD']
-        }
-      ]
+    {
+      label: responseTab3Data_block[0].district,
+      percentage: responseTab3Data_dist.map(item => parseFloat(item["distAvg 1st Trimester Registration"]))[0]
     },
-    [responseTab3Data_block[0].block + ' - ' + responseTab3Data_block.map(item => parseFloat(item["block_avg_1st_tri_reg"]))[0].toFixed(2) + '%']: {
-      labels: ['Block Avg'],
-      datasets: [
-        {
-          data: [responseTab3Data_block.map(item => parseFloat(item["block_avg_1st_tri_reg"]))[0].toFixed(2), 100 - responseTab3Data_block.map(item => parseFloat(item["block_avg_1st_tri_reg"]))[0]],
-          backgroundColor: ['#E44D2A', '#DDDDDD'],
-          hoverBackgroundColor: ['#E44D2A', '#DDDDDD']
-        }
-      ]
-    }
+    {
+      label: responseTab3Data_block[0].block,
+      percentage: responseTab3Data_block.map(item => parseFloat(item["block_avg_1st_tri_reg"]))[0].toFixed(2)
 
-  };
+    }
+  ];
+
+  console.log(temp_trendsDataTab3_1, "^^^^ temp_trendsDataTab3_1 ^^^^");
 
   temp_trendsDataTab3_2 = {
     
@@ -1541,6 +1453,8 @@ const handleFilterButtonClick_TAB3 = async () => {
 
   };
 
+  
+
   setTrendsDataTab3_1(temp_trendsDataTab3_1);
   setTrendsDataTab3_2(temp_trendsDataTab3_2);
   setTrendsDataTab3_3(temp_trendsDataTab3_3);
@@ -1587,27 +1501,6 @@ const handleFilterButtonClick_TAB3 = async () => {
   };
 
 
-  const speedValue = 0; // Example speed value
-
-
-  
-  // Define columns for the table
-  const columns_1 = [
-    {
-      Header: "1st Trimester Registration (%)",
-      accessor: "1st Trimester Registration (%)"
-    },
-    {
-      Header: "Institutional Delivery (%)",
-      accessor: "Institutional Delivery (%)"
-    },
-    {
-      Header: "Low Birth Weight (%)",
-      accessor: "Low Birth Weight (%)"
-    }
-  ];
-
-
   const [tableColumns, setTableColumns] = useState([]);
 
 
@@ -1615,11 +1508,13 @@ const handleFilterButtonClick_TAB3 = async () => {
 
     <div>
 
+      <div>
+
       {/* Header */}
       {/* ------ */}
       <div className="header">
         <div className="header_left">
-          <h4 style={{ color: 'DodgerBlue', textAlign: 'left', width: '200px' }}>Aspirational Blocks Programme</h4>
+          <h4 style={{ color: 'DodgerBlue', textAlign: 'left', width: '220px' }}>Aspirational Blocks Programme</h4>
           <img src={Logo} style={{ width: '30%' }} alt="Logo"/>
         </div>
 
@@ -1656,7 +1551,7 @@ const handleFilterButtonClick_TAB3 = async () => {
       {activeTab === 'home' && (
         <div>
           <label>
-            <h1 style={{ justifyContent: 'center', color: '#4286f4', textAlign: 'center', lineHeight: '0.5', backgroundColor: '#ddd', padding: '30px', display: 'flex' }}>100 Lowest Performing Blocks</h1>
+            <h1 style={{ justifyContent: 'center', color: 'white', textAlign: 'center', lineHeight: '0.5', backgroundColor: '#25B7B7', padding: '30px', display: 'flex' }}>100 Lowest Performing Blocks</h1>
           </label>
 
 
@@ -1665,79 +1560,86 @@ const handleFilterButtonClick_TAB3 = async () => {
           </div>
 
           <div className="header_new">
-            <div className="tile_new">
-              <h3 style={{ color: '#4286f4', textAlign: 'center', lineHeight: '1.5' }} >Top 5 Performer Blocks</h3>
-            </div>
+            {/* <div className="tile_new"> */}
+              <h2 style={{ fontSize:'x-large', width:'50%', padding:'4px',backgroundColor: '#25B7B7' ,color: 'white', textAlign: 'center', lineHeight: '2.5' }} >Top 5 Performer Blocks</h2>
+            {/* </div> */}
           </div>
             
 
 
           <div className="header_new">
 
+            
+
             {/* Tile 1 */}
             <div className="tile_new">
               <div className="title_new">
-                <strong><p style={{ fontSize:"1vw" }}>1st Trimester Registration (%)</p></strong>
+                <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#25B7B7'}}>Percentage of 1st Trimester Registration</p></strong>
               </div>
               <div className="doughnut-container">
-                {commonfilteredDataTop5 && <Speedometer value={commonfilteredDataTop5.datasets[0].data} labels={commonfilteredDataTop5.labels }/>}
+                {commonfilteredDataTop5 && <Speedometer value={commonfilteredDataTop5.datasets[0].data} labels={commonfilteredDataTop5.labels } startColor="blue" endColor="green" maxValue={100} minValue={80}/>}
+              
               </div>
             </div>
 
 
             <div className="tile_new">
               <div className="title_new">
-                <strong><p style={{ fontSize:"1vw" }}>Institutional Delivery (%)</p></strong>
+                <strong><p style={{ fontSize:"1.5vw", padding: '28px', color:'white', backgroundColor: '#25B7B7' }}>Percentage of Institutional Delivery</p></strong>
               </div>
               <div className="doughnut-container">
-                {commonfilteredDataTop5_2 && <Speedometer value={commonfilteredDataTop5_2.datasets[0].data} labels={commonfilteredDataTop5_2.labels} />}
+                {commonfilteredDataTop5_2 && <Speedometer value={commonfilteredDataTop5_2.datasets[0].data} labels={commonfilteredDataTop5_2.labels} startColor="yellow" endColor="green" maxValue={100} minValue={80}/>}
               </div>
             </div>
 
             <div className="tile_new">
               <div className="title_new">
-                <strong><p style={{ fontSize:"1vw" }}>Low Birth Weight (%)</p></strong>
+                <strong><p style={{ fontSize:"1.5vw", padding: '28px', color:'white', backgroundColor: '#25B7B7' }}>Percentage of Low Birth Weight</p></strong>
               </div>
               <div className="doughnut-container">
-                {commonfilteredDataTop5_3 && <Speedometer value={commonfilteredDataTop5_3.datasets[0].data} labels={commonfilteredDataTop5_3.labels} invertColors={[false, false, true, false, false]} />}
+              {commonfilteredDataTop5_3 && <ChildChart percentages={commonfilteredDataTop5_3.datasets[0].data} labels={commonfilteredDataTop5_3.labels}/>}
+              </div>
+            </div>
+
+            <div className="tile_new">
+              <div className="title_new" style={{justifyContent: 'space-between !important'}}>
+                <strong><p style={{ fontSize:"1.5vw", padding: '28px',backgroundColor: '#25B7B7', color:'white' }}>Percentage of NQAS certified health facilities</p></strong>
+              </div>
+
+              <div className="doughnut-container">
+                <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between'}}>
+                  {commonfilteredDataTop5_4 && <BuildingComponent percentages={commonfilteredDataTop5_4.datasets[0].data} labels={commonfilteredDataTop5_4.labels}/>}
+                </div>
               </div>
             </div>
 
             <div className="tile_new">
               <div className="title_new">
-                <strong><p style={{ fontSize:"1vw" }}>NQAS certified health facilities (%)</p></strong>
+                <strong><p style={{ fontSize:"1.5vw" , padding: '28px',backgroundColor: '#25B7B7', color:'white'}}>Percentage of Hypertension</p></strong>
               </div>
               <div className="doughnut-container">
-                {commonfilteredDataTop5_4 && <Speedometer value={commonfilteredDataTop5_4.datasets[0].data} labels={commonfilteredDataTop5_4.labels} />}
+                {commonfilteredDataTop5_5 && <MyComponent percentages={commonfilteredDataTop5_5.datasets[0].data} labels={commonfilteredDataTop5_5.labels }/>}
               </div>
             </div>
 
             <div className="tile_new">
               <div className="title_new">
-                <strong><p style={{ fontSize:"1vw" }}>Hypertension (%)</p></strong>
+                <strong><p style={{ fontSize:"1.5vw" , padding: '28px',backgroundColor: '#25B7B7', color:'white'}}>Percentage of Diabetes</p></strong>
               </div>
               <div className="doughnut-container">
-                {commonfilteredDataTop5_5 && <Speedometer value={commonfilteredDataTop5_5.datasets[0].data} labels={commonfilteredDataTop5_5.labels} />}
+              {commonfilteredDataTop5_6 && <MyComponent percentages={commonfilteredDataTop5_6.datasets[0].data} labels={commonfilteredDataTop5_6.labels }/>}
               </div>
             </div>
 
             <div className="tile_new">
               <div className="title_new">
-                <strong><p style={{ fontSize:"1vw" }}>Diabetes (%)</p></strong>
+                <strong><p style={{ fontSize:"1.5vw", padding: '28px',backgroundColor: '#25B7B7' , color:'white'}}>Percentage of Treatment Success Rate</p></strong>
               </div>
               <div className="doughnut-container">
-                {commonfilteredDataTop5_6 && <Speedometer value={commonfilteredDataTop5_6.datasets[0].data} labels={commonfilteredDataTop5_6.labels} />}
+                {commonfilteredDataTop5_7 && <ProgressBarComponent chartData={commonfilteredDataTop5_7}/> }
               </div>
             </div>
 
-            <div className="tile_new">
-              <div className="title_new">
-                <strong><p style={{ fontSize:"1vw" }}>Treatment success rate (%)</p></strong>
-              </div>
-              <div className="doughnut-container">
-                {commonfilteredDataTop5_7 && <Speedometer value={commonfilteredDataTop5_7.datasets[0].data} labels={commonfilteredDataTop5_7.labels} />}
-              </div>
-            </div>
 
 
         </div>
@@ -1748,9 +1650,7 @@ const handleFilterButtonClick_TAB3 = async () => {
         </div>
 
         <div className="header_new">
-          <div className="tile_new">
-            <h3 style={{ color: '#4286f4', textAlign: 'center', lineHeight: '1.5' }} >Bottom 5 Performer Blocks</h3>
-          </div>
+            <h3 style={{ fontSize:'x-large', width:'50%', padding:'4px',backgroundColor: '#25B7B7' ,color: 'white', textAlign: 'center', lineHeight: '2.5' }} >Bottom 5 Performer Blocks</h3>
         </div>
 
         <div className="header_new">
@@ -1758,65 +1658,67 @@ const handleFilterButtonClick_TAB3 = async () => {
             {/* Tile 1 */}
             <div className="tile_new">
               <div className="title_new">
-                <strong><p style={{ fontSize:"1vw" }}>1st Trimester Registration (%)</p></strong>
+                <strong><p style={{ fontSize:"1.5vw", padding: '28px',backgroundColor: '#25B7B7' , color:'white'}}>Percentage of 1st Trimester Registration</p></strong>
               </div>
               <div className="doughnut-container">
-                {commonfilteredDataBottom5 && <Speedometer value={commonfilteredDataBottom5.datasets[0].data} labels={commonfilteredDataBottom5.labels} />}
+                {commonfilteredDataBottom5 && <Speedometer value={commonfilteredDataBottom5.datasets[0].data} labels={commonfilteredDataBottom5.labels} startColor="blue" endColor="green" maxValue={50} minValue={0}/>}
               </div>
             </div>
 
             <div className="tile_new">
               <div className="title_new">
-                <strong><p style={{ fontSize:"1vw" }}>Institutional Delivery (%)</p></strong>
+                <strong><p style={{ fontSize:"1.5vw", padding: '28px',backgroundColor: '#25B7B7' , color:'white'}}>Percentage of Institutional Delivery</p></strong>
               </div>
               <div className="doughnut-container">
-                {commonfilteredDataBottom5_2 && <Speedometer value={commonfilteredDataBottom5_2.datasets[0].data} labels={commonfilteredDataBottom5_2.labels} />}
+                {commonfilteredDataBottom5_2 && <Speedometer value={commonfilteredDataBottom5_2.datasets[0].data} labels={commonfilteredDataBottom5_2.labels} startColor="blue" endColor="green" maxValue={50} minValue={0}/>}
               </div>
             </div>
 
             <div className="tile_new">
               <div className="title_new">
-                <strong><p style={{ fontSize:"1vw" }}>Low Birth Weight (%)</p></strong>
+                <strong><p style={{ fontSize:"1.5vw", padding: '28px',backgroundColor: '#25B7B7' , color:'white'}}>Percentage of Low Birth Weight</p></strong>
               </div>
               <div className="doughnut-container">
-                {commonfilteredDataBottom5_3 && <Speedometer value={commonfilteredDataBottom5_3.datasets[0].data} labels={commonfilteredDataBottom5_3.labels} />}
+                {commonfilteredDataBottom5_3 && <ChildChart percentages={commonfilteredDataBottom5_3.datasets[0].data} labels={commonfilteredDataBottom5_3.labels}/>}
               </div>
             </div>
 
             {/* Tile 1 */}
             <div className="tile_new">
               <div className="title_new">
-                <strong><p style={{ fontSize:"1vw" }}>NQAS certified health facilities (%)</p></strong>
+                <strong><p style={{ fontSize:"1.5vw", padding: '28px',backgroundColor: '#25B7B7' , color:'white'}}>Percentage of NQAS certified health facilities</p></strong>
               </div>
               <div className="doughnut-container">
-                {commonfilteredDataBottom5_4 && <Speedometer value={commonfilteredDataBottom5_4.datasets[0].data} labels={commonfilteredDataBottom5_4.labels} />}
+                {/* {commonfilteredDataBottom5_4 && <Speedometer value={commonfilteredDataBottom5_4.datasets[0].data} labels={commonfilteredDataBottom5_4.labels} startColor="blue" endColor="green" maxValue={50} minValue={0}/>} */}
+                {commonfilteredDataBottom5_4 && <BuildingComponent percentages={commonfilteredDataBottom5_4.datasets[0].data} labels={commonfilteredDataBottom5_4.labels}/>}
               </div>
             </div>
 
             <div className="tile_new">
               <div className="title_new">
-                <strong><p style={{ fontSize:"1vw" }}>Hypertension (%)</p></strong>
+                <strong><p style={{ fontSize:"1.5vw", padding: '28px',backgroundColor: '#25B7B7' , color:'white'}}>Percentage of Hypertension</p></strong>
               </div>
               <div className="doughnut-container">
-                {commonfilteredDataBottom5_5 && <Speedometer value={commonfilteredDataBottom5_5.datasets[0].data} labels={commonfilteredDataBottom5_5.labels} />}
+              {commonfilteredDataBottom5_5 && <MyComponent percentages={commonfilteredDataBottom5_5.datasets[0].data} labels={commonfilteredDataBottom5_5.labels }/>}
               </div>
             </div>
 
             <div className="tile_new">
               <div className="title_new">
-                <strong><p style={{ fontSize:"1vw" }}>Diabetes (%)</p></strong>
+                <strong><p style={{ fontSize:"1.5vw", padding: '28px',backgroundColor: '#25B7B7' , color:'white'}}>Percentage of Diabetes</p></strong>
               </div>
               <div className="doughnut-container">
-                {commonfilteredDataBottom5_6 && <Speedometer value={commonfilteredDataBottom5_6.datasets[0].data} labels={commonfilteredDataBottom5_6.labels} />}
+              {commonfilteredDataBottom5_6 && <MyComponent percentages={commonfilteredDataBottom5_6.datasets[0].data} labels={commonfilteredDataBottom5_6.labels }/>}
               </div>
             </div>
 
             <div className="tile_new">
               <div className="title_new">
-                <strong><p style={{ fontSize:"1vw" }}>Treatment success rate (%)</p></strong>
+                <strong><p style={{ fontSize:"1.5vw", padding: '28px',backgroundColor: '#25B7B7' , color:'white'}}>Percentage of Treatment Success rate</p></strong>
               </div>
               <div className="doughnut-container">
-                {commonfilteredDataBottom5_7 && <Speedometer value={commonfilteredDataBottom5_7.datasets[0].data} labels={commonfilteredDataBottom5_7.labels} />}
+                {/* {commonfilteredDataBottom5_7 && <Speedometer value={commonfilteredDataBottom5_7.datasets[0].data} labels={commonfilteredDataBottom5_7.labels} startColor="blue" endColor="green" maxValue={50} minValue={0}/>} */}
+                {commonfilteredDataBottom5_7 && <ProgressBarComponent chartData={commonfilteredDataBottom5_7}/> }
               </div>
             </div>
 
@@ -1840,27 +1742,27 @@ const handleFilterButtonClick_TAB3 = async () => {
 
             {/* <Card variant="outlined" */}
 
-            <div className="tile">
+            <div className="tile_tab1_SC">
                 <h2 className="tile-title">27</h2>
                 <img className="tile-content" src="https://abp.championsofchange.gov.in/assets/img/anganwadi.svg"></img>
                 <p className="tile-content">Sub Center</p>
             </div>
-            <div className="tile">
+            <div className="tile_tab1_SC">
                 <h2 className="tile-title">0</h2>
                 <img className="tile-content" src="https://abp.championsofchange.gov.in/assets/img/panchayat.svg"></img>
                 <p className="tile-content">Primary Health Center</p>
             </div>
-            <div className="tile">
+            <div className="tile_tab1_SC">
                 <h2 className="tile-title">15</h2>
                 <img className="tile-content" src="https://abp.championsofchange.gov.in/assets/img/schools.svg"></img>
                 <p className="tile-content">Community Health Center</p>
             </div>
-            <div className="tile">
+            <div className="tile_tab1_SC">
                 <h2 className="tile-title">19</h2>
                 <img className="tile-content" src="https://abp.championsofchange.gov.in/assets/img/villages.svg"></img>
                 <p className="tile-content">Sub District Hospital</p>
             </div>
-            <div className="tile">
+            <div className="tile_tab1_SC">
                 <h2 className="tile-title">19</h2>
                 <img className="tile-content" src="https://abp.championsofchange.gov.in/assets/img/villages.svg"></img>
                 <p className="tile-content">District Hospital</p>
@@ -1880,92 +1782,84 @@ const handleFilterButtonClick_TAB3 = async () => {
 
           
             <label>
-              <h1 style={{ justifyContent: 'center', color: '#4286f4', textAlign: 'center', lineHeight: '0.5', backgroundColor: '#ddd', padding: '30px', display: 'flex' }}>Present State of Block Nationwide</h1>
+              <h1 style={{ justifyContent: 'center', color: 'white', textAlign: 'center', lineHeight: '0.5', backgroundColor: '#25B7B7', padding: '30px', display: 'flex' }}>Present State of Block Nationwide</h1>
             </label>
      
             <div className="tile">
 
               <div className="select-container">
 
-                <div className="select-item">
-                  <h3>Select State:</h3>
-                  <select
-                    onChange={(e) => setSelectedState(e.target.value)}
-                    value={selectedState}
-                  >
-                    {updatedUserData1.state.map((state, index) => (
-                      <option key={state} value={state}>
-                        {state}
-                      </option>
-                    ))}
-                  </select>
+                <div>
+                  <div><p>State</p></div>
+                  <div className="select-item">
+                    <SingleSelectDropdown
+                      options={updatedUserData1.state.map((state) => ({ value: state, label: state }))}
+                      buttonText="-- State --"
+                      onSelect={(selectedValue) => setSelectedState(selectedValue)} // Pass a function to setSelectedItem
+                    />
+                  </div>
                 </div>
 
-                <div className="select-item">
-                  <h3>Select District:</h3>
-                  <select
-                    onChange={(e) => setSelectedDistrict(e.target.value)}
-                    value={selectedDistrict}
-                  >
-                    {updatedUserData1.district.map((district, index) => (
-                      <option key={index} value={district}>
-                        {district}
-                      </option>
-                    ))}
-                  </select>
+                <div>
+                  <div><p>District</p></div>
+                  <div className="select-item">
+                    <SingleSelectDropdown
+                      options={updatedUserData1.district.map((district) => ({ value: district, label: district }))}
+                      buttonText="-- District --"
+                      onSelect={(selectedValue) => setSelectedDistrict(selectedValue)} // Pass a function to setSelectedItem
+                    />
+                  </div>
                 </div>
 
-                <div className="select-item">
-                  <h3>Select Block:</h3>
-                  <select
-                    onChange={(e) => setSelectedBlock(e.target.value)}
-                    value={selectedBlock}
-                  >
-                    {updatedUserData1.block.map((block, index) => (
-                      <option key={index} value={block}>
-                        {block}
-                      </option>
-                    ))}
-                  </select>
+                <div>
+                  <div><p>Block</p></div>
+                  <div className="select-item">
+                    <SingleSelectDropdown
+                      options={updatedUserData1.block.map((block) => ({ value: block, label: block }))}
+                      buttonText="-- Block --"
+                      onSelect={(selectedValue) => setSelectedBlock(selectedValue)} // Pass a function to setSelectedItem
+                    />
+                  </div>
                 </div>
 
-                <div className="select-item">
-                  <h3>From Month:</h3>
-                  <select onChange={(e) => setSelectedMonth1(e.target.value)} value={selectedMonth1}>
-                    {updatedUserData1.month.map((month, index) => (
-                    <option key={index} value={month}>
-                        {month}
-                    </option>
-                    ))}
-                  </select>
+                <div>
+                  <div><p>From Month</p></div>
+                  <div className="select-item">
+                    <SingleSelectDropdown
+                      options={updatedUserData1.month.map((month) => ({ value: month, label: month }))}
+                      buttonText="-- From Month --"
+                      onSelect={(selectedValue) => setSelectedMonth1(selectedValue)} // Pass a function to setSelectedItem
+                    />
+                  </div>
                 </div>
 
-                <div className="select-item">
-                  <h3>To Month:</h3>
-                  <select onChange={(e) => setSelectedMonth2(e.target.value)} value={selectedMonth2}>
-                    {updatedUserData1.month.map((month, index) => (
-                    <option key={index} value={month}>
-                        {month}
-                    </option>
-                    ))}
-                  </select> 
+                <div>
+                  <div><p>To Month</p></div>
+                  <div className="select-item">
+                    <SingleSelectDropdown
+                      options={updatedUserData1.month.map((month) => ({ value: month, label: month }))}
+                      buttonText="-- To Month --"
+                      onSelect={(selectedValue) => setSelectedMonth2(selectedValue)} // Pass a function to setSelectedItem
+                    />
+                  </div>
                 </div>
 
-                <div className="select-item">
-                  <h3>Financial Year:</h3>
-                  <select onChange={(e) => setSelectedFinancialYear(e.target.value)} value={selectedFinancialYear}>
-                    {updatedUserData1.year.map((year, index) => (
-                    <option key={index} value={year}>
-                        {year}
-                    </option>
-                    ))}
-                  </select>   
+                <div>
+                  <div><p>Financial Year</p></div>
+                  <div className="select-item">
+                    <SingleSelectDropdown
+                      options={updatedUserData1.year.map((year) => ({ value: year, label: year }))}
+                      buttonText="-- Financial Year --"
+                      onSelect={(selectedValue) => setSelectedFinancialYear(selectedValue)} // Pass a function to setSelectedItem
+                    />
+                  </div>
                 </div>
-
-                <div className="select-item">
-                  <button className="login-button" onClick={handleFilterButtonClick_TAB3}>
-                    Search
-                  </button>
+                  
+                <div>
+                  <div><p> </p></div>
+                  <div className="select-item">
+                    <button className="apply-filter-button" onClick={handleFilterButtonClick_TAB3}> Apply Filter </button>
+                  </div>
                 </div>
 
               </div>
@@ -1977,60 +1871,66 @@ const handleFilterButtonClick_TAB3 = async () => {
               {/* Tile 1 */}
               <div className="tile_new">
                 <div className="title_new">
-                  <strong><p style={{ fontSize:"1vw" }}>1st Trimester Registration (%)</p></strong>
+                <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#7A63BD'}}>Percentage of 1st Trimester Registration</p></strong>
                 </div>
                 <div className="doughnut-container">
-                  <DoughnutChart chartData={trendsDataTab3_1}/>
+                  {/* <DoughnutChart chartData={trendsDataTab3_1}/> */}
+                  {trendsDataTab3_1.length > 0 && <ProgressGaugeComponent chartData={trendsDataTab3_1}/>}
                 </div>
               </div>
               
               {/* Tile 2 */}
               <div className="tile_new">
                 <div className="title_new">
-                  <strong><p style={{ fontSize:"1vw" }}>Institutional Delivery (%)</p></strong>
+                  <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#7A63BD'}}>Percentage of Institutional Delivery</p></strong>
                 </div>
                 <div className="doughnut-container">
-                  <DoughnutChart chartData={trendsDataTab3_2}/>
+                  {/* <DoughnutChart chartData={trendsDataTab3_2}/> */}
+                  {trendsDataTab3_1.length > 0 && <ProgressBarComponent chartData={trendsDataTab3_1}/>} 
                 </div>
               </div>
               
               {/* Tile 3 */}
               <div className="tile_new">
                 <div className="title_new">
-                  <strong><p style={{ fontSize:"1vw" }}>Low Birth Weight (%)</p></strong>
+                <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#7A63BD'}}>Percentage of Low Birth Weight</p></strong>
                 </div>
                 <div className="doughnut-container">
-                  <DoughnutChart chartData={trendsDataTab3_3}/>
+                  {/* <DoughnutChart chartData={trendsDataTab3_3}/> */}
+                  {trendsDataTab3_1.length > 0 && <ProgressBarComponent chartData={trendsDataTab3_1}/>}
                 </div>
               </div>
        
               {/* Tile 4 */}
               <div className="tile_new">
                 <div className="title_new">
-                  <strong><p style={{ fontSize:"1vw" }}>NQAS certified health facilities (%)</p></strong>
+                <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#7A63BD'}}>Percentage of NQAS certified health facilities</p></strong>
                 </div>
                 <div className="doughnut-container">
-                  <DoughnutChart chartData={trendsDataTab3_4}/>
+                  {/* <DoughnutChart chartData={trendsDataTab3_4}/> */}
+                  {trendsDataTab3_1.length > 0 && <ProgressBarComponent chartData={trendsDataTab3_1}/>}
                 </div>
               </div>
               
               {/* Tile 5 */}
               <div className="tile_new">
                 <div className="title_new">
-                  <strong><p style={{ fontSize:"1vw" }}>Hypertension (%)</p></strong>
+                <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#7A63BD'}}>Percentage of Hypertension</p></strong>
                 </div>
                 <div className="doughnut-container">
-                  <DoughnutChart chartData={trendsDataTab3_5}/>
+                  {/* <DoughnutChart chartData={trendsDataTab3_5}/> */}
+                  {trendsDataTab3_1.length > 0 && <ProgressBarComponent chartData={trendsDataTab3_1}/>} 
                 </div>
               </div>
               
               {/* Tile 6 */}
               <div className="tile_new">
                 <div className="title_new">
-                  <strong><p style={{ fontSize:"1vw" }}>Diabetes (%)</p></strong>
+                <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#7A63BD'}}>Percentage of Diabetes</p></strong>
                 </div>
                 <div className="doughnut-container">
-                  <DoughnutChart chartData={trendsDataTab3_6}/>
+                  {/* <DoughnutChart chartData={trendsDataTab3_6}/> */}
+                  {trendsDataTab3_1.length > 0 && <ProgressBarComponent chartData={trendsDataTab3_1}/>} 
                 </div>
               </div>
             </div>
@@ -2039,10 +1939,11 @@ const handleFilterButtonClick_TAB3 = async () => {
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <div style={{ width: '30%', alignItems: 'center' }} className="tile_new">
                 <div className="title_new">
-                  <strong><p style={{ fontSize:"1vw" }}>Treatment success rate (%)</p></strong>
+                <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#7A63BD'}}>Percentage of Treatment success rate</p></strong>
                 </div>
                 <div className="doughnut-container">
-                  <DoughnutChart chartData={trendsDataTab3_7} />
+                  {/* <DoughnutChart chartData={trendsDataTab3_7} /> */}
+                  {trendsDataTab3_1.length > 0 && <ProgressBarComponent chartData={trendsDataTab3_1}/>}
                 </div>
                   </div>
             </div>
@@ -2062,128 +1963,99 @@ const handleFilterButtonClick_TAB3 = async () => {
 
        
           <label>
-            <h1 style={{ justifyContent: 'center', color: '#4286f4', textAlign: 'center', lineHeight: '0.5', backgroundColor: '#ddd', padding: '30px', display: 'flex' }}>Trends of Performance of an Indicator</h1>
+            <h1 style={{ justifyContent: 'center', color: 'white', textAlign: 'center', lineHeight: '0.5', backgroundColor: '#25B7B7', padding: '30px', display: 'flex' }}>Trends of Performance of an Indicator</h1>
           </label>
          
             
-          {/* <div className="header"> */}
             <div className="tile">
+            
               <div className="select-container">
-
-                <div className="select-item">
-                  <MultipleSelectDropdown options={KPI_options} buttonText="Select KPI(s)" setSelectedKPI={setSelectedKPI} />
+                <div>
+                  <div><p>KPI</p></div>
+                  <div className="select-item">
+                    <MultipleSelectDropdown options={KPI_options} buttonText="-- KPI --" setSelectedKPI={setSelectedKPI} />
+                  </div>
                 </div>
 
                 <div>
-                  <SingleSelectDropdown
-                    options={updatedUserData1.state.map((state) => ({ value: state, label: state }))}
-                    buttonText="Select State"
-                    onSelect={(selectedValue) => setSelectedState(selectedValue)} // Pass a function to setSelectedItem
-                  />
-                </div>
-
-
-                {/* <div className="select-item">
-                  <h3 > Select State: </h3>
-                  <div style={{ height: "20px" }}>
-                    <select onChange={(e) => setSelectedState(e.target.value)} value={selectedState}>
-                      {updatedUserData1.state.map((state, index) => (
-                        <option key={index} value={state}>
-                            {state}
-                        </option>
-                        ))}
-                    </select>
-                  </div>
-                </div> */}
-              
-
-                <div className="select-item">
-                  <h3> Select District: </h3>
-                  <div style={{ height: "20px" }}>
-                      <select onChange={(e) => setSelectedDistrict(e.target.value)} value={selectedDistrict}>
-                          {updatedUserData1.district.map((district, index) => (
-                            <option key={index} value={district}>
-                                {district}
-                            </option>
-                            ))}
-                      </select>
-                  </div>
-                </div>
-                
-
-                <div className="select-item">
-                  <h3> Select Block: </h3>
-                  <div>
-                    <select onChange={(e) => setSelectedBlock(e.target.value)} value={selectedBlock}>
-                        {updatedUserData1.block.map((block, index) => (
-                        <option key={index} value={block}>
-                            {block}
-                        </option>
-                        ))}
-                    </select>
+                  <div><p>State</p></div>
+                  <div className="select-item">
+                    <SingleSelectDropdown
+                      options={updatedUserData1.state.map((state) => ({ value: state, label: state }))}
+                      buttonText="-- State --"
+                      onSelect={(selectedValue) => setSelectedState(selectedValue)} // Pass a function to setSelectedItem
+                    />
                   </div>
                 </div>
 
-                {/* <div>
-                  <SingleSelectDropdown
-                    options={updatedUserData1.block.map((block) => ({ value: block, label: block }))}
-                    buttonText="Select Block"
-                    onSelect={(selectedValue) => setSelectedBlock(selectedValue)}
-                  />
-                </div> */}
-
-                <div className="select-item">
-                  <h3> From Month: </h3>
-                  <div>
-                    <select onChange={(e) => setSelectedMonth1(e.target.value)} value={selectedMonth1}>
-                      {updatedUserData1.month.map((month, index) => (
-                      <option key={index} value={month}>
-                          {month}
-                      </option>
-                      ))}
-                    </select>
-                  </div>
-                </div> 
-
-                <div className="select-item">
-                  <h3> To Month: </h3>
-                  <div>
-                    <select onChange={(e) => setSelectedMonth2(e.target.value)} value={selectedMonth2}>
-                        {updatedUserData1.month.map((month, index) => (
-                        <option key={index} value={month}>
-                            {month}
-                        </option>
-                        ))}
-                    </select>
+                <div>
+                  <div><p>District</p></div>
+                  <div className="select-item">
+                    <SingleSelectDropdown
+                      options={updatedUserData1.district.map((district) => ({ value: district, label: district }))}
+                      buttonText="-- District --"
+                      onSelect={(selectedValue) => setSelectedDistrict(selectedValue)} // Pass a function to setSelectedItem
+                    />
                   </div>
                 </div>
 
-                <div className="select-item">
-                  <h3> Financial Year: </h3>
-                  <div>
-                      <select>
-                          <option >
-                            2023-24
-                          </option>
-                      </select>
+                <div>
+                  <div><p>Block</p></div>
+                  <div className="select-item">
+                    <SingleSelectDropdown
+                      options={updatedUserData1.block.map((block) => ({ value: block, label: block }))}
+                      buttonText="-- Block --"
+                      onSelect={(selectedValue) => setSelectedBlock(selectedValue)} // Pass a function to setSelectedItem
+                    />
                   </div>
                 </div>
 
-                <div className="select-item">   
-                  <div>
-                    <button className="login-button" onClick={handleFilterButtonClick_TAB2}> Plot </button>
+                <div>
+                  <div><p>From Month</p></div>
+                  <div className="select-item">
+                    <SingleSelectDropdown
+                      options={updatedUserData1.month.map((month) => ({ value: month, label: month }))}
+                      buttonText="-- From Month --"
+                      onSelect={(selectedValue) => setSelectedMonth1(selectedValue)} // Pass a function to setSelectedItem
+                    />
                   </div>
                 </div>
-                  
+
+                <div>
+                  <div><p>To Month</p></div>
+                  <div className="select-item">
+                    <SingleSelectDropdown
+                      options={updatedUserData1.month.map((month) => ({ value: month, label: month }))}
+                      buttonText="-- To Month --"
+                      onSelect={(selectedValue) => setSelectedMonth2(selectedValue)} // Pass a function to setSelectedItem
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <div><p>Financial Year</p></div>
+                  <div className="select-item">
+                    <SingleSelectDropdown
+                      options={updatedUserData1.year.map((year) => ({ value: year, label: year }))}
+                      buttonText="-- Financial Year --"
+                      onSelect={(selectedValue) => setSelectedFinancialYear(selectedValue)} // Pass a function to setSelectedItem
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <div><p> </p></div>
+                  <div className="select-item">
+                    <button className="apply-filter-button" onClick={handleFilterButtonClick_TAB2}> Apply Filter </button>
+                  </div>
+                </div>
+
               </div>
-           
             </div>
 
 
 
-            <div>
-
-
+            <div>              
               <div className="header_new">
 
                 {/* Tile 1 */}
@@ -2191,11 +2063,13 @@ const handleFilterButtonClick_TAB3 = async () => {
                   <div className="tile_new">
                     <div className="title_new">
                       <strong>
-                        <p style={{ fontSize: "1vw" }}>1st Trimester Registration (%)</p>
+                        <p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#DA5978'}}>Percentage of 1st Trimester Registration</p>
                       </strong>
                     </div>
                     <div className="doughnut-container">
-                      <LineChart chartData={trendsDataTab2_1} />
+                      {/* <LineChart chartData={trendsDataTab2_1} /> */}
+                      <NewLineChart chartData={trendsDataTab2_1} />
+                      
                     </div>
                   </div>
                 )} 
@@ -2204,50 +2078,51 @@ const handleFilterButtonClick_TAB3 = async () => {
                 {/* Tile 2 */}
                 { Object.keys(trendsDataTab2_2).length > 0 && <div className="tile_new">
                   <div className="title_new">
-                    <strong><p style={{ fontSize:"1vw" }}>Institutional Delivery (%)</p></strong>
+                    <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#DA5978'}}>Percentage of Institutional Delivery</p></strong>
                   </div>
                   <div className="doughnut-container">
-                    <LineChart chartData={trendsDataTab2_2}/>
+                    <NewLineChart chartData={trendsDataTab2_2}/>
                   </div>
                 </div>}
+                
 
                 {/* Tile 3 */}
                 { Object.keys(trendsDataTab2_3).length > 0 && <div className="tile_new">
                   <div className="title_new">
-                    <strong><p style={{ fontSize:"1vw" }}>Low Birth Weight (%) (%)</p></strong>
+                    <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#DA5978'}}>Percentage of Low Birth Weight</p></strong>
                   </div>
                   <div className="doughnut-container">
-                    <LineChart chartData={trendsDataTab2_3}/>
+                    <NewLineChart chartData={trendsDataTab2_3}/>
                   </div>
                 </div>}
 
                 {/* Tile 4 */}
                 { Object.keys(trendsDataTab2_4).length > 0 &&<div className="tile_new">
                   <div className="title_new">
-                    <strong><p style={{ fontSize:"1vw" }}>NQAS certified health facilities (%)</p></strong>
+                    <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#DA5978'}}>Percentage of NQAS certified health facilities</p></strong>
                   </div>
                   <div className="doughnut-container">
-                    <LineChart chartData={trendsDataTab2_4}/>
+                    <NewLineChart chartData={trendsDataTab2_4}/>
                   </div>
                 </div>}
 
                 {/* Tile 5 */}
                 { Object.keys(trendsDataTab2_5).length > 0 &&<div className="tile_new">
                   <div className="title_new">
-                    <strong><p style={{ fontSize:"1vw" }}>Hypertension (%)</p></strong>
+                    <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#DA5978'}}>Percentage of Hypertension</p></strong>
                   </div>
                   <div className="doughnut-container">
-                    <LineChart chartData={trendsDataTab2_5}/>
+                    <NewLineChart chartData={trendsDataTab2_5}/>
                   </div>
                 </div>}
 
                 {/* Tile 6 */}
                 { Object.keys(trendsDataTab2_6).length > 0 &&<div className="tile_new">
                   <div className="title_new">
-                    <strong><p style={{ fontSize:"1vw" }}>Diabetes (%)</p></strong>
+                    <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#DA5978'}}>Percentage of Diabetes</p></strong>
                   </div>
                   <div className="doughnut-container">
-                    <LineChart chartData={trendsDataTab2_6}/>
+                    <NewLineChart chartData={trendsDataTab2_6}/>
                   </div>
                 </div>}
               {/* </div> */}
@@ -2256,22 +2131,22 @@ const handleFilterButtonClick_TAB3 = async () => {
               {/* <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}> */}
               { Object.keys(trendsDataTab2_7).length > 0 &&<div style={{ width: '30%', alignItems: 'center' }} className="tile_new">
                   <div className="title_new">
-                    <strong><p style={{ fontSize:"1vw" }}>Treatment success rate (%)</p></strong>
+                    <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#DA5978'}}>Percentage of Treatment success rate</p></strong>
                   </div>
                   <div className="doughnut-container">
-                    <LineChart chartData={trendsDataTab2_7}/>
+                    <NewLineChart chartData={trendsDataTab2_7}/>
                   </div>
                 </div>}
               {/* </div> */}
 
               {/* If the condition is false, render the message */}
-              {Object.keys(trendsDataTab2_1).length === 0 && Object.keys(trendsDataTab2_2).length === 0 && Object.keys(trendsDataTab2_3).length === 0 && Object.keys(trendsDataTab2_4).length === 0 && Object.keys(trendsDataTab2_5).length === 0 && Object.keys(trendsDataTab2_6).length === 0 && Object.keys(trendsDataTab2_7).length === 0 &&(
+              {/* {Object.keys(trendsDataTab2_1).length === 0 && Object.keys(trendsDataTab2_2).length === 0 && Object.keys(trendsDataTab2_3).length === 0 && Object.keys(trendsDataTab2_4).length === 0 && Object.keys(trendsDataTab2_5).length === 0 && Object.keys(trendsDataTab2_6).length === 0 && Object.keys(trendsDataTab2_7).length === 0 &&(
                   <div className="tile_new" style={{flexBasis: '100%'}}>
                     <div className="title_new">
                       <h3 style={{ color: '#4286f4', textAlign: 'center', lineHeight: '10.5'  }} >data will display after search</h3>
                     </div>
                   </div>
-                )}
+                )} */}
 
             </div>  
           </div>
@@ -2282,7 +2157,7 @@ const handleFilterButtonClick_TAB3 = async () => {
 
           <div>
             <label>
-              <h1 style={{ justifyContent: 'center', color: '#4286f4', textAlign: 'center', lineHeight: '0.5', backgroundColor: '#ddd', padding: '30px', display: 'flex' }}>Data Report</h1>
+              <h1 style={{ justifyContent: 'center', color: 'white', textAlign: 'center', lineHeight: '0.5', backgroundColor: '#25B7B7', padding: '30px', display: 'flex' }}>Data Report</h1>
             </label>
           </div>
 
@@ -2312,192 +2187,192 @@ const handleFilterButtonClick_TAB3 = async () => {
         <div>
 
           <label>
-            <h1 style={{ justifyContent: 'center', color: '#4286f4', textAlign: 'center', lineHeight: '0.5', backgroundColor: '#ddd', padding: '30px', display: 'flex' }}>Block Performance of Indicators</h1>
+            <h1 style={{ justifyContent: 'center', color: 'white', textAlign: 'center', lineHeight: '0.5', backgroundColor: '#25B7B7', padding: '30px', display: 'flex' }}>Block Performance of Indicators</h1>
           </label>
 
           <div className="tile">
 
             <div className="select-container">
-              <div className="select-item">
-                <h3>Select State:</h3>
-                <select
-                  onChange={(e) => setSelectedState(e.target.value)}
-                  value={selectedState}
-                >
-                  {updatedUserData1.state.map((state, index) => (
-                    <option key={state} value={state}>
-                      {state}
-                    </option>
-                  ))}
-                </select>
-                
-              </div>
-            </div>
 
-            <div className="select-container">
-              <div className="select-item">
-                <h3>Select District:</h3>
-                <select
-                  onChange={(e) => setSelectedDistrict(e.target.value)}
-                  value={selectedDistrict}
-                >
-                  {updatedUserData1.district.map((state, index) => (
-                    <option key={state} value={selectedDistrict}>
-                      {selectedDistrict}
-                    </option>
-                  ))}
-                </select>
-                
-              </div>
+              <div>
+                  <div><p>State</p></div>
+                  <div className="select-item">
+                    <SingleSelectDropdown
+                      options={updatedUserData1.state.map((state) => ({ value: state, label: state }))}
+                      buttonText="-- State --"
+                      onSelect={(selectedValue) => setSelectedState(selectedValue)} // Pass a function to setSelectedItem
+                    />
+                  </div>
+                </div>
 
-              <div className="select-item">
-                <h3>Select Block:</h3>
-                <select
-                  onChange={(e) => setSelectedBlock(e.target.value)}
-                  value={selectedBlock}
-                >
-                  {updatedUserData1.block.map((selectedBlock, index) => (
-                    <option key={index} value={selectedBlock}>
-                      {selectedBlock}
-                    </option>
-                  ))}
-                </select>
-              </div>
+                <div>
+                  <div><p>District</p></div>
+                  <div className="select-item">
+                    <SingleSelectDropdown
+                      options={updatedUserData1.district.map((district) => ({ value: district, label: district }))}
+                      buttonText="-- District --"
+                      onSelect={(selectedValue) => setSelectedDistrict(selectedValue)} // Pass a function to setSelectedItem
+                    />
+                  </div>
+                </div>
 
-              <div className="select-item">
-                <h3>From Month:</h3>
-                  <select onChange={(e) => setSelectedMonth1(e.target.value)} value={selectedMonth1}>
-                    {updatedUserData1.month.map((month, index) => (
-                    <option key={index} value={month}>
-                        {month}
-                    </option>
-                    ))}
-                  </select>
-              </div>
+                <div>
+                  <div><p>Block</p></div>
+                  <div className="select-item">
+                    <SingleSelectDropdown
+                      options={updatedUserData1.block.map((block) => ({ value: block, label: block }))}
+                      buttonText="-- Block --"
+                      onSelect={(selectedValue) => setSelectedBlock(selectedValue)} // Pass a function to setSelectedItem
+                    />
+                  </div>
+                </div>
 
-              <div className="select-item">
-                <h3>To Month:</h3>
-                  <select onChange={(e) => setSelectedMonth2(e.target.value)} value={selectedMonth2}>
-                    {updatedUserData1.month.map((month, index) => (
-                    <option key={index} value={month}>
-                        {month}
-                    </option>
-                    ))}
-                  </select>
-              </div>
+                <div>
+                  <div><p>From Month</p></div>
+                  <div className="select-item">
+                    <SingleSelectDropdown
+                      options={updatedUserData1.month.map((month) => ({ value: month, label: month }))}
+                      buttonText="-- From Month --"
+                      onSelect={(selectedValue) => setSelectedMonth1(selectedValue)} // Pass a function to setSelectedItem
+                    />
+                  </div>
+                </div>
 
-              <div className="select-item">
-                <h3>Financial Year:</h3>
-                <select>
-                  <option>2023-24</option>
-                </select>  
-              </div>
+                <div>
+                  <div><p>To Month</p></div>
+                  <div className="select-item">
+                    <SingleSelectDropdown
+                      options={updatedUserData1.month.map((month) => ({ value: month, label: month }))}
+                      buttonText="-- To Month --"
+                      onSelect={(selectedValue) => setSelectedMonth2(selectedValue)} // Pass a function to setSelectedItem
+                    />
+                  </div>
+                </div>
 
-              <div className="select-item">
-                <button className="login-button" onClick={handleFilterButtonClick}>
-                  Search
-                </button>
-              </div>
+                <div>
+                  <div><p>Financial Year</p></div>
+                  <div className="select-item">
+                    <SingleSelectDropdown
+                      options={updatedUserData1.year.map((year) => ({ value: year, label: year }))}
+                      buttonText="-- Financial Year --"
+                      onSelect={(selectedValue) => setSelectedFinancialYear(selectedValue)} // Pass a function to setSelectedItem
+                    />
+                  </div>
+                </div>
+
+              <div>
+                  <div><p> </p></div>
+                  <div className="select-item">
+                    <button className="apply-filter-button" onClick={handleFilterButtonClick}> Apply Filter </button>
+                  </div>
+                </div>
               
             </div>  
           </div>
 
+
+                     
+
           
           <div className="header_new">
 
+            
+            {/* <ProgressBarComponent />    */}
+
             {/* Tile 1 */}
             <div className="tile_new">
               <div className="title_new">
-                <strong><p style={{ fontSize:"1vw" }}>1st Trimester Registration (%)</p></strong>
+                <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#0066B2'}}>Percentage of 1st Trimester Registration</p></strong>
               </div>
               <div className="tile-content">
-                {filteredData && filteredData[0] && filteredData[0].labels ? (
+                {/* {filteredData && filteredData[0] && filteredData[0].labels ? (
                   <BarChart chartData={filteredData[0]} />
                   ) : (
                       <div className="title_new">
-                        <h3 style={{ color: '#4286f4', textAlign: 'center', lineHeight: '2.5' }} >data will display after search</h3>
+                        <h3 style={{ color: '#4286f4', textAlign: 'center', lineHeight: '2.5' }} >data will display after applying Filter</h3>
                       </div>
-                  )}
+                  )} */}
+                  {<ThreeDBarChart/>}
               </div>
             </div>
 
             {/* Tile 1 */}
             <div className="tile_new">
               <div className="title_new">
-                <strong><p style={{ fontSize:"1vw" }}>Institutional Delivery (%)</p></strong>
+              <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#0066B2'}}>Percentage of Institutional Delivery</p></strong>
               </div>
               <div className="doughnut-container">
-                {filteredData && filteredData[1] && filteredData[1].labels ? (
+                {/* {filteredData && filteredData[1] && filteredData[1].labels ? (
                       <BarChart chartData={filteredData[1]} />
                       ) : (
                         <div className="title_new">
-                          <h3 style={{ color: '#4286f4', textAlign: 'center', lineHeight: '2.5' }} >data will display after search</h3>
+                          <h3 style={{ color: '#4286f4', textAlign: 'center', lineHeight: '2.5' }} >data will display after applying Filter</h3>
                         </div>
-                  )}
+                  )} */}{1}
               </div>
             </div>
             
             {/* Tile 1 */}
             <div className="tile_new">
               <div className="title_new">
-                <strong><p style={{ fontSize:"1vw" }}>Low Birth Weight (%)</p></strong>
+              <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#0066B2'}}>Percentage of Low Birth Weight</p></strong>
               </div>
               <div className="doughnut-container">
-                {filteredData && filteredData[0] && filteredData[0].labels ? (
+                {/* {filteredData && filteredData[0] && filteredData[0].labels ? (
                       <BarChart chartData={filteredData[2]} />
                       ) : (
                         <div className="title_new">
-                          <h3 style={{ color: '#4286f4', textAlign: 'center', lineHeight: '2.5' }} >data will display after search</h3>
+                          <h3 style={{ color: '#4286f4', textAlign: 'center', lineHeight: '2.5' }} >data will display after applying Filter</h3>
                         </div>
-                  )}
+                  )} */}{2}
               </div>
             </div>
 
             {/* Tile 1 */}
             <div className="tile_new">
               <div className="title_new">
-                <strong><p style={{ fontSize:"1vw" }}>NQAS certified health facilities (%)</p></strong>
+              <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#0066B2'}}>Percentage of NQAS certified health facilities</p></strong>
               </div>
               <div className="doughnut-container">
-                {filteredData && filteredData[0] && filteredData[0].labels ? (
+                {/* {filteredData && filteredData[0] && filteredData[0].labels ? (
                       <BarChart chartData={filteredData[3]} />
                       ) : (
                         <div className="title_new">
-                          <h3 style={{ color: '#4286f4', textAlign: 'center', lineHeight: '2.5' }} >data will display after search</h3>
+                          <h3 style={{ color: '#4286f4', textAlign: 'center', lineHeight: '2.5' }} >data will display after applying Filter</h3>
                         </div>
-                  )}
+                  )} */}{3}
               </div>
             </div>
 
             {/* Tile 1 */}
             <div className="tile_new">
               <div className="title_new">
-                <strong><p style={{ fontSize:"1vw" }}>Hypertension (%)</p></strong>
+              <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#0066B2'}}>Percentage of Hypertension</p></strong>
               </div>
               <div className="doughnut-container">
-                {filteredData && filteredData[0] && filteredData[0].labels ? (
+                {/* {filteredData && filteredData[0] && filteredData[0].labels ? (
                       <BarChart chartData={filteredData[4]} />
                       ) : (
                         <div className="title_new">
-                          <h3 style={{ color: '#4286f4', textAlign: 'center', lineHeight: '2.5' }} >data will display after search</h3>
+                          <h3 style={{ color: '#4286f4', textAlign: 'center', lineHeight: '2.5' }} >data will display after applying Filter</h3>
                         </div>
-                  )}
+                  )} */}{4}
               </div>
             </div>
             
             {/* Tile 1 */}
             <div className="tile_new">
               <div className="title_new">
-                <strong><p style={{ fontSize:"1vw" }}>Diabetes (%)</p></strong>
+                <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#0066B2'}}>Percentage of Diabetes</p></strong>
               </div>
               <div className="doughnut-container">
-                {filteredData && filteredData[0] && filteredData[0].labels ? (
+                {/* {filteredData && filteredData[0] && filteredData[0].labels ? (
                       <BarChart chartData={filteredData[5]} />
                       ) : (
                         <div className="title_new">
-                          <h3 style={{ color: '#4286f4', textAlign: 'center', lineHeight: '2.5' }} >data will display after search</h3>
+                          <h3 style={{ color: '#4286f4', textAlign: 'center', lineHeight: '2.5' }} >data will display after applying Filter</h3>
                         </div>
-                  )}
+                  )} */}{5}
               </div>
             </div>
           </div>
@@ -2507,36 +2382,35 @@ const handleFilterButtonClick_TAB3 = async () => {
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <div style={{ width: '30%', alignItems: 'center' }} className="tile_new">
               <div className="title_new">
-                <strong><p style={{ fontSize:"1vw" }}>Treatment success rate (%)</p></strong>
+                <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#0066B2'}}>Percentage of Treatment success rate</p></strong>
               </div>
               <div className="doughnut-container">
-                {filteredData && filteredData[0] && filteredData[0].labels ? (
+                {/* {filteredData && filteredData[0] && filteredData[0].labels ? (
                         <BarChart chartData={filteredData[6]} />
                         ) : (
                           <div className="title_new">
-                            <h3 style={{ color: '#4286f4', textAlign: 'center', lineHeight: '2.5' }} >data will display after search</h3>
+                            <h3 style={{ color: '#4286f4', textAlign: 'center', lineHeight: '2.5' }} >data will display after applying Filter </h3>
                           </div>
-                  )}
+                  )} */}{6}
               </div>
             </div>
           </div>
 
-          <div className="header">
+          &nbsp;
+
+          {/* <div className="header">
             <img style={{ width: "100%" }} src="https://abp.championsofchange.gov.in/assets/img/titlebottom.svg"></img>
-          </div>
+          </div> */}
 
         </div>
           
-      )}
-      
+        )}
+      </div>
 
-      {/* <div className="footer">
-        <h2 >TEST DASHBOARD HMIS</h2>
-      </div> */}
-
-      <div className="footer">
+      <div style={{ width: "100%" }}>
         <img className="footer-image" src={footer} alt="HMIS Footer"/>
       </div>
+
     </div>
     
   );

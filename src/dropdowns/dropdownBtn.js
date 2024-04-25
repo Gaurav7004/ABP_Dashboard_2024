@@ -21,7 +21,7 @@ const SingleSelectDropdown = ({ options, buttonText, onSelect }) => {
 
   return (
     <div className="dropdown" onMouseEnter={togglePopover} onMouseLeave={togglePopover}>
-      <button className="dropdown-toggle">
+      <button style={{fontSize: '20px'}} className="dropdown-toggle">
         {selectedOption ? selectedOption.label : buttonText} 
       </button>
       {showPopover && (
