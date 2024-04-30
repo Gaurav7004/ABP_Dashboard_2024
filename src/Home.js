@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from 'react-router-dom';
 import "./App.css";
 import BarChart from "./components/BarChart";
-import MyComponent from "./components/HumanChart";
+import HumanChart from "./components/HumanChart";
 import BuildingComponent from "./components/BuildingChart";
 import DoughnutChart from "./components/DoughnutChart";
 import Speedometer from "./components/Speedometer";
@@ -27,6 +27,8 @@ import * as XLSX from "xlsx";
 
 import MultipleSelectDropdown from "./dropdowns/kpi_select_dropdown";
 import SingleSelectDropdown from "./dropdowns/dropdownBtn";
+
+import Swal from 'sweetalert2';
 
 
 function Home() {
@@ -140,31 +142,6 @@ function Home() {
       { id: 7, label:'Treatment success rate (%)'},
     ];
 
-    const newlineChartDataTest = {
-      series: [
-        {
-          name: 'National Avg',
-          data: [12, 20, 30],
-          month: ['1', '2', '3'],
-        },
-        {
-          name: 'State Avg',
-          data: [48, 60, 90],
-          month: ['1', '2', '3'],
-        },
-        {
-          name: 'District Avg',
-          data: [30, 12, 59],
-          month: ['1', '2', '3'],
-        },
-        {
-          name: 'Block Avg',
-          data: [23, 40, 78],
-          month: ['1', '2', '3'],
-        }
-      ]
-    };
-
     const chartDataTab3 = {
       national: {
         labels: ['National Avg'],
@@ -228,27 +205,15 @@ function Home() {
 
   const [trendsDataTab3_1, setTrendsDataTab3_1] = useState(chartDataTab3);
   const [trendsDataTab3_2, setTrendsDataTab3_2] = useState(chartDataTab3);
-  const [trendsDataTab3_3, setTrendsDataTab3_3] = useState(chartDataTab3);
-  const [trendsDataTab3_4, setTrendsDataTab3_4] = useState(chartDataTab3);
-  const [trendsDataTab3_5, setTrendsDataTab3_5] = useState(chartDataTab3);
-  const [trendsDataTab3_6, setTrendsDataTab3_6] = useState(chartDataTab3);
+  const [trendsDataTab3_3, setTrendsDataTab3_3] = useState();
+  const [trendsDataTab3_4, setTrendsDataTab3_4] = useState();
+  const [trendsDataTab3_5, setTrendsDataTab3_5] = useState();
+  const [trendsDataTab3_6, setTrendsDataTab3_6] = useState();
   const [trendsDataTab3_7, setTrendsDataTab3_7] = useState(chartDataTab3);
 
-  const [testnewLineChart, setTestnewLineChart] = useState(newlineChartDataTest);
-
   const [responseTab2Data_block, setresponseTab2Data_block] = useState([]);
-  
+  const [filteredData, setFilteredData] = useState();
 
-  const [filteredData, setFilteredData] = useState({
-        labels: [],
-        state: [],
-        district: [],
-        block: [],
-        datasets: [],
-    });
-
-  const [indicator, setIndicator] = useState([]);
-  const [month, setMonth] = useState([]);
 
 
 
@@ -259,203 +224,59 @@ const handleFilterButtonClick = () => {
         .then(response => {
             const responseData = response.data;
 
-            // Your mapping logic here
-            const updatedUserDataTab4_1 = {
-              labels: responseData.map(item => `${item.month} - ( ${item["1st Trimester Registration (%)"]} ) `),
-              state: responseData.map(item => item.state),
-              district: responseData.map(item => item.district),
-              block: responseData.map(item => item.block),
-              month: Months,
-              year: responseData.map(item => item.year),
-              datasets: [
-                  {
-                      label: "Percentage of 1st Trimester Registration",
-                      data: responseData.map(item => item["1st Trimester Registration (%)"]),
-                      backgroundColor: [
-                        "rgba(75,192,192,1)",
-                        "#ecf0f1",
-                        "#50AF95",
-                        "#f3ba2f",
-                        "#2a71d0",
-                        "#e8418d",
-                        "#d4d746",
-                        "#f3534b",
-                        "#dd33fa",
-                      ],
-                      borderColor: "black",
-                      borderWidth: 2,
-                  },
-              ],
-            };
+            const updatedUserDataTab4_1 = responseData.map(item => (
+            {
+              label: item.month,
+              value: item["1st Trimester Registration (%)"]
+            }
+            ));
 
-            const updatedUserDataTab4_2 = {
-                labels: responseData.map(item => item.month), // Update with the appropriate property
-                state: responseData.map(item => item.state),      // Update with the appropriate property
-                district: responseData.map(item => item.district), // Update with the appropriate property
-                block: responseData.map(item => item.block),
-                month: Months,
-                year: responseData.map(item => item.year),
-                datasets: [
-                            {
-                              label: "Institutional Delivery (%)",
-                              data: responseData.map(item => item["Institutional Delivery (%)"]),
-                              backgroundColor: [
-                                "rgba(75,192,192,1)",
-                                "#ecf0f1",
-                                "#50AF95",
-                                "#f3ba2f",
-                                "#2a71d0",
-                                "#e8418d",
-                                "#d4d746",
-                                "#f3534b",
-                                "#dd33fa",
-                              ],
-                              borderColor: "black",
-                              borderWidth: 2,
-                            },
-                        ],
-              };
+            const updatedUserDataTab4_2 = responseData.map(item => (
+              {
+                label: item.month,
+                value: item["Institutional Delivery (%)"]
+              }
+              ));
 
-              const updatedUserDataTab4_3 = {
-                labels: responseData.map(item => item.month), // Update with the appropriate property
-                state: responseData.map(item => item.state),      // Update with the appropriate property
-                district: responseData.map(item => item.district), // Update with the appropriate property
-                block: responseData.map(item => item.block),
-                month: Months,
-                year: responseData.map(item => item.year),
-                datasets: [
-                            {
-                              label: " Low Birth Weight (%) ",
-                              data: responseData.map(item => item["Low Birth Weight (%)"]),
-                              backgroundColor: [
-                                "rgba(75,192,192,1)",
-                                "#ecf0f1",
-                                "#50AF95",
-                                "#f3ba2f",
-                                "#2a71d0",
-                                "#e8418d",
-                                "#d4d746",
-                                "#f3534b",
-                                "#dd33fa",
-                              ],
-                              borderColor: "black",
-                              borderWidth: 2,
-                            },
-                          ],
-              };
+              const updatedUserDataTab4_3 = responseData.map(item => (
+                {
+                  label: item.month,
+                  value: item["Low Birth Weight (%)"]
+                }
+                ));
 
-              const updatedUserDataTab4_4 = {
-                labels: responseData.map(item => item.month), // Update with the appropriate property
-                state: responseData.map(item => item.state),      // Update with the appropriate property
-                district: responseData.map(item => item.district), // Update with the appropriate property
-                block: responseData.map(item => item.block),
-                month: Months,
-                year: responseData.map(item => item.year),
-                datasets: [
-                            {
-                              label: " NQAS certified health facilities (%) ",
-                              data: responseData.map(item => item["NQAS certified health facilities (%)"]),
-                              backgroundColor: [
-                                "rgba(75,192,192,1)",
-                                "#ecf0f1",
-                                "#50AF95",
-                                "#f3ba2f",
-                                "#2a71d0",
-                                "#e8418d",
-                                "#d4d746",
-                                "#f3534b",
-                                "#dd33fa",
-                              ],
-                              borderColor: "black",
-                              borderWidth: 2,
-                            },
-                          ],
-              };
 
-              const updatedUserDataTab4_5 = {
-                labels: responseData.map(item => item.month), // Update with the appropriate property
-                state: responseData.map(item => item.state),      // Update with the appropriate property
-                district: responseData.map(item => item.district), // Update with the appropriate property
-                block: responseData.map(item => item.block),
-                month: Months,
-                year: responseData.map(item => item.year),
-                datasets: [
-                            {
-                              label: " Person screened for Hypertension (%) ",
-                              data: responseData.map(item => item["Person screened for Hypertension (%)"]),
-                              backgroundColor: [
-                                "rgba(75,192,192,1)",
-                                "#ecf0f1",
-                                "#50AF95",
-                                "#f3ba2f",
-                                "#2a71d0",
-                                "#e8418d",
-                                "#d4d746",
-                                "#f3534b",
-                                "#dd33fa",
-                              ],
-                              borderColor: "black",
-                              borderWidth: 2,
-                            },
-                          ],
-              };
+              const updatedUserDataTab4_4 = responseData.map(item => (
+                {
+                  label: item.month,
+                  value: item["NQAS certified health facilities (%)"]
+                }
+                ));
 
-              const updatedUserDataTab4_6 = {
-                labels: responseData.map(item => item.month), // Update with the appropriate property
-                state: responseData.map(item => item.state),      // Update with the appropriate property
-                district: responseData.map(item => item.district), // Update with the appropriate property
-                block: responseData.map(item => item.block),
-                month: Months,
-                year: responseData.map(item => item.year),
-                datasets: [
-                            {
-                              label: " Person screened for Diabetes (%)) ",
-                              data: responseData.map(item => item["Person screened for Diabetes (%)"]),
-                              backgroundColor: [
-                                "rgba(75,192,192,1)",
-                                "#ecf0f1",
-                                "#50AF95",
-                                "#f3ba2f",
-                                "#2a71d0",
-                                "#e8418d",
-                                "#d4d746",
-                                "#f3534b",
-                                "#dd33fa",
-                              ],
-                              borderColor: "black",
-                              borderWidth: 2,
-                            },
-                          ],
-              };
 
-              const updatedUserDataTab4_7 = {
-                labels: responseData.map(item => item.month), // Update with the appropriate property
-                state: responseData.map(item => item.state),      // Update with the appropriate property
-                district: responseData.map(item => item.district), // Update with the appropriate property
-                block: responseData.map(item => item.block),
-                month: Months,
-                year: responseData.map(item => item.year),
-                datasets: [
-                            {
-                              label: " Treatment success rate (%) ",
-                              data: responseData.map(item => item["Treatment success rate (%)"]),
-                              backgroundColor: [
-                                "rgba(75,192,192,1)",
-                                "#ecf0f1",
-                                "#50AF95",
-                                "#f3ba2f",
-                                "#2a71d0",
-                                "#e8418d",
-                                "#d4d746",
-                                "#f3534b",
-                                "#dd33fa",
-                              ],
-                              borderColor: "black",
-                              borderWidth: 2,
-                            },
-                          ],
-              };
+              const updatedUserDataTab4_5 = responseData.map(item => (
+                {
+                  label: item.month,
+                  value: item["Person screened for Hypertension (%)"]
+                }
+                ));
 
+              const updatedUserDataTab4_6 = responseData.map(item => (
+                {
+                  label: item.month,
+                  value: item["Person screened for Diabetes (%)"]
+                }
+                ));
+
+              const updatedUserDataTab4_7 = responseData.map(item => (
+                {
+                  label: item.month,
+                  value: item["Treatment success rate (%)"]
+                }
+                ));
+
+
+              
             // Update the state with the filtered result
             setFilteredData([updatedUserDataTab4_1, updatedUserDataTab4_2, updatedUserDataTab4_3, updatedUserDataTab4_4, updatedUserDataTab4_5, updatedUserDataTab4_6, updatedUserDataTab4_7]);
 
@@ -510,9 +331,6 @@ useEffect(() => {
         // Your mapping logic here
         const VerticalBarUserDataTop5 = {
             labels: response.data.top5_1.map(item => item.block), // Update with the appropriate property
-            // state: response.data.map(item => item.State),      // Update with the appropriate property
-            // district: response.data.map(item => item.District), // Update with the appropriate property
-            // block: response.data.map(item => item.Block),
             datasets: [
                             {
                               label: "Percentage 1st Trimester Registration",
@@ -561,23 +379,21 @@ useEffect(() => {
         const VerticalBarUserDataTop5_3 = {
             labels: response.data.bottom5_3.map(item => item.block), // Update with the appropriate property
             datasets: [
-                            {
-                              label: " Low Birth Weight (%) ",
-                              data: response.data.bottom5_3.map(item => item["Low Birth Weight (%)"]),
-                              backgroundColor: [
-                                "rgba(75,192,192,1)",
-                                "#ecf0f1",
-                                "#50AF95",
-                                "#f3ba2f",
-                                "#2a71d0",
-                              ],
-                              borderColor: "black",
-                              borderWidth: 2,
-                            },
+                        {
+                          label: " Low Birth Weight (%) ",
+                          data: response.data.bottom5_3.map(item => item["Low Birth Weight (%)"]),
+                          backgroundColor: [
+                            "rgba(75,192,192,1)",
+                            "#ecf0f1",
+                            "#50AF95",
+                            "#f3ba2f",
+                            "#2a71d0",
                           ],
+                          borderColor: "black",
+                          borderWidth: 2,
+                        },
+                      ],
           };
-          
-          console.log(VerticalBarUserDataTop5_3, '-- VerticalBarUserDataTop5_3 --')
 
           setCommonFilteredDataTop5_3(VerticalBarUserDataTop5_3); 
 
@@ -608,9 +424,6 @@ useEffect(() => {
           // Your mapping logic here
           const VerticalBarUserDataTop5_5 = {
             labels: response.data.top5_5.map(item => item.block), // Update with the appropriate property
-            // state: response.data.map(item => item.State),      // Update with the appropriate property
-            // district: response.data.map(item => item.District), // Update with the appropriate property
-            // block: response.data.map(item => item.Block),
             datasets: [
                             {
                               label: " Person screened for Hypertension (%) ",
@@ -632,9 +445,6 @@ useEffect(() => {
         // Your mapping logic here
         const VerticalBarUserDataTop5_6 = {
           labels: response.data.top5_6.map(item => item.block), // Update with the appropriate property
-          // state: response.data.map(item => item.State),      // Update with the appropriate property
-          // district: response.data.map(item => item.District), // Update with the appropriate property
-          // block: response.data.map(item => item.Block),
           datasets: [
                           {
                             label: " Person screened for Diabetes (%) ",
@@ -653,49 +463,11 @@ useEffect(() => {
         };
         setCommonFilteredDataTop5_6(VerticalBarUserDataTop5_6); 
 
-        const VerticalBarUserDataTop5_7 = [
-          {
-            label: response.data.top5_7.map(item => item.block)[0], 
-            percentage: response.data.bottom5_1.map(item => parseFloat(item["1st Trimester Registration (%)"]))[0]
-          },
-          {
-            label: response.data.top5_7.map(item => item.block)[1], 
-            percentage: response.data.bottom5_1.map(item => parseFloat(item["1st Trimester Registration (%)"]))[1]
-          },
-          {
-            label: response.data.top5_7.map(item => item.block)[2], 
-            percentage: response.data.bottom5_1.map(item => parseFloat(item["1st Trimester Registration (%)"]))[2]
-          },
-          {
-            label: response.data.top5_7.map(item => item.block)[3], 
-            percentage: response.data.bottom5_1.map(item => parseFloat(item["1st Trimester Registration (%)"]))[3]
-          }
-          ,
-          {
-            label: response.data.top5_7.map(item => item.block)[4], 
-            percentage: response.data.bottom5_1.map(item => parseFloat(item["1st Trimester Registration (%)"]))[4]
-          }
-        ];
-
-        // Your mapping logic here
-        // const VerticalBarUserDataTop5_7 = {
-        //   labels: response.data.top5_7.map(item => item.block), // Update with the appropriate property
-        //   datasets: [
-        //                   {
-        //                     label: " Treatment success rate (%) ",
-        //                     data: response.data.top5_7.map(item => item["Treatment success rate (%)"]),
-        //                     backgroundColor: [
-        //                       "rgba(75,192,192,1)",
-        //                       "#ecf0f1",
-        //                       "#50AF95",
-        //                       "#f3ba2f",
-        //                       "#2a71d0",
-        //                     ],
-        //                     borderColor: "black",
-        //                     borderWidth: 2,
-        //                   },
-        //                 ],
-        // };
+        const VerticalBarUserDataTop5_7 = response.data.top5_7.map(item => ({
+          label: item.block,
+          percentage: parseFloat(item["Treatment success rate (%)"])
+        }));
+        
         setCommonFilteredDataTop5_7(VerticalBarUserDataTop5_7); 
 
 
@@ -703,11 +475,8 @@ useEffect(() => {
         /// -------------------------------------------------------------------
 
         // Your mapping logic here
-        const VerticalBarUserDataBottom5 = {
+          const VerticalBarUserDataBottom5 = {
             labels: response.data.bottom5_1.map(item => item.block), // Update with the appropriate property
-            // state: response.data.map(item => item.State),      // Update with the appropriate property
-            // district: response.data.map(item => item.District), // Update with the appropriate property
-            // block: response.data.map(item => item.Block),
             datasets: [
                             {
                               label: "Percentage 1st Trimester Registration",
@@ -728,9 +497,6 @@ useEffect(() => {
 
           const VerticalBarUserDataBottom5_2 = {
             labels: response.data.bottom5_2.map(item => item.block), // Update with the appropriate property
-            // state: response.data.map(item => item.State),      // Update with the appropriate property
-            // district: response.data.map(item => item.District), // Update with the appropriate property
-            // block: response.data.map(item => item.Block),
             datasets: [
                             {
                               label: " Institutional Delivery (%) ",
@@ -748,7 +514,6 @@ useEffect(() => {
                           ],
           };
           setCommonFilteredDataBottom5_2(VerticalBarUserDataBottom5_2); 
-
 
           const VerticalBarUserDataBottom5_3 = {
             labels: response.data.top5_3.map(item => item.block), // Update with the appropriate property
@@ -772,9 +537,6 @@ useEffect(() => {
 
           const VerticalBarUserDataBottom5_4 = {
             labels: response.data.bottom5_4.map(item => item.block), // Update with the appropriate property
-            // state: response.data.map(item => item.State),      // Update with the appropriate property
-            // district: response.data.map(item => item.District), // Update with the appropriate property
-            // block: response.data.map(item => item.Block),
             datasets: [
                             {
                               label: " NQAS certified health facilities (%) ",
@@ -795,9 +557,6 @@ useEffect(() => {
 
           const VerticalBarUserDataBottom5_5 = {
             labels: response.data.bottom5_5.map(item => item.block), // Update with the appropriate property
-            // state: response.data.map(item => item.State),      // Update with the appropriate property
-            // district: response.data.map(item => item.District), // Update with the appropriate property
-            // block: response.data.map(item => item.Block),
             datasets: [
                             {
                               label: " Person screened for Hypertension (%) ",
@@ -818,9 +577,6 @@ useEffect(() => {
 
           const VerticalBarUserDataBottom5_6 = {
             labels: response.data.bottom5_6.map(item => item.block), // Update with the appropriate property
-            // state: response.data.map(item => item.State),      // Update with the appropriate property
-            // district: response.data.map(item => item.District), // Update with the appropriate property
-            // block: response.data.map(item => item.Block),
             datasets: [
                             {
                               label: " Person screened for Diabetes (%) ",
@@ -839,27 +595,29 @@ useEffect(() => {
           };
           setCommonFilteredDataBottom5_6(VerticalBarUserDataBottom5_6); 
 
-          const VerticalBarUserDataBottom5_7 = {
-            labels: response.data.bottom5_7.map(item => item.block), // Update with the appropriate property
-            // state: response.data.map(item => item.State),      // Update with the appropriate property
-            // district: response.data.map(item => item.District), // Update with the appropriate property
-            // block: response.data.map(item => item.Block),
-            datasets: [
-                            {
-                              label: " Treatment success rate (%) ",
-                              data: response.data.bottom5_7.map(item => item["Treatment success rate (%)"]),
-                              backgroundColor: [
-                                "rgba(75,192,192,1)",
-                                "#ecf0f1",
-                                "#50AF95",
-                                "#f3ba2f",
-                                "#2a71d0",
-                              ],
-                              borderColor: "black",
-                              borderWidth: 2,
-                            },
-                          ],
-          };
+          const VerticalBarUserDataBottom5_7 = [
+            {
+              label: response.data.bottom5_7.map(item => item.block)[0], 
+              percentage: response.data.bottom5_7.map(item => parseFloat(item["Treatment success rate (%)"]))[0]
+            },
+            {
+              label: response.data.bottom5_7.map(item => item.block)[1], 
+              percentage: response.data.bottom5_7.map(item => parseFloat(item["Treatment success rate (%)"]))[1]
+            },
+            {
+              label: response.data.bottom5_7.map(item => item.block)[2], 
+              percentage: response.data.bottom5_7.map(item => parseFloat(item["Treatment success rate (%)"]))[2]
+            },
+            {
+              label: response.data.bottom5_7.map(item => item.block)[3], 
+              percentage: response.data.bottom5_7.map(item => parseFloat(item["Treatment success rate (%)"]))[3]
+            }
+            ,
+            {
+              label: response.data.bottom5_7.map(item => item.block)[4], 
+              percentage: response.data.bottom5_7.map(item => parseFloat(item["Treatment success rate (%)"]))[4]
+            }
+          ];
           setCommonFilteredDataBottom5_7(VerticalBarUserDataBottom5_7);
 
         // } catch (error) {
@@ -876,7 +634,12 @@ const handleFilterButtonClick_TAB2 = async () => {
   // try {
 
         if (selectedKPI.length === 0) {
-          alert('Please select some KPI');
+          Swal.fire({
+            icon: 'error',
+            title: 'Please select some KPI',
+            // text: error.message,
+            confirmButtonText: 'OK'
+          });
           return 
         }
 
@@ -1176,236 +939,89 @@ const handleFilterButtonClick_TAB3 = async () => {
     },
     {
       label: responseTab3Data_block[0].block,
-      percentage: responseTab3Data_block.map(item => parseFloat(item["block_avg_1st_tri_reg"]))[0].toFixed(2)
+      percentage: responseTab3Data_block.map(item => parseFloat(item["block_avg_1st_tri_reg"]))[0].toFixed(1)
 
     }
   ];
 
-  console.log(temp_trendsDataTab3_1, "^^^^ temp_trendsDataTab3_1 ^^^^");
+  temp_trendsDataTab3_2 = [
+    {
+    label: 'India', 
+    percentage: responseTab3Data_nat.map(item => parseFloat(item["natAvg Institutional Delivery"]))[0]
+    },
+    {
+      label: responseTab3Data_block[0].state,
+      percentage: responseTab3Data_state.map(item => parseFloat(item["stAvg Institutional Delivery"]))[0]
+    },
+    {
+      label: responseTab3Data_block[0].district,
+      percentage: responseTab3Data_dist.map(item => parseFloat(item["distAvg Institutional Delivery"]))[0]
+    },
+    {
+      label: responseTab3Data_block[0].block,
+      percentage: responseTab3Data_block.map(item => parseFloat(item["block_avg_inst_delivery"]))[0].toFixed(1)
 
-  temp_trendsDataTab3_2 = {
-    
-    ['India' + ' - ' + responseTab3Data_nat.map(item => parseFloat(item["natAvg Institutional Delivery"]))[0] + '%']: {
-      labels: ['National Avg'],
-      datasets: [
-        {
-          data: [responseTab3Data_nat.map(item => parseFloat(item["natAvg Institutional Delivery"]))[0], 100 - responseTab3Data_nat.map(item => parseFloat(item["natAvg Institutional Delivery"]))[0]],
-          backgroundColor: ['#00e676', '#DDDDDD'],
-          hoverBackgroundColor: ['#00e676', '#DDDDDD']
-        }
-      ]
-    },
-    [responseTab3Data_block[0].state + ' - ' + responseTab3Data_state.map(item => parseFloat(item["stAvg Institutional Delivery"]))[0] + '%']: {
-      labels: ['State Avg'],
-      datasets: [
-        {
-          data: [responseTab3Data_state.map(item => parseFloat(item["stAvg Institutional Delivery"]))[0], 100 - responseTab3Data_state.map(item => parseFloat(item["stAvg Institutional Delivery"]))[0]],
-          backgroundColor: ['brown', '#DDDDDD'],
-          hoverBackgroundColor: ['brown', '#DDDDDD']
-        }
-      ]
-    },
-    [responseTab3Data_block[0].district + ' - ' + responseTab3Data_dist.map(item => parseFloat(item["distAvg Institutional Delivery"]))[0] + '%']: {
-      labels: ['District Avg'],
-      datasets: [
-        {
-          data: [responseTab3Data_dist.map(item => parseFloat(item["distAvg Institutional Delivery"]))[0], 100 - responseTab3Data_dist.map(item => parseFloat(item["distAvg Institutional Delivery"]))[0]],
-          backgroundColor: ['#36A2EB', '#DDDDDD'],
-          hoverBackgroundColor: ['#36A2EB', '#DDDDDD']
-        }
-      ]
-    },
-    [responseTab3Data_block[0].block + ' - ' + responseTab3Data_block.map(item => parseFloat(item["block_avg_inst_delivery"]))[0].toFixed(2) + '%']: {
-      labels: ['Block Avg'],
-      datasets: [
-        {
-          data: [responseTab3Data_block.map(item => parseFloat(item["block_avg_inst_delivery"]))[0], 100 - responseTab3Data_block.map(item => parseFloat(item["block_avg_inst_delivery"]))[0]],
-          backgroundColor: ['#E44D2A', '#DDDDDD'],
-          hoverBackgroundColor: ['#E44D2A', '#DDDDDD']
-        }
-      ]
     }
-
-  };
+  ];
 
   temp_trendsDataTab3_3 = {
     
-    ['India' + ' - ' + responseTab3Data_nat.map(item => parseFloat(item["natAvg Low Birth Weight"]))[0] + '%']: {
-      labels: ['National Avg'],
+      labels: ['India', responseTab3Data_block[0].state, responseTab3Data_block[0].district, responseTab3Data_block[0].block],
       datasets: [
         {
-          data: [responseTab3Data_nat.map(item => parseFloat(item["natAvg Low Birth Weight"]))[0], 100 - responseTab3Data_nat.map(item => parseFloat(item["natAvg Low Birth Weight"]))[0]],
+          data: [responseTab3Data_nat.map(item => parseFloat(item["natAvg Low Birth Weight"]))[0],
+                  responseTab3Data_state.map(item => parseFloat(item["stAvg Low Birth Weight"]))[0],
+                    responseTab3Data_dist.map(item => parseFloat(item["distAvg Low Birth Weight"]))[0],
+                    responseTab3Data_block.map(item => parseFloat(item["block_avg_low_birth_wt"]).toFixed(1))[0]],
           backgroundColor: ['#00e676', '#DDDDDD'],
           hoverBackgroundColor: ['#00e676', '#DDDDDD']
-        }
-      ]
-    },
-    [responseTab3Data_block[0].state + ' - ' + responseTab3Data_state.map(item => parseFloat(item["stAvg Low Birth Weight"]))[0] + '%']: {
-      labels: ['State Avg'],
-      datasets: [
-        {
-          data: [responseTab3Data_state.map(item => parseFloat(item["stAvg Low Birth Weight"]))[0], 100 - responseTab3Data_state.map(item => parseFloat(item["stAvg Low Birth Weight"]))[0]],
-          backgroundColor: ['brown', '#DDDDDD'],
-          hoverBackgroundColor: ['brown', '#DDDDDD']
-        }
-      ]
-    },
-    [responseTab3Data_block[0].district + ' - ' + responseTab3Data_dist.map(item => parseFloat(item["distAvg Low Birth Weight"]))[0] + '%']: {
-      labels: ['District Avg'],
-      datasets: [
-        {
-          data: [responseTab3Data_dist.map(item => parseFloat(item["distAvg Low Birth Weight"]))[0], 100 - responseTab3Data_dist.map(item => parseFloat(item["distAvg Low Birth Weight"]))[0]],
-          backgroundColor: ['#36A2EB', '#DDDDDD'],
-          hoverBackgroundColor: ['#36A2EB', '#DDDDDD']
-        }
-      ]
-    },
-    [responseTab3Data_block[0].block + ' - ' + responseTab3Data_block.map(item => parseFloat(item["block_avg_low_birth_wt"]))[0].toFixed(2) + '%']: {
-      labels: ['Block Avg'],
-      datasets: [
-        {
-          data: [responseTab3Data_block.map(item => parseFloat(item["block_avg_low_birth_wt"]))[0], 100 - responseTab3Data_block.map(item => parseFloat(item["block_avg_low_birth_wt"]))[0]],
-          backgroundColor: ['#E44D2A', '#DDDDDD'],
-          hoverBackgroundColor: ['#E44D2A', '#DDDDDD']
-        }
-      ]
-    }
-
+        },
+      ],
   };
 
   temp_trendsDataTab3_4 = {
     
-    ['India' + ' - ' + responseTab3Data_nat.map(item => parseFloat(item["natAvg NQAS"]))[0] + '%']: {
-      labels: ['National Avg'],
-      datasets: [
-        {
-          data: [responseTab3Data_nat.map(item => parseFloat(item["natAvg NQAS"]))[0], 100 - responseTab3Data_nat.map(item => parseFloat(item["natAvg NQAS"]))[0]],
-          backgroundColor: ['#00e676', '#DDDDDD'],
-          hoverBackgroundColor: ['#00e676', '#DDDDDD']
-        }
-      ]
-    },
-    [responseTab3Data_block[0].state + ' - ' + responseTab3Data_state.map(item => parseFloat(item["stAvg NQAS"]))[0] + '%']: {
-      labels: ['State Avg'],
-      datasets: [
-        {
-          data: [responseTab3Data_state.map(item => parseFloat(item["stAvg NQAS"]))[0], 100 - responseTab3Data_state.map(item => parseFloat(item["stAvg NQAS"]))[0]],
-          backgroundColor: ['#00e676', '#DDDDDD'],
-          hoverBackgroundColor: ['#00e676', '#DDDDDD']
-        }
-      ]
-    },
-    [responseTab3Data_block[0].district + ' - ' + responseTab3Data_dist.map(item => parseFloat(item["distAvg NQAS"]))[0] + '%']: {
-      labels: ['District Avg'],
-      datasets: [
-        {
-          data: [responseTab3Data_dist.map(item => parseFloat(item["distAvg NQAS"]))[0], 100 - responseTab3Data_dist.map(item => parseFloat(item["distAvg NQAS"]))[0]],
-          backgroundColor: ['brown', '#DDDDDD'],
-          hoverBackgroundColor: ['brown', '#DDDDDD']
-        }
-      ]
-    },
-    [responseTab3Data_block[0].block + ' - ' + responseTab3Data_block.map(item => parseFloat(item["block_avg_nqas"]))[0].toFixed(2) + '%']: {
-      labels: ['Block Avg'],
-      datasets: [
-        {
-          data: [responseTab3Data_block.map(item => parseFloat(item["block_avg_nqas"]))[0], 100 - responseTab3Data_block.map(item => parseFloat(item["block_avg_nqas"]))[0]],
-          backgroundColor: ['#E44D2A', '#DDDDDD'],
-          hoverBackgroundColor: ['#E44D2A', '#DDDDDD']
-        }
-      ]
-    }
-
+    labels: ['India', responseTab3Data_block[0].state, responseTab3Data_block[0].district, responseTab3Data_block[0].block],
+    datasets: [
+      {
+        data: [responseTab3Data_nat.map(item => parseFloat(item["natAvg NQAS"]))[0],
+                responseTab3Data_state.map(item => parseFloat(item["stAvg NQAS"]))[0],
+                  responseTab3Data_dist.map(item => parseFloat(item["distAvg NQAS"]))[0],
+                  responseTab3Data_block.map(item => parseFloat(item["block_avg_nqas"]).toFixed(1))[0]],
+        backgroundColor: ['#00e676', '#DDDDDD'],
+        hoverBackgroundColor: ['#00e676', '#DDDDDD']
+      },
+    ],
   };
 
   temp_trendsDataTab3_5 = {
     
-    ['India' + ' - ' + responseTab3Data_nat.map(item => parseFloat(item["natAvg Hypertension"]))[0] + '%']: {
-      labels: ['National Avg'],
-      datasets: [
-        {
-          data: [responseTab3Data_nat.map(item => parseFloat(item["natAvg Hypertension"]))[0], 100 - responseTab3Data_nat.map(item => parseFloat(item["natAvg Hypertension"]))[0]],
-          backgroundColor: ['#00e676', '#DDDDDD'],
-          hoverBackgroundColor: ['#00e676', '#DDDDDD']
-        }
-      ]
-    },
-    [responseTab3Data_block[0].state + ' - ' + responseTab3Data_state.map(item => parseFloat(item["stAvg Hypertension"]))[0] + '%']: {
-      labels: ['State Avg'],
-      datasets: [
-        {
-          data: [responseTab3Data_state.map(item => parseFloat(item["stAvg Hypertension"]))[0], 100 - responseTab3Data_state.map(item => parseFloat(item["stAvg Hypertension"]))[0]],
-          backgroundColor: ['brown', '#DDDDDD'],
-          hoverBackgroundColor: ['brown', '#DDDDDD']
-        }
-      ]
-    },
-    [responseTab3Data_block[0].district + ' - ' + responseTab3Data_dist.map(item => parseFloat(item["distAvg Hypertension"]))[0] + '%']: {
-      labels: ['District Avg'],
-      datasets: [
-        {
-          data: [responseTab3Data_dist.map(item => parseFloat(item["distAvg Hypertension"]))[0], 100 - responseTab3Data_dist.map(item => parseFloat(item["distAvg Hypertension"]))[0]],
-          backgroundColor: ['#36A2EB', '#DDDDDD'],
-          hoverBackgroundColor: ['#36A2EB', '#DDDDDD']
-        }
-      ]
-    },
-    [responseTab3Data_block[0].block + ' - ' + responseTab3Data_block.map(item => parseFloat(item["block_avg_hypertension"]))[0].toFixed(2) + '%']: {
-      labels: ['Block Avg'],
-      datasets: [
-        {
-          data: [responseTab3Data_block.map(item => parseFloat(item["block_avg_hypertension"]))[0], 100 - responseTab3Data_block.map(item => parseFloat(item["block_avg_hypertension"]))[0]],
-          backgroundColor: ['#E44D2A', '#DDDDDD'],
-          hoverBackgroundColor: ['#E44D2A', '#DDDDDD']
-        }
-      ]
-    }
-
+    labels: ['India', responseTab3Data_block[0].state, responseTab3Data_block[0].district, responseTab3Data_block[0].block],
+    datasets: [
+      {
+        data: [responseTab3Data_nat.map(item => parseFloat(item["natAvg Hypertension"]))[0],
+                responseTab3Data_state.map(item => parseFloat(item["stAvg Hypertension"]))[0],
+                  responseTab3Data_dist.map(item => parseFloat(item["distAvg Hypertension"]))[0],
+                  responseTab3Data_block.map(item => parseFloat(item["block_avg_hypertension"]).toFixed(1))[0]],
+        backgroundColor: ['#00e676', '#DDDDDD'],
+        hoverBackgroundColor: ['#00e676', '#DDDDDD']
+      },
+    ],
   };
 
   temp_trendsDataTab3_6 = {
     
-    ['India' + ' - ' + responseTab3Data_nat.map(item => parseFloat(item["natAvg Diabetes "]))[0] + '%']: {
-      labels: ['National Avg'],
-      datasets: [
-        {
-          data: [responseTab3Data_nat.map(item => parseFloat(item["natAvg Diabetes "]))[0], 100 - responseTab3Data_nat.map(item => parseFloat(item["natAvg Diabetes "]))[0]],
-          backgroundColor: ['#00e676', '#DDDDDD'],
-          hoverBackgroundColor: ['#00e676', '#DDDDDD']
-        }
-      ]
-    },
-    [responseTab3Data_block[0].state + ' - ' + responseTab3Data_state.map(item => parseFloat(item["stAvg Diabetes "]))[0] + '%']: {
-      labels: ['State Avg'],
-      datasets: [
-        {
-          data: [responseTab3Data_state.map(item => parseFloat(item["stAvg Diabetes "]))[0], 100 - responseTab3Data_state.map(item => parseFloat(item["stAvg Diabetes "]))[0]],
-          backgroundColor: ['brown', '#DDDDDD'],
-          hoverBackgroundColor: ['brown', '#DDDDDD']
-        }
-      ]
-    },
-    [responseTab3Data_block[0].district + ' - ' + responseTab3Data_dist.map(item => parseFloat(item["distAvg Diabetes "]))[0] + '%']: {
-      labels: ['District Avg'],
-      datasets: [
-        {
-          data: [responseTab3Data_dist.map(item => parseFloat(item["distAvg Diabetes "]))[0], 100 - responseTab3Data_dist.map(item => parseFloat(item["distAvg Diabetes "]))[0]],
-          backgroundColor: ['#36A2EB', '#DDDDDD'],
-          hoverBackgroundColor: ['#36A2EB', '#DDDDDD']
-        }
-      ]
-    },
-    [responseTab3Data_block[0].block + ' - ' + responseTab3Data_block.map(item => parseFloat(item["block_avg_diabetes"]))[0].toFixed(2) + '%']: {
-      labels: ['Block Avg'],
-      datasets: [
-        {
-          data: [responseTab3Data_block.map(item => parseFloat(item["block_avg_diabetes"]))[0], 100 - responseTab3Data_block.map(item => parseFloat(item["block_avg_diabetes"]))[0]],
-          backgroundColor: ['#E44D2A', '#DDDDDD'],
-          hoverBackgroundColor: ['#E44D2A', '#DDDDDD']
-        }
-      ]
-    }
-
+    labels: ['India', responseTab3Data_block[0].state, responseTab3Data_block[0].district, responseTab3Data_block[0].block],
+    datasets: [
+      {
+        data: [responseTab3Data_nat.map(item => parseFloat(item["natAvg Diabetes "]))[0],
+                responseTab3Data_state.map(item => parseFloat(item["stAvg Diabetes "]))[0],
+                  responseTab3Data_dist.map(item => parseFloat(item["distAvg Diabetes "]))[0],
+                  responseTab3Data_block.map(item => parseFloat(item["block_avg_diabetes"]).toFixed(1))[0]],
+        backgroundColor: ['#00e676', '#DDDDDD'],
+        hoverBackgroundColor: ['#00e676', '#DDDDDD']
+      },
+    ],
   };
 
   temp_trendsDataTab3_7 = {
@@ -1440,7 +1056,7 @@ const handleFilterButtonClick_TAB3 = async () => {
         }
       ]
     },
-    [responseTab3Data_block[0].block + ' - ' + responseTab3Data_block.map(item => parseFloat(item["block_avg_treatment_success"]))[0].toFixed(2) + '%']: {
+    [responseTab3Data_block[0].block + ' - ' + responseTab3Data_block.map(item => parseFloat(item["block_avg_treatment_success"]))[0].toFixed(1) + '%']: {
       labels: ['Block Avg'],
       datasets: [
         {
@@ -1452,6 +1068,10 @@ const handleFilterButtonClick_TAB3 = async () => {
     }
 
   };
+
+
+  console.log(trendsDataTab3_6, '-- trendsDataTab3_6 --');
+  // console.log(trendsDataTab3_3.datasets[0], '-- trendsDataTab3_3 data --');
 
   
 
@@ -1574,36 +1194,50 @@ const handleFilterButtonClick_TAB3 = async () => {
             {/* Tile 1 */}
             <div className="tile_new">
               <div className="title_new">
-                <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#25B7B7'}}>Percentage of 1st Trimester Registration</p></strong>
+                <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#25B7B7'}}>Percentage 1st Trimester to Total ANC Registration</p></strong>
               </div>
               <div className="doughnut-container">
-                {commonfilteredDataTop5 && <Speedometer value={commonfilteredDataTop5.datasets[0].data} labels={commonfilteredDataTop5.labels } startColor="blue" endColor="green" maxValue={100} minValue={80}/>}
-              
+                {commonfilteredDataTop5 && <Speedometer value={commonfilteredDataTop5.datasets[0].data} labels={commonfilteredDataTop5.labels } startColor="blue" endColor="green" maxValue={100} minValue={80}/>}      
+              </div>
+
+              <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: '1vw'}}>
+                {<p>Data Source : <strong>Health Management Inifmation system (HMIS)</strong></p>}
+                {<p>Year : <strong>F.Y. (test)</strong></p>}
               </div>
             </div>
 
 
             <div className="tile_new">
               <div className="title_new">
-                <strong><p style={{ fontSize:"1.5vw", padding: '28px', color:'white', backgroundColor: '#25B7B7' }}>Percentage of Institutional Delivery</p></strong>
+                <strong><p style={{ fontSize:"1.5vw", padding: '28px', color:'white', backgroundColor: '#25B7B7' }}>Percentage Institutional deliveries to total Reported Deliveries</p></strong>
               </div>
               <div className="doughnut-container">
                 {commonfilteredDataTop5_2 && <Speedometer value={commonfilteredDataTop5_2.datasets[0].data} labels={commonfilteredDataTop5_2.labels} startColor="yellow" endColor="green" maxValue={100} minValue={80}/>}
               </div>
+
+              <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: '1vw'}}>
+                {<p>Data Source : <strong>Health Management Inifmation system (HMIS)</strong></p>}
+                {<p>Year : <strong>F.Y. (test)</strong></p>}
+              </div>
             </div>
 
             <div className="tile_new">
               <div className="title_new">
-                <strong><p style={{ fontSize:"1.5vw", padding: '28px', color:'white', backgroundColor: '#25B7B7' }}>Percentage of Low Birth Weight</p></strong>
+                <strong><p style={{ fontSize:"1.5vw", padding: '28px', color:'white', backgroundColor: '#25B7B7' }}>Percentage Low birth weight babies (less than 2500g)</p></strong>
               </div>
               <div className="doughnut-container">
               {commonfilteredDataTop5_3 && <ChildChart percentages={commonfilteredDataTop5_3.datasets[0].data} labels={commonfilteredDataTop5_3.labels}/>}
+              </div>
+
+              <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: '1vw'}}>
+                {<p>Data Source : <strong>Health Management Inifmation system (HMIS)</strong></p>}
+                {<p>Year : <strong>F.Y. (test)</strong></p>}
               </div>
             </div>
 
             <div className="tile_new">
               <div className="title_new" style={{justifyContent: 'space-between !important'}}>
-                <strong><p style={{ fontSize:"1.5vw", padding: '28px',backgroundColor: '#25B7B7', color:'white' }}>Percentage of NQAS certified health facilities</p></strong>
+                <strong><p style={{ fontSize:"1.5vw", padding: '28px',backgroundColor: '#25B7B7', color:'white' }}>Percentage of NQAS certified facilities</p></strong>
               </div>
 
               <div className="doughnut-container">
@@ -1615,32 +1249,30 @@ const handleFilterButtonClick_TAB3 = async () => {
 
             <div className="tile_new">
               <div className="title_new">
-                <strong><p style={{ fontSize:"1.5vw" , padding: '28px',backgroundColor: '#25B7B7', color:'white'}}>Percentage of Hypertension</p></strong>
+                <strong><p style={{ fontSize:"1.5vw" , padding: '28px',backgroundColor: '#25B7B7', color:'white'}}>Percentage of person screened for Hypertension against targeted population</p></strong>
               </div>
               <div className="doughnut-container">
-                {commonfilteredDataTop5_5 && <MyComponent percentages={commonfilteredDataTop5_5.datasets[0].data} labels={commonfilteredDataTop5_5.labels }/>}
+                {commonfilteredDataTop5_5 && <HumanChart percentages={commonfilteredDataTop5_5.datasets[0].data} labels={commonfilteredDataTop5_5.labels }/>}
               </div>
             </div>
 
             <div className="tile_new">
               <div className="title_new">
-                <strong><p style={{ fontSize:"1.5vw" , padding: '28px',backgroundColor: '#25B7B7', color:'white'}}>Percentage of Diabetes</p></strong>
+                <strong><p style={{ fontSize:"1.5vw" , padding: '28px',backgroundColor: '#25B7B7', color:'white'}}>Percentage of person screened for Diabetes against targeted population</p></strong>
               </div>
               <div className="doughnut-container">
-              {commonfilteredDataTop5_6 && <MyComponent percentages={commonfilteredDataTop5_6.datasets[0].data} labels={commonfilteredDataTop5_6.labels }/>}
+              {commonfilteredDataTop5_6 && <HumanChart percentages={commonfilteredDataTop5_6.datasets[0].data} labels={commonfilteredDataTop5_6.labels }/>}
               </div>
             </div>
 
             <div className="tile_new">
               <div className="title_new">
-                <strong><p style={{ fontSize:"1.5vw", padding: '28px',backgroundColor: '#25B7B7' , color:'white'}}>Percentage of Treatment Success Rate</p></strong>
+                <strong><p style={{ fontSize:"1.5vw", padding: '28px',backgroundColor: '#25B7B7' , color:'white'}}>Number of TB cases treated successfully in public and private institutions</p></strong>
               </div>
               <div className="doughnut-container">
                 {commonfilteredDataTop5_7 && <ProgressBarComponent chartData={commonfilteredDataTop5_7}/> }
               </div>
             </div>
-
-
 
         </div>
 
@@ -1658,35 +1290,50 @@ const handleFilterButtonClick_TAB3 = async () => {
             {/* Tile 1 */}
             <div className="tile_new">
               <div className="title_new">
-                <strong><p style={{ fontSize:"1.5vw", padding: '28px',backgroundColor: '#25B7B7' , color:'white'}}>Percentage of 1st Trimester Registration</p></strong>
+                <strong><p style={{ fontSize:"1.5vw", padding: '28px',backgroundColor: '#25B7B7' , color:'white'}}>Percentage 1st Trimester to Total ANC Registration</p></strong>
               </div>
               <div className="doughnut-container">
                 {commonfilteredDataBottom5 && <Speedometer value={commonfilteredDataBottom5.datasets[0].data} labels={commonfilteredDataBottom5.labels} startColor="blue" endColor="green" maxValue={50} minValue={0}/>}
               </div>
+
+              <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: '1vw'}}>
+                {<p>Data Source : <strong>Health Management Inifmation system (HMIS)</strong></p>}
+                {<p>Year : <strong>F.Y. (test)</strong></p>}
+              </div>
             </div>
 
             <div className="tile_new">
               <div className="title_new">
-                <strong><p style={{ fontSize:"1.5vw", padding: '28px',backgroundColor: '#25B7B7' , color:'white'}}>Percentage of Institutional Delivery</p></strong>
+                <strong><p style={{ fontSize:"1.5vw", padding: '28px',backgroundColor: '#25B7B7' , color:'white'}}>Percentage Institutional deliveries to total Reported Deliveries</p></strong>
               </div>
               <div className="doughnut-container">
                 {commonfilteredDataBottom5_2 && <Speedometer value={commonfilteredDataBottom5_2.datasets[0].data} labels={commonfilteredDataBottom5_2.labels} startColor="blue" endColor="green" maxValue={50} minValue={0}/>}
               </div>
+
+              <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: '1vw'}}>
+                {<p>Data Source : <strong>Health Management Inifmation system (HMIS)</strong></p>}
+                {<p>Year : <strong>F.Y. (test)</strong></p>}
+              </div>
             </div>
 
             <div className="tile_new">
               <div className="title_new">
-                <strong><p style={{ fontSize:"1.5vw", padding: '28px',backgroundColor: '#25B7B7' , color:'white'}}>Percentage of Low Birth Weight</p></strong>
+                <strong><p style={{ fontSize:"1.5vw", padding: '28px',backgroundColor: '#25B7B7' , color:'white'}}>Percentage Low birth weight babies (less than 2500g)</p></strong>
               </div>
               <div className="doughnut-container">
                 {commonfilteredDataBottom5_3 && <ChildChart percentages={commonfilteredDataBottom5_3.datasets[0].data} labels={commonfilteredDataBottom5_3.labels}/>}
+              </div>
+
+              <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: '1vw'}}>
+                {<p>Data Source : <strong>Health Management Inifmation system (HMIS)</strong></p>}
+                {<p>Year : <strong>F.Y. (test)</strong></p>}
               </div>
             </div>
 
             {/* Tile 1 */}
             <div className="tile_new">
               <div className="title_new">
-                <strong><p style={{ fontSize:"1.5vw", padding: '28px',backgroundColor: '#25B7B7' , color:'white'}}>Percentage of NQAS certified health facilities</p></strong>
+                <strong><p style={{ fontSize:"1.5vw", padding: '28px',backgroundColor: '#25B7B7' , color:'white'}}>Percentage of NQAS certified facilities</p></strong>
               </div>
               <div className="doughnut-container">
                 {/* {commonfilteredDataBottom5_4 && <Speedometer value={commonfilteredDataBottom5_4.datasets[0].data} labels={commonfilteredDataBottom5_4.labels} startColor="blue" endColor="green" maxValue={50} minValue={0}/>} */}
@@ -1696,25 +1343,25 @@ const handleFilterButtonClick_TAB3 = async () => {
 
             <div className="tile_new">
               <div className="title_new">
-                <strong><p style={{ fontSize:"1.5vw", padding: '28px',backgroundColor: '#25B7B7' , color:'white'}}>Percentage of Hypertension</p></strong>
+                <strong><p style={{ fontSize:"1.5vw", padding: '28px',backgroundColor: '#25B7B7' , color:'white'}}>Percentage of person screened for Hypertension against targeted population</p></strong>
               </div>
               <div className="doughnut-container">
-              {commonfilteredDataBottom5_5 && <MyComponent percentages={commonfilteredDataBottom5_5.datasets[0].data} labels={commonfilteredDataBottom5_5.labels }/>}
+              {commonfilteredDataBottom5_5 && <HumanChart percentages={commonfilteredDataBottom5_5.datasets[0].data} labels={commonfilteredDataBottom5_5.labels }/>}
               </div>
             </div>
 
             <div className="tile_new">
               <div className="title_new">
-                <strong><p style={{ fontSize:"1.5vw", padding: '28px',backgroundColor: '#25B7B7' , color:'white'}}>Percentage of Diabetes</p></strong>
+                <strong><p style={{ fontSize:"1.5vw", padding: '28px',backgroundColor: '#25B7B7' , color:'white'}}>Percentage of person screened for Diabetes against targeted population</p></strong>
               </div>
               <div className="doughnut-container">
-              {commonfilteredDataBottom5_6 && <MyComponent percentages={commonfilteredDataBottom5_6.datasets[0].data} labels={commonfilteredDataBottom5_6.labels }/>}
+              {commonfilteredDataBottom5_6 && <HumanChart percentages={commonfilteredDataBottom5_6.datasets[0].data} labels={commonfilteredDataBottom5_6.labels }/>}
               </div>
             </div>
 
             <div className="tile_new">
               <div className="title_new">
-                <strong><p style={{ fontSize:"1.5vw", padding: '28px',backgroundColor: '#25B7B7' , color:'white'}}>Percentage of Treatment Success rate</p></strong>
+                <strong><p style={{ fontSize:"1.5vw", padding: '28px',backgroundColor: '#25B7B7' , color:'white'}}>Number of TB cases treated successfully in public and private institutions</p></strong>
               </div>
               <div className="doughnut-container">
                 {/* {commonfilteredDataBottom5_7 && <Speedometer value={commonfilteredDataBottom5_7.datasets[0].data} labels={commonfilteredDataBottom5_7.labels} startColor="blue" endColor="green" maxValue={50} minValue={0}/>} */}
@@ -1722,6 +1369,10 @@ const handleFilterButtonClick_TAB3 = async () => {
               </div>
             </div>
 
+        </div>
+
+        <div style={{textAlign: 'center'}}>
+          <p>** A blank indicates that either the services was not provided or there were no benefeciaries to avail services during that period</p>
         </div>
 
         <div className="header">
@@ -1733,7 +1384,9 @@ const handleFilterButtonClick_TAB3 = async () => {
             <h1 style={{ color: '#4286f4', textAlign: 'center', lineHeight: '1.5' }}>
               Welcome<br />
               CNO - {officerName} <br />
-              {uniqueStates}, {uniqueDistrict} , {uniqueBlock}
+              State : {uniqueStates}<br />
+              District : {uniqueDistrict} <br /> 
+              Block : {uniqueBlock}
             </h1>
           </div>
         </div>
@@ -1871,66 +1524,79 @@ const handleFilterButtonClick_TAB3 = async () => {
               {/* Tile 1 */}
               <div className="tile_new">
                 <div className="title_new">
-                <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#7A63BD'}}>Percentage of 1st Trimester Registration</p></strong>
+                <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#7A63BD'}}>Percentage 1st Trimester to Total ANC Registration</p></strong>
                 </div>
                 <div className="doughnut-container">
-                  {/* <DoughnutChart chartData={trendsDataTab3_1}/> */}
                   {trendsDataTab3_1.length > 0 && <ProgressGaugeComponent chartData={trendsDataTab3_1}/>}
+                </div>
+
+                <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: '1vw'}}>
+                  {<p>Data Source : <strong>Health Management Inifmation system (HMIS)</strong></p>}
+                  {<p>Year : <strong>F.Y. (test)</strong></p>}
                 </div>
               </div>
               
               {/* Tile 2 */}
               <div className="tile_new">
                 <div className="title_new">
-                  <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#7A63BD'}}>Percentage of Institutional Delivery</p></strong>
+                  <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#7A63BD'}}>Percentage Institutional deliveries to total Reported Deliveries</p></strong>
                 </div>
                 <div className="doughnut-container">
-                  {/* <DoughnutChart chartData={trendsDataTab3_2}/> */}
-                  {trendsDataTab3_1.length > 0 && <ProgressBarComponent chartData={trendsDataTab3_1}/>} 
+                  {trendsDataTab3_2.length > 0 && <ProgressGaugeComponent chartData={trendsDataTab3_2}/>} 
+                </div>
+
+                <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: '1vw'}}>
+                  {<p>Data Source : <strong>Health Management Inifmation system (HMIS)</strong></p>}
+                  {<p>Year : <strong>F.Y. (test)</strong></p>}
                 </div>
               </div>
               
               {/* Tile 3 */}
               <div className="tile_new">
                 <div className="title_new">
-                <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#7A63BD'}}>Percentage of Low Birth Weight</p></strong>
+                <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#7A63BD'}}>Percentage Low birth weight babies (less than 2500g)</p></strong>
                 </div>
                 <div className="doughnut-container">
                   {/* <DoughnutChart chartData={trendsDataTab3_3}/> */}
-                  {trendsDataTab3_1.length > 0 && <ProgressBarComponent chartData={trendsDataTab3_1}/>}
+                  {trendsDataTab3_3 && <ChildChart percentages={trendsDataTab3_3.datasets[0].data} labels={trendsDataTab3_3.labels} />}
+                </div>
+
+                <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: '1vw'}}>
+                  {<p>Data Source : <strong>Health Management Inifmation system (HMIS)</strong></p>}
+                  {<p>Year : <strong>F.Y. (test)</strong></p>}
                 </div>
               </div>
        
               {/* Tile 4 */}
               <div className="tile_new">
                 <div className="title_new">
-                <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#7A63BD'}}>Percentage of NQAS certified health facilities</p></strong>
+                <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#7A63BD'}}>Percentage of NQAS certified facilities</p></strong>
                 </div>
                 <div className="doughnut-container">
                   {/* <DoughnutChart chartData={trendsDataTab3_4}/> */}
-                  {trendsDataTab3_1.length > 0 && <ProgressBarComponent chartData={trendsDataTab3_1}/>}
+                  {trendsDataTab3_4 && <BuildingComponent percentages={trendsDataTab3_4.datasets[0].data} labels={trendsDataTab3_4.labels} />}
                 </div>
               </div>
               
               {/* Tile 5 */}
               <div className="tile_new">
                 <div className="title_new">
-                <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#7A63BD'}}>Percentage of Hypertension</p></strong>
+                <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#7A63BD'}}>Percentage of person screened for Hypertension against targeted population</p></strong>
                 </div>
                 <div className="doughnut-container">
                   {/* <DoughnutChart chartData={trendsDataTab3_5}/> */}
-                  {trendsDataTab3_1.length > 0 && <ProgressBarComponent chartData={trendsDataTab3_1}/>} 
+                  {trendsDataTab3_5 && <HumanChart percentages={trendsDataTab3_5.datasets[0].data} labels={trendsDataTab3_5.labels} />}
                 </div>
               </div>
               
               {/* Tile 6 */}
               <div className="tile_new">
                 <div className="title_new">
-                <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#7A63BD'}}>Percentage of Diabetes</p></strong>
+                <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#7A63BD'}}>Percentage of person screened for Diabetes against targeted population</p></strong>
                 </div>
                 <div className="doughnut-container">
                   {/* <DoughnutChart chartData={trendsDataTab3_6}/> */}
-                  {trendsDataTab3_1.length > 0 && <ProgressBarComponent chartData={trendsDataTab3_1}/>} 
+                  {trendsDataTab3_6 && <HumanChart percentages={trendsDataTab3_6.datasets[0].data} labels={trendsDataTab3_6.labels} />}
                 </div>
               </div>
             </div>
@@ -1939,13 +1605,17 @@ const handleFilterButtonClick_TAB3 = async () => {
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <div style={{ width: '30%', alignItems: 'center' }} className="tile_new">
                 <div className="title_new">
-                <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#7A63BD'}}>Percentage of Treatment success rate</p></strong>
+                <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#7A63BD'}}>Number of TB cases treated successfully in public and private institutionsts</p></strong>
                 </div>
                 <div className="doughnut-container">
                   {/* <DoughnutChart chartData={trendsDataTab3_7} /> */}
                   {trendsDataTab3_1.length > 0 && <ProgressBarComponent chartData={trendsDataTab3_1}/>}
                 </div>
                   </div>
+            </div>
+
+            <div style={{textAlign: 'center'}}>
+              <p>** A blank indicates that either the services was not provided or there were no benefeciaries to avail services during that period</p>
             </div>
 
             <div className="header">
@@ -1971,14 +1641,14 @@ const handleFilterButtonClick_TAB3 = async () => {
             
               <div className="select-container">
                 <div>
-                  <div><p>KPI</p></div>
+                  <div><strong><p>KPI</p></strong></div>
                   <div className="select-item">
                     <MultipleSelectDropdown options={KPI_options} buttonText="-- KPI --" setSelectedKPI={setSelectedKPI} />
                   </div>
                 </div>
 
                 <div>
-                  <div><p>State</p></div>
+                  <div><strong><p>State</p></strong></div>
                   <div className="select-item">
                     <SingleSelectDropdown
                       options={updatedUserData1.state.map((state) => ({ value: state, label: state }))}
@@ -1989,7 +1659,7 @@ const handleFilterButtonClick_TAB3 = async () => {
                 </div>
 
                 <div>
-                  <div><p>District</p></div>
+                  <div><strong><p>District</p></strong></div>
                   <div className="select-item">
                     <SingleSelectDropdown
                       options={updatedUserData1.district.map((district) => ({ value: district, label: district }))}
@@ -2000,7 +1670,7 @@ const handleFilterButtonClick_TAB3 = async () => {
                 </div>
 
                 <div>
-                  <div><p>Block</p></div>
+                  <div><strong><p>Block</p></strong></div>
                   <div className="select-item">
                     <SingleSelectDropdown
                       options={updatedUserData1.block.map((block) => ({ value: block, label: block }))}
@@ -2011,7 +1681,7 @@ const handleFilterButtonClick_TAB3 = async () => {
                 </div>
 
                 <div>
-                  <div><p>From Month</p></div>
+                  <div><strong><p>From Month</p></strong></div>
                   <div className="select-item">
                     <SingleSelectDropdown
                       options={updatedUserData1.month.map((month) => ({ value: month, label: month }))}
@@ -2022,7 +1692,7 @@ const handleFilterButtonClick_TAB3 = async () => {
                 </div>
 
                 <div>
-                  <div><p>To Month</p></div>
+                  <div><strong><p>To Month</p></strong></div>
                   <div className="select-item">
                     <SingleSelectDropdown
                       options={updatedUserData1.month.map((month) => ({ value: month, label: month }))}
@@ -2033,7 +1703,7 @@ const handleFilterButtonClick_TAB3 = async () => {
                 </div>
 
                 <div>
-                  <div><p>Financial Year</p></div>
+                  <div><strong><p>Financial Year</p></strong></div>
                   <div className="select-item">
                     <SingleSelectDropdown
                       options={updatedUserData1.year.map((year) => ({ value: year, label: year }))}
@@ -2063,13 +1733,17 @@ const handleFilterButtonClick_TAB3 = async () => {
                   <div className="tile_new">
                     <div className="title_new">
                       <strong>
-                        <p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#DA5978'}}>Percentage of 1st Trimester Registration</p>
+                        <p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#DA5978'}}>Percentage 1st Trimester to Total ANC Registration</p>
                       </strong>
                     </div>
                     <div className="doughnut-container">
                       {/* <LineChart chartData={trendsDataTab2_1} /> */}
                       <NewLineChart chartData={trendsDataTab2_1} />
-                      
+                    </div>
+
+                    <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: '1vw'}}>
+                      {<p>Data Source : <strong>Health Management Inifmation system (HMIS)</strong></p>}
+                      {<p>Year : <strong>F.Y. (test)</strong></p>}
                     </div>
                   </div>
                 )} 
@@ -2078,10 +1752,15 @@ const handleFilterButtonClick_TAB3 = async () => {
                 {/* Tile 2 */}
                 { Object.keys(trendsDataTab2_2).length > 0 && <div className="tile_new">
                   <div className="title_new">
-                    <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#DA5978'}}>Percentage of Institutional Delivery</p></strong>
+                    <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#DA5978'}}>Percentage Institutional deliveries to total Reported Deliveries</p></strong>
                   </div>
                   <div className="doughnut-container">
                     <NewLineChart chartData={trendsDataTab2_2}/>
+                  </div>
+
+                  <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: '1vw'}}>
+                    {<p>Data Source : <strong>Health Management Inifmation system (HMIS)</strong></p>}
+                    {<p>Year : <strong>F.Y. (test)</strong></p>}
                   </div>
                 </div>}
                 
@@ -2089,17 +1768,22 @@ const handleFilterButtonClick_TAB3 = async () => {
                 {/* Tile 3 */}
                 { Object.keys(trendsDataTab2_3).length > 0 && <div className="tile_new">
                   <div className="title_new">
-                    <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#DA5978'}}>Percentage of Low Birth Weight</p></strong>
+                    <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#DA5978'}}>Percentage Low birth weight babies (less than 2500g)</p></strong>
                   </div>
                   <div className="doughnut-container">
                     <NewLineChart chartData={trendsDataTab2_3}/>
+                  </div>
+
+                  <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: '1vw'}}>
+                    {<p>Data Source : <strong>Health Management Inifmation system (HMIS)</strong></p>}
+                    {<p>Year : <strong>F.Y. (test)</strong></p>}
                   </div>
                 </div>}
 
                 {/* Tile 4 */}
                 { Object.keys(trendsDataTab2_4).length > 0 &&<div className="tile_new">
                   <div className="title_new">
-                    <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#DA5978'}}>Percentage of NQAS certified health facilities</p></strong>
+                    <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#DA5978'}}>Percentage of NQAS certified facilities</p></strong>
                   </div>
                   <div className="doughnut-container">
                     <NewLineChart chartData={trendsDataTab2_4}/>
@@ -2109,7 +1793,7 @@ const handleFilterButtonClick_TAB3 = async () => {
                 {/* Tile 5 */}
                 { Object.keys(trendsDataTab2_5).length > 0 &&<div className="tile_new">
                   <div className="title_new">
-                    <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#DA5978'}}>Percentage of Hypertension</p></strong>
+                    <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#DA5978'}}>Percentage of person screened for Hypertension against targeted population</p></strong>
                   </div>
                   <div className="doughnut-container">
                     <NewLineChart chartData={trendsDataTab2_5}/>
@@ -2119,7 +1803,7 @@ const handleFilterButtonClick_TAB3 = async () => {
                 {/* Tile 6 */}
                 { Object.keys(trendsDataTab2_6).length > 0 &&<div className="tile_new">
                   <div className="title_new">
-                    <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#DA5978'}}>Percentage of Diabetes</p></strong>
+                    <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#DA5978'}}>Percentage of person screened for Diabetes against targeted population</p></strong>
                   </div>
                   <div className="doughnut-container">
                     <NewLineChart chartData={trendsDataTab2_6}/>
@@ -2131,24 +1815,19 @@ const handleFilterButtonClick_TAB3 = async () => {
               {/* <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}> */}
               { Object.keys(trendsDataTab2_7).length > 0 &&<div style={{ width: '30%', alignItems: 'center' }} className="tile_new">
                   <div className="title_new">
-                    <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#DA5978'}}>Percentage of Treatment success rate</p></strong>
+                    <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#DA5978'}}>Number of TB cases treated successfully in public and private institutions</p></strong>
                   </div>
                   <div className="doughnut-container">
                     <NewLineChart chartData={trendsDataTab2_7}/>
                   </div>
                 </div>}
-              {/* </div> */}
-
-              {/* If the condition is false, render the message */}
-              {/* {Object.keys(trendsDataTab2_1).length === 0 && Object.keys(trendsDataTab2_2).length === 0 && Object.keys(trendsDataTab2_3).length === 0 && Object.keys(trendsDataTab2_4).length === 0 && Object.keys(trendsDataTab2_5).length === 0 && Object.keys(trendsDataTab2_6).length === 0 && Object.keys(trendsDataTab2_7).length === 0 &&(
-                  <div className="tile_new" style={{flexBasis: '100%'}}>
-                    <div className="title_new">
-                      <h3 style={{ color: '#4286f4', textAlign: 'center', lineHeight: '10.5'  }} >data will display after search</h3>
-                    </div>
-                  </div>
-                )} */}
+              
 
             </div>  
+          </div>
+
+          <div style={{textAlign: 'center'}}>
+            <p>** A blank indicates that either the services was not provided or there were no benefeciaries to avail services during that period</p>
           </div>
 
           <div className="header">
@@ -2195,7 +1874,7 @@ const handleFilterButtonClick_TAB3 = async () => {
             <div className="select-container">
 
               <div>
-                  <div><p>State</p></div>
+                  <div><strong><p>State</p></strong></div>
                   <div className="select-item">
                     <SingleSelectDropdown
                       options={updatedUserData1.state.map((state) => ({ value: state, label: state }))}
@@ -2206,7 +1885,7 @@ const handleFilterButtonClick_TAB3 = async () => {
                 </div>
 
                 <div>
-                  <div><p>District</p></div>
+                  <div><strong><p>District</p></strong></div>
                   <div className="select-item">
                     <SingleSelectDropdown
                       options={updatedUserData1.district.map((district) => ({ value: district, label: district }))}
@@ -2217,7 +1896,7 @@ const handleFilterButtonClick_TAB3 = async () => {
                 </div>
 
                 <div>
-                  <div><p>Block</p></div>
+                  <div><strong><p>Block</p></strong></div>
                   <div className="select-item">
                     <SingleSelectDropdown
                       options={updatedUserData1.block.map((block) => ({ value: block, label: block }))}
@@ -2228,7 +1907,7 @@ const handleFilterButtonClick_TAB3 = async () => {
                 </div>
 
                 <div>
-                  <div><p>From Month</p></div>
+                  <div><strong><p>From Month</p></strong></div>
                   <div className="select-item">
                     <SingleSelectDropdown
                       options={updatedUserData1.month.map((month) => ({ value: month, label: month }))}
@@ -2239,7 +1918,7 @@ const handleFilterButtonClick_TAB3 = async () => {
                 </div>
 
                 <div>
-                  <div><p>To Month</p></div>
+                  <div><strong><p>To Month</p></strong></div>
                   <div className="select-item">
                     <SingleSelectDropdown
                       options={updatedUserData1.month.map((month) => ({ value: month, label: month }))}
@@ -2250,7 +1929,7 @@ const handleFilterButtonClick_TAB3 = async () => {
                 </div>
 
                 <div>
-                  <div><p>Financial Year</p></div>
+                  <div><strong><p>Financial Year</p></strong></div>
                   <div className="select-item">
                     <SingleSelectDropdown
                       options={updatedUserData1.year.map((year) => ({ value: year, label: year }))}
@@ -2276,103 +1955,114 @@ const handleFilterButtonClick_TAB3 = async () => {
           
           <div className="header_new">
 
-            
-            {/* <ProgressBarComponent />    */}
-
             {/* Tile 1 */}
             <div className="tile_new">
               <div className="title_new">
-                <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#0066B2'}}>Percentage of 1st Trimester Registration</p></strong>
+                <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#0066B2'}}>Percentage 1st Trimester to Total ANC Registration</p></strong>
               </div>
               <div className="tile-content">
-                {/* {filteredData && filteredData[0] && filteredData[0].labels ? (
-                  <BarChart chartData={filteredData[0]} />
-                  ) : (
-                      <div className="title_new">
-                        <h3 style={{ color: '#4286f4', textAlign: 'center', lineHeight: '2.5' }} >data will display after applying Filter</h3>
-                      </div>
-                  )} */}
-                  {<ThreeDBarChart/>}
+              {filteredData  ? (
+                    <ThreeDBarChart data={filteredData[0]}/>
+                    ) : (
+                        <div className="title_new">
+                          <h3 style={{ color: '#4286f4', textAlign: 'center', lineHeight: '2.5' }} >data will display after applying filter</h3>
+                        </div>
+                    )}
+              </div>
+
+              <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: '1vw'}}>
+                {<p>Data Source : <strong>Health Management Inifmation system (HMIS)</strong></p>}
+                {<p>Year : <strong>F.Y. (test)</strong></p>}
+              </div>
+            </div>
+
+            {/* Tile 2 */}
+            <div className="tile_new">
+              <div className="title_new">
+              <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#0066B2'}}>Percentage Institutional deliveries to total Reported Deliveries</p></strong>
+              </div>
+              <div className="doughnut-container">
+                {filteredData  ? (
+                    <ThreeDBarChart data={filteredData[1]}/>
+                    ) : (
+                        <div className="title_new">
+                          <h3 style={{ color: '#4286f4', textAlign: 'center', lineHeight: '2.5' }} >data will display after applying filter</h3>
+                        </div>
+                    )}
+              </div>
+
+              <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: '1vw'}}>
+                {<p>Data Source : <strong>Health Management Inifmation system (HMIS)</strong></p>}
+                {<p>Year : <strong>F.Y. (test)</strong></p>}
+              </div>
+            </div>
+            
+            {/* Tile 3 */}
+            <div className="tile_new">
+              <div className="title_new">
+              <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#0066B2'}}>Percentage Low birth weight babies (less than 2500g)</p></strong>
+              </div>
+              <div className="doughnut-container">
+              {filteredData  ? (
+                    <ThreeDBarChart data={filteredData[2]}/>
+                    ) : (
+                        <div className="title_new">
+                          <h3 style={{ color: '#4286f4', textAlign: 'center', lineHeight: '2.5' }} >data will display after applying filter</h3>
+                        </div>
+                    )}
+              </div>
+
+              <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: '1vw'}}>
+                {<p>Data Source : <strong>Health Management Inifmation system (HMIS)</strong></p>}
+                {<p>Year : <strong>F.Y. (test)</strong></p>}
               </div>
             </div>
 
             {/* Tile 1 */}
             <div className="tile_new">
               <div className="title_new">
-              <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#0066B2'}}>Percentage of Institutional Delivery</p></strong>
+              <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#0066B2'}}>Percentage of NQAS certified facilities</p></strong>
               </div>
               <div className="doughnut-container">
-                {/* {filteredData && filteredData[1] && filteredData[1].labels ? (
-                      <BarChart chartData={filteredData[1]} />
-                      ) : (
+              {filteredData  ? (
+                    <ThreeDBarChart data={filteredData[3]}/>
+                    ) : (
                         <div className="title_new">
-                          <h3 style={{ color: '#4286f4', textAlign: 'center', lineHeight: '2.5' }} >data will display after applying Filter</h3>
+                          <h3 style={{ color: '#4286f4', textAlign: 'center', lineHeight: '2.5' }} >data will display after applying filter</h3>
                         </div>
-                  )} */}{1}
+                    )}
+              </div>
+            </div>
+
+            {/* Tile 1 */}
+            <div className="tile_new">
+              <div className="title_new">
+              <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#0066B2'}}>Percentage of person screened for Hypertension against targeted population</p></strong>
+              </div>
+              <div className="doughnut-container">
+              {filteredData  ? (
+                    <ThreeDBarChart data={filteredData[4]}/>
+                    ) : (
+                        <div className="title_new">
+                          <h3 style={{ color: '#4286f4', textAlign: 'center', lineHeight: '2.5' }} >data will display after applying filter</h3>
+                        </div>
+                    )}
               </div>
             </div>
             
             {/* Tile 1 */}
             <div className="tile_new">
               <div className="title_new">
-              <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#0066B2'}}>Percentage of Low Birth Weight</p></strong>
+                <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#0066B2'}}>Percentage of person screened for Diabetes against targeted population</p></strong>
               </div>
               <div className="doughnut-container">
-                {/* {filteredData && filteredData[0] && filteredData[0].labels ? (
-                      <BarChart chartData={filteredData[2]} />
-                      ) : (
+              {filteredData  ? (
+                    <ThreeDBarChart data={filteredData[5]}/>
+                    ) : (
                         <div className="title_new">
-                          <h3 style={{ color: '#4286f4', textAlign: 'center', lineHeight: '2.5' }} >data will display after applying Filter</h3>
+                          <h3 style={{ color: '#4286f4', textAlign: 'center', lineHeight: '2.5' }} >data will display after applying filter</h3>
                         </div>
-                  )} */}{2}
-              </div>
-            </div>
-
-            {/* Tile 1 */}
-            <div className="tile_new">
-              <div className="title_new">
-              <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#0066B2'}}>Percentage of NQAS certified health facilities</p></strong>
-              </div>
-              <div className="doughnut-container">
-                {/* {filteredData && filteredData[0] && filteredData[0].labels ? (
-                      <BarChart chartData={filteredData[3]} />
-                      ) : (
-                        <div className="title_new">
-                          <h3 style={{ color: '#4286f4', textAlign: 'center', lineHeight: '2.5' }} >data will display after applying Filter</h3>
-                        </div>
-                  )} */}{3}
-              </div>
-            </div>
-
-            {/* Tile 1 */}
-            <div className="tile_new">
-              <div className="title_new">
-              <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#0066B2'}}>Percentage of Hypertension</p></strong>
-              </div>
-              <div className="doughnut-container">
-                {/* {filteredData && filteredData[0] && filteredData[0].labels ? (
-                      <BarChart chartData={filteredData[4]} />
-                      ) : (
-                        <div className="title_new">
-                          <h3 style={{ color: '#4286f4', textAlign: 'center', lineHeight: '2.5' }} >data will display after applying Filter</h3>
-                        </div>
-                  )} */}{4}
-              </div>
-            </div>
-            
-            {/* Tile 1 */}
-            <div className="tile_new">
-              <div className="title_new">
-                <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#0066B2'}}>Percentage of Diabetes</p></strong>
-              </div>
-              <div className="doughnut-container">
-                {/* {filteredData && filteredData[0] && filteredData[0].labels ? (
-                      <BarChart chartData={filteredData[5]} />
-                      ) : (
-                        <div className="title_new">
-                          <h3 style={{ color: '#4286f4', textAlign: 'center', lineHeight: '2.5' }} >data will display after applying Filter</h3>
-                        </div>
-                  )} */}{5}
+                    )}
               </div>
             </div>
           </div>
@@ -2382,18 +2072,22 @@ const handleFilterButtonClick_TAB3 = async () => {
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <div style={{ width: '30%', alignItems: 'center' }} className="tile_new">
               <div className="title_new">
-                <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#0066B2'}}>Percentage of Treatment success rate</p></strong>
+                <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#0066B2'}}>Number of TB cases treated successfully in public and private institutions</p></strong>
               </div>
               <div className="doughnut-container">
-                {/* {filteredData && filteredData[0] && filteredData[0].labels ? (
-                        <BarChart chartData={filteredData[6]} />
-                        ) : (
-                          <div className="title_new">
-                            <h3 style={{ color: '#4286f4', textAlign: 'center', lineHeight: '2.5' }} >data will display after applying Filter </h3>
-                          </div>
-                  )} */}{6}
+              {filteredData  ? (
+                    <ThreeDBarChart data={filteredData[6]}/>
+                    ) : (
+                        <div className="title_new">
+                          <h3 style={{ color: '#4286f4', textAlign: 'center', lineHeight: '2.5' }} >data will display after applying filter</h3>
+                        </div>
+                    )}
               </div>
             </div>
+          </div>
+
+          <div style={{textAlign: 'center'}}>
+            <p>** A blank indicates that either the services was not provided or there were no benefeciaries to avail services during that period</p>
           </div>
 
           &nbsp;
@@ -2407,7 +2101,7 @@ const handleFilterButtonClick_TAB3 = async () => {
         )}
       </div>
 
-      <div style={{ width: "100%" }}>
+      <div className="footer">
         <img className="footer-image" src={footer} alt="HMIS Footer"/>
       </div>
 

@@ -9,6 +9,8 @@ import g20Logo from "./assets/images/g20-logo.png";
 import hmisLogo from "./assets/images/hmis.png";
 import nrhmLogo from "./assets/images/nrhm-logo.png";
 import footer from "./assets/images/footer_abp_dashboard.png";
+import Swal from 'sweetalert2';
+
 
 
 const Login = () => {
@@ -33,6 +35,13 @@ const handleLogin = async () => {
 
     console.log('Login successful!', response);
 
+    Swal.fire({
+      icon: 'success',
+      title: 'Login successful!',
+      // text: 'Welcome ' + [...new Set(response.map(item => item?.nodal_officer_name))],
+      confirmButtonText: 'OK'
+    });
+
     // function getResponse() {
     //   return 'This is the response from Login.js';
     // }
@@ -44,6 +53,12 @@ const handleLogin = async () => {
   } catch (error) {
     if (error.response && error.response.data) {
       console.error('Login failed:', error.response.data);
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops invaid credentials !',
+        text: error.message,
+        confirmButtonText: 'OK'
+      });
     } else {
       console.error('Login failed. An unexpected error occurred.');
     }
@@ -70,7 +85,7 @@ const handleLogin = async () => {
 
 
       <div className="header"> 
-        <div className="tile">
+        <div className="tile_tab1_SC">
 
           <div className='header' >
             <img className='header_left_login' src={HMIS_login_abp_dashboard} alt="HMIS"/>

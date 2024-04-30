@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./HumanChart.css";
 
-const MyComponent = ({ percentages, labels }) => {
+const HumanChart = ({ percentages, labels }) => {
   const [color, setColor] = useState("#047dc5");
 
   // Function to generate SVG elements for each row
@@ -61,4 +61,4 @@ const MyComponent = ({ percentages, labels }) => {
   );
 };
 
-export default MyComponent;
+export default HumanChart;

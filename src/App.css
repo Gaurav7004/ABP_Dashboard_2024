@@ -265,7 +265,7 @@ canvas {
   display: flex;
   justify-content: center;
   align-items: center !important; /* Center vertically */
-  background: #134277;
+  background: #004465;
 }
 
 .footer-image {
@@ -417,8 +417,8 @@ canvas {
   flex: 0 0 calc(47% - 20px); /* Set each tile to occupy one-third of the container width, with some spacing */
   max-width: calc(47% - 20px); /* Set max-width to ensure tiles don't exceed one-third of the container width */
   align-items: center;
-  /* margin: 5px; 
-  padding: 5px;  */
+  margin: 5px; 
+  padding: 5px; 
   border: 1px solid #ddd;
   /* border-radius: 16px; */
   background-color: #25B7B7;

@@ -2,15 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types'; // Import PropTypes
 import { Circle } from 'rc-progress';
 
-const data = [
-  { label: 'India', percentage: 79.6 },
-  { label: 'State', percentage: 74.3 },
-  { label: 'District', percentage: 79.3 },
-  { label: 'Block', percentage: 77.3 }
-];
-
 // Define colors for each label
-const labelColors = ['#1565C0', '#03A9F4', '#4FC3F7', '#BBDEFB'];
+const labelColors = ['#0277BD', '#039BE5', '#03A9F4', '#4FC3F7', '#81D4FA'];
 
 const ProgressGaugeComponent = ({ chartData }) => {
   return (
