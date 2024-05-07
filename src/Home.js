@@ -27,6 +27,7 @@ import * as XLSX from "xlsx";
 
 import MultipleSelectDropdown from "./dropdowns/kpi_select_dropdown";
 import SingleSelectDropdown from "./dropdowns/dropdownBtn";
+import Month_Dropdown from "./dropdowns/Month_Dropdown";
 
 import Swal from 'sweetalert2';
 
@@ -74,14 +75,21 @@ function Home() {
     const Months = [...new Set(newData.map(item => item.month))];
 
 
+    const mappedArray = Months.map((month, index) => {
+          return { month: month, index: index };
+      });
+
+      console.log(mappedArray, "--mappedArray--")
+
     // Assuming you want to update labels, state, district, and data fields
     const updatedUserData1 = {
 
-      labels: newData.map(item => item.Month), // Update with the appropriate property
+      labels: newData.map(item => item.Month), 
       state: uniqueStates,
-      district: uniqueDistrict, // Update with the appropriate property
+      district: uniqueDistrict, 
       block: uniqueBlock,
       month: Months,
+      // month: Months,
       year: uniqueFinancialYear,
       datasets: [
                   {
@@ -100,6 +108,9 @@ function Home() {
                 ],
     };
 
+    
+
+    console.log(updatedUserData1, '-- updatedUserData1 --');
 
     const extractUniqueStates = (data) => {
     const uniqueStates = [...new Set(data.map((item) => item.state))];
@@ -219,6 +230,7 @@ function Home() {
 
 // handling user specific block data (TAB 4)
 const handleFilterButtonClick = () => {
+
  
     axios.post('http://localhost:4000/fetch-data-tab4', { selectedState, selectedDistrict, selectedBlock, selectedMonth1, selectedMonth2, selectedFinancialYear })
         .then(response => {
@@ -227,21 +239,21 @@ const handleFilterButtonClick = () => {
             const updatedUserDataTab4_1 = responseData.map(item => (
             {
               label: item.month,
-              value: item["1st Trimester Registration (%)"]
+              value: parseFloat(item["1st Trimester Registration (%)"]).toFixed(1)
             }
             ));
 
             const updatedUserDataTab4_2 = responseData.map(item => (
               {
                 label: item.month,
-                value: item["Institutional Delivery (%)"]
+                value: parseFloat(item["Institutional Delivery (%)"]).toFixed(1)
               }
               ));
 
               const updatedUserDataTab4_3 = responseData.map(item => (
                 {
                   label: item.month,
-                  value: item["Low Birth Weight (%)"]
+                  value: parseFloat(item["Low Birth Weight (%)"]).toFixed(1)
                 }
                 ));
 
@@ -249,7 +261,7 @@ const handleFilterButtonClick = () => {
               const updatedUserDataTab4_4 = responseData.map(item => (
                 {
                   label: item.month,
-                  value: item["NQAS certified health facilities (%)"]
+                  value: parseFloat(item["NQAS certified health facilities (%)"]).toFixed(1)
                 }
                 ));
 
@@ -257,21 +269,21 @@ const handleFilterButtonClick = () => {
               const updatedUserDataTab4_5 = responseData.map(item => (
                 {
                   label: item.month,
-                  value: item["Person screened for Hypertension (%)"]
+                  value: parseFloat(item["Person screened for Hypertension (%)"]).toFixed(1)
                 }
                 ));
 
               const updatedUserDataTab4_6 = responseData.map(item => (
                 {
                   label: item.month,
-                  value: item["Person screened for Diabetes (%)"]
+                  value: parseFloat(item["Person screened for Diabetes (%)"]).toFixed(1)
                 }
                 ));
 
               const updatedUserDataTab4_7 = responseData.map(item => (
                 {
                   label: item.month,
-                  value: item["Treatment success rate (%)"]
+                  value: parseFloat(item["Treatment success rate (%)"]).toFixed(1)
                 }
                 ));
 
@@ -328,13 +340,15 @@ useEffect(() => {
     //   try {
         const response = await axios.post('http://localhost:4000/common-fetch-data');
 
+        console.log(response, '-- response --');
+
         // Your mapping logic here
         const VerticalBarUserDataTop5 = {
             labels: response.data.top5_1.map(item => item.block), // Update with the appropriate property
             datasets: [
                             {
                               label: "Percentage 1st Trimester Registration",
-                              data: response.data.top5_1.map(item => item["1st Trimester Registration (%)"]),
+                              data: response.data.top5_1.map(item => parseFloat(item["1st Trimester Registration (%)"]).toFixed(1)),
                               backgroundColor: [
                                 "rgba(75,192,192,1)",
                                 "#ecf0f1",
@@ -353,13 +367,10 @@ useEffect(() => {
         // Your mapping logic here
         const VerticalBarUserDataTop5_2 = {
             labels: response.data.top5_2.map(item => item.block), // Update with the appropriate property
-            // state: response.data.map(item => item.State),      // Update with the appropriate property
-            // district: response.data.map(item => item.District), // Update with the appropriate property
-            // block: response.data.map(item => item.Block),
             datasets: [
                             {
                               label: " Institutional Delivery (%) ",
-                              data: response.data.top5_2.map(item => item["Institutional Delivery (%)"]),
+                              data: response.data.top5_2.map(item => parseFloat(item["Institutional Delivery (%)"]).toFixed(1)),
                               backgroundColor: [
                                 "rgba(75,192,192,1)",
                                 "#ecf0f1",
@@ -381,7 +392,7 @@ useEffect(() => {
             datasets: [
                         {
                           label: " Low Birth Weight (%) ",
-                          data: response.data.bottom5_3.map(item => item["Low Birth Weight (%)"]),
+                          data: response.data.bottom5_3.map(item => parseFloat(item["Low Birth Weight (%)"]).toFixed(1)),
                           backgroundColor: [
                             "rgba(75,192,192,1)",
                             "#ecf0f1",
@@ -400,13 +411,10 @@ useEffect(() => {
           // Your mapping logic here
         const VerticalBarUserDataTop5_4 = {
           labels: response.data.top5_4.map(item => item.block), // Update with the appropriate property
-          // state: response.data.map(item => item.State),      // Update with the appropriate property
-          // district: response.data.map(item => item.District), // Update with the appropriate property
-          // block: response.data.map(item => item.Block),
           datasets: [
                           {
                             label: " NQAS certified health facilities (%) ",
-                            data: response.data.top5_4.map(item => item["NQAS certified health facilities (%)"]),
+                            data: response.data.top5_4.map(item => parseFloat(item["NQAS certified health facilities (%)"]).toFixed(1)),
                             backgroundColor: [
                               "rgba(75,192,192,1)",
                               "#ecf0f1",
@@ -427,7 +435,7 @@ useEffect(() => {
             datasets: [
                             {
                               label: " Person screened for Hypertension (%) ",
-                              data: response.data.top5_5.map(item => item["Person screened for Hypertension (%)"]),
+                              data: response.data.top5_5.map(item => parseFloat(item["Person screened for Hypertension (%)"]).toFixed(1)),
                               backgroundColor: [
                                 "rgba(75,192,192,1)",
                                 "#ecf0f1",
@@ -446,28 +454,27 @@ useEffect(() => {
         const VerticalBarUserDataTop5_6 = {
           labels: response.data.top5_6.map(item => item.block), // Update with the appropriate property
           datasets: [
-                          {
-                            label: " Person screened for Diabetes (%) ",
-                            data: response.data.top5_6.map(item => item["Person screened for Diabetes (%)"]),
-                            backgroundColor: [
-                              "rgba(75,192,192,1)",
-                              "#ecf0f1",
-                              "#50AF95",
-                              "#f3ba2f",
-                              "#2a71d0",
-                            ],
-                            borderColor: "black",
-                            borderWidth: 2,
-                          },
+                      {
+                        label: " Person screened for Diabetes (%) ",
+                        data: response.data.top5_6.map(item => parseFloat(item["Person screened for Diabetes (%)"]).toFixed(1)),
+                        backgroundColor: [
+                          "rgba(75,192,192,1)",
+                          "#ecf0f1",
+                          "#50AF95",
+                          "#f3ba2f",
+                          "#2a71d0",
                         ],
+                        borderColor: "black",
+                        borderWidth: 2,
+                      },
+                    ],
         };
         setCommonFilteredDataTop5_6(VerticalBarUserDataTop5_6); 
 
         const VerticalBarUserDataTop5_7 = response.data.top5_7.map(item => ({
           label: item.block,
-          percentage: parseFloat(item["Treatment success rate (%)"])
+          percentage: parseFloat(item["Treatment success rate (%)"]).toFixed(1)
         }));
-        
         setCommonFilteredDataTop5_7(VerticalBarUserDataTop5_7); 
 
 
@@ -480,7 +487,7 @@ useEffect(() => {
             datasets: [
                             {
                               label: "Percentage 1st Trimester Registration",
-                              data: response.data.bottom5_1.map(item => parseFloat(item["1st Trimester Registration (%)"])),
+                              data: response.data.bottom5_1.map(item => parseFloat(item["1st Trimester Registration (%)"]).toFixed(1)),
                               backgroundColor: [
                                 "rgba(75,192,192,1)",
                                 "#ecf0f1",
@@ -500,7 +507,7 @@ useEffect(() => {
             datasets: [
                             {
                               label: " Institutional Delivery (%) ",
-                              data: response.data.bottom5_2.map(item => item["Institutional Delivery (%)"]),
+                              data: response.data.bottom5_2.map(item => parseFloat(item["Institutional Delivery (%)"]).toFixed(1)),
                               backgroundColor: [
                                 "rgba(75,192,192,1)",
                                 "#ecf0f1",
@@ -520,7 +527,7 @@ useEffect(() => {
             datasets: [
                             {
                               label: " Low Birth Weight (%) ",
-                              data: response.data.top5_3.map(item => parseFloat(item["Low Birth Weight (%)"])),
+                              data: response.data.top5_3.map(item => parseFloat(item["Low Birth Weight (%)"]).toFixed(1)),
                               backgroundColor: [
                                 "rgba(75,192,192,1)",
                                 "#ecf0f1",
@@ -540,7 +547,7 @@ useEffect(() => {
             datasets: [
                             {
                               label: " NQAS certified health facilities (%) ",
-                              data: response.data.bottom5_4.map(item => item["NQAS certified health facilities (%)"]),
+                              data: response.data.bottom5_4.map(item => parseFloat(item["NQAS certified health facilities (%)"]).toFixed(1)),
                               backgroundColor: [
                                 "rgba(75,192,192,1)",
                                 "#ecf0f1",
@@ -560,7 +567,7 @@ useEffect(() => {
             datasets: [
                             {
                               label: " Person screened for Hypertension (%) ",
-                              data: response.data.bottom5_5.map(item => item["Person screened for Hypertension (%)"]),
+                              data: response.data.bottom5_5.map(item => parseFloat(item["Person screened for Hypertension (%)"]).toFixed(1)),
                               backgroundColor: [
                                 "rgba(75,192,192,1)",
                                 "#ecf0f1",
@@ -580,7 +587,7 @@ useEffect(() => {
             datasets: [
                             {
                               label: " Person screened for Diabetes (%) ",
-                              data: response.data.bottom5_6.map(item => item["Person screened for Diabetes (%)"]),
+                              data: response.data.bottom5_6.map(item => parseFloat(item["Person screened for Diabetes (%)"]).toFixed(1)),
                               backgroundColor: [
                                 "rgba(75,192,192,1)",
                                 "#ecf0f1",
@@ -598,24 +605,24 @@ useEffect(() => {
           const VerticalBarUserDataBottom5_7 = [
             {
               label: response.data.bottom5_7.map(item => item.block)[0], 
-              percentage: response.data.bottom5_7.map(item => parseFloat(item["Treatment success rate (%)"]))[0]
+              percentage: response.data.bottom5_7.map(item => parseFloat(item["Treatment success rate (%)"]).toFixed(1))[0]
             },
             {
               label: response.data.bottom5_7.map(item => item.block)[1], 
-              percentage: response.data.bottom5_7.map(item => parseFloat(item["Treatment success rate (%)"]))[1]
+              percentage: response.data.bottom5_7.map(item => parseFloat(item["Treatment success rate (%)"]).toFixed(1))[1]
             },
             {
               label: response.data.bottom5_7.map(item => item.block)[2], 
-              percentage: response.data.bottom5_7.map(item => parseFloat(item["Treatment success rate (%)"]))[2]
+              percentage: response.data.bottom5_7.map(item => parseFloat(item["Treatment success rate (%)"]).toFixed(1))[2]
             },
             {
               label: response.data.bottom5_7.map(item => item.block)[3], 
-              percentage: response.data.bottom5_7.map(item => parseFloat(item["Treatment success rate (%)"]))[3]
+              percentage: response.data.bottom5_7.map(item => parseFloat(item["Treatment success rate (%)"]).toFixed(1))[3]
             }
             ,
             {
               label: response.data.bottom5_7.map(item => item.block)[4], 
-              percentage: response.data.bottom5_7.map(item => parseFloat(item["Treatment success rate (%)"]))[4]
+              percentage: response.data.bottom5_7.map(item => parseFloat(item["Treatment success rate (%)"]).toFixed(1))[4]
             }
           ];
           setCommonFilteredDataBottom5_7(VerticalBarUserDataBottom5_7);
@@ -655,11 +662,6 @@ const handleFilterButtonClick_TAB2 = async () => {
 
         let keys_responseTab2Data_block = Object.keys(responseTab2Data_block[0]);
 
-        console.log(responseTab2Data_nat, '--- const responseTab2Data_nat ---');
-        console.log(responseTab2Data_state, '--- const responseTab2Data_state ---');
-        console.log(responseTab2Data_dist, '--- const responseTab2Data_dist ---');
-        console.log(responseTab2Data_block, '--- const responseTab2Data_block ---');
-
         let temp_val = [] 
 
         keys_responseTab2Data_block.map((item) => {
@@ -688,24 +690,22 @@ const handleFilterButtonClick_TAB2 = async () => {
             series: [
               {
                 name: ["National Average"],
-                // data: [...new Set(responseTab2Data_nat.map(item => parseFloat(item["natAvg 1st Trimester Registration"])))] ,
-                data: responseTab2Data_nat.map(item => parseFloat(item["natAvg 1st Trimester Registration"])) ,
-                // month: responseTab2Data_nat.map(item => item["month"]).sort((a, b) => monthNames.indexOf(a) - monthNames.indexOf(b)) ,
+                data: responseTab2Data_nat.map(item => parseFloat(item["natAvg 1st Trimester Registration"]).toFixed(1)) ,
                 month: responseTab2Data_nat.map(item => item["month"]) ,
               },
               {
                 name: ["State Average"],
-                data: responseTab2Data_state.map(item => parseFloat(item["stAvg 1st Trimester Registration"])),
+                data: responseTab2Data_state.map(item => parseFloat(item["stAvg 1st Trimester Registration"]).toFixed(1)),
                 month: responseTab2Data_state.map(item => item["month"]) ,
               },
               {
                 name: ["District Average"],
-                data: responseTab2Data_dist.map(item => parseFloat(item["distAvg 1st Trimester Registration"])),
+                data: responseTab2Data_dist.map(item => parseFloat(item["distAvg 1st Trimester Registration"]).toFixed(1)),
                 month: responseTab2Data_dist.map(item => item["month"]) ,
               },
               {
                 name: ["Block Average"],
-                data: responseTab2Data_block.map(item => parseFloat(item["block_avg_1st_tri_reg"])),
+                data: responseTab2Data_block.map(item => parseFloat(item["block_avg_1st_tri_reg"]).toFixed(1)),
                 month: responseTab2Data_block.map(item => item["month"]) ,
               }
             ]
@@ -717,24 +717,22 @@ const handleFilterButtonClick_TAB2 = async () => {
             series: [
               {
                 name: ["National Average"],
-                // data: [...new Set(responseTab2Data_nat.map(item => parseFloat(item["natAvg 1st Trimester Registration"])))] ,
-                data: responseTab2Data_nat.map(item => parseFloat(item["natAvg Institutional Delivery"])) ,
-                // month: responseTab2Data_nat.map(item => item["month"]).sort((a, b) => monthNames.indexOf(a) - monthNames.indexOf(b)) ,
+                data: responseTab2Data_nat.map(item => parseFloat(item["natAvg Institutional Delivery"]).toFixed(1)) ,
                 month: responseTab2Data_nat.map(item => item["month"]) ,
               },
               {
                 name: ["State Average"],
-                data: responseTab2Data_state.map(item => parseFloat(item["stAvg Institutional Delivery"])),
+                data: responseTab2Data_state.map(item => parseFloat(item["stAvg Institutional Delivery"]).toFixed(1)),
                 month: responseTab2Data_state.map(item => item["month"]) ,
               },
               {
                 name: ["District Average"],
-                data: responseTab2Data_dist.map(item => parseFloat(item["distAvg Institutional Delivery"])),
+                data: responseTab2Data_dist.map(item => parseFloat(item["distAvg Institutional Delivery"]).toFixed(1)),
                 month: responseTab2Data_dist.map(item => item["month"]) ,
               },
               {
                 name: ["Block Average"],
-                data: responseTab2Data_block.map(item => parseFloat(item["block_avg_inst_delivery"])),
+                data: responseTab2Data_block.map(item => parseFloat(item["block_avg_inst_delivery"]).toFixed(1)),
                 month: responseTab2Data_block.map(item => item["month"]) ,
               }
             ]
@@ -746,24 +744,22 @@ const handleFilterButtonClick_TAB2 = async () => {
             series: [
               {
                 name: ["National Average"],
-                // data: [...new Set(responseTab2Data_nat.map(item => parseFloat(item["natAvg 1st Trimester Registration"])))] ,
-                data: responseTab2Data_nat.map(item => parseFloat(item["natAvg Low Birth Weight"])) ,
-                // month: responseTab2Data_nat.map(item => item["month"]).sort((a, b) => monthNames.indexOf(a) - monthNames.indexOf(b)) ,
+                data: responseTab2Data_nat.map(item => parseFloat(item["natAvg Low Birth Weight"]).toFixed(1)) ,
                 month: responseTab2Data_nat.map(item => item["month"]) ,
               },
               {
                 name: ["State Average"],
-                data: responseTab2Data_state.map(item => parseFloat(item["stAvg Low Birth Weight"])),
+                data: responseTab2Data_state.map(item => parseFloat(item["stAvg Low Birth Weight"]).toFixed(1)),
                 month: responseTab2Data_state.map(item => item["month"]) ,
               },
               {
                 name: ["District Average"],
-                data: responseTab2Data_dist.map(item => parseFloat(item["distAvg Low Birth Weight"])),
+                data: responseTab2Data_dist.map(item => parseFloat(item["distAvg Low Birth Weight"]).toFixed(1)),
                 month: responseTab2Data_dist.map(item => item["month"]) ,
               },
               {
                 name: ["Block Average"],
-                data: responseTab2Data_block.map(item => parseFloat(item["block_avg_low_birth_wt"])),
+                data: responseTab2Data_block.map(item => parseFloat(item["block_avg_low_birth_wt"]).toFixed(1)),
                 month: responseTab2Data_block.map(item => item["month"]) ,
               }
             ]
@@ -775,24 +771,22 @@ const handleFilterButtonClick_TAB2 = async () => {
             series: [
               {
                 name: ["National Average"],
-                // data: [...new Set(responseTab2Data_nat.map(item => parseFloat(item["natAvg 1st Trimester Registration"])))] ,
-                data: responseTab2Data_nat.map(item => parseFloat(item["natAvg NQAS"])) ,
-                // month: responseTab2Data_nat.map(item => item["month"]).sort((a, b) => monthNames.indexOf(a) - monthNames.indexOf(b)) ,
+                data: responseTab2Data_nat.map(item => parseFloat(item["natAvg NQAS"]).toFixed(1)) ,
                 month: responseTab2Data_nat.map(item => item["month"]) ,
               },
               {
                 name: ["State Average"],
-                data: responseTab2Data_state.map(item => parseFloat(item["stAvg NQAS"])),
+                data: responseTab2Data_state.map(item => parseFloat(item["stAvg NQAS"]).toFixed(1)),
                 month: responseTab2Data_state.map(item => item["month"]) ,
               },
               {
                 name: ["District Average"],
-                data: responseTab2Data_dist.map(item => parseFloat(item["distAvg NQAS"])),
+                data: responseTab2Data_dist.map(item => parseFloat(item["distAvg NQAS"]).toFixed(1)),
                 month: responseTab2Data_dist.map(item => item["month"]) ,
               },
               {
                 name: ["Block Average"],
-                data: responseTab2Data_block.map(item => parseFloat(item["block_avg_NQAS"])),
+                data: responseTab2Data_block.map(item => parseFloat(item["block_avg_NQAS"]).toFixed(1)),
                 month: responseTab2Data_block.map(item => item["month"]) ,
               }
             ]
@@ -804,24 +798,22 @@ const handleFilterButtonClick_TAB2 = async () => {
             series: [
               {
                 name: ["National Average"],
-                // data: [...new Set(responseTab2Data_nat.map(item => parseFloat(item["natAvg 1st Trimester Registration"])))] ,
-                data: responseTab2Data_nat.map(item => parseFloat(item["natAvg Hypertension"])) ,
-                // month: responseTab2Data_nat.map(item => item["month"]).sort((a, b) => monthNames.indexOf(a) - monthNames.indexOf(b)) ,
+                data: responseTab2Data_nat.map(item => parseFloat(item["natAvg Hypertension"]).toFixed(1)) ,
                 month: responseTab2Data_nat.map(item => item["month"]) ,
               },
               {
                 name: ["State Average"],
-                data: responseTab2Data_state.map(item => parseFloat(item["stAvg Hypertension"])),
+                data: responseTab2Data_state.map(item => parseFloat(item["stAvg Hypertension"]).toFixed(1)),
                 month: responseTab2Data_state.map(item => item["month"]) ,
               },
               {
                 name: ["District Average"],
-                data: responseTab2Data_dist.map(item => parseFloat(item["distAvg Hypertension"])),
+                data: responseTab2Data_dist.map(item => parseFloat(item["distAvg Hypertension"]).toFixed(1)),
                 month: responseTab2Data_dist.map(item => item["month"]) ,
               },
               {
                 name: ["Block Average"],
-                data: responseTab2Data_block.map(item => parseFloat(item["block_avg_Hypertension"])),
+                data: responseTab2Data_block.map(item => parseFloat(item["block_avg_Hypertension"]).toFixed(1)),
                 month: responseTab2Data_block.map(item => item["month"]) ,
               }
             ]
@@ -833,24 +825,22 @@ const handleFilterButtonClick_TAB2 = async () => {
             series: [
               {
                 name: ["National Average"],
-                // data: [...new Set(responseTab2Data_nat.map(item => parseFloat(item["natAvg 1st Trimester Registration"])))] ,
-                data: responseTab2Data_nat.map(item => parseFloat(item["natAvg Diabetes"])) ,
-                // month: responseTab2Data_nat.map(item => item["month"]).sort((a, b) => monthNames.indexOf(a) - monthNames.indexOf(b)) ,
+                data: responseTab2Data_nat.map(item => parseFloat(item["natAvg Diabetes"]).toFixed(1)) ,
                 month: responseTab2Data_nat.map(item => item["month"]) ,
               },
               {
                 name: ["State Average"],
-                data: responseTab2Data_state.map(item => parseFloat(item["stAvg Diabetes"])),
+                data: responseTab2Data_state.map(item => parseFloat(item["stAvg Diabetes"]).toFixed(1)),
                 month: responseTab2Data_state.map(item => item["month"]) ,
               },
               {
                 name: ["District Average"],
-                data: responseTab2Data_dist.map(item => parseFloat(item["distAvg Diabetes"])),
+                data: responseTab2Data_dist.map(item => parseFloat(item["distAvg Diabetes"]).toFixed(1)),
                 month: responseTab2Data_dist.map(item => item["month"]) ,
               },
               {
                 name: ["Block Average"],
-                data: responseTab2Data_block.map(item => parseFloat(item["block_avg_Diabetes"])),
+                data: responseTab2Data_block.map(item => parseFloat(item["block_avg_Diabetes"]).toFixed(1)),
                 month: responseTab2Data_block.map(item => item["month"]) ,
               }
             ]
@@ -862,24 +852,22 @@ const handleFilterButtonClick_TAB2 = async () => {
               series: [
                 {
                   name: ["National Average"],
-                  // data: [...new Set(responseTab2Data_nat.map(item => parseFloat(item["natAvg 1st Trimester Registration"])))] ,
-                  data: responseTab2Data_nat.map(item => parseFloat(item["natAvg Treatment success rate"])) ,
-                  // month: responseTab2Data_nat.map(item => item["month"]).sort((a, b) => monthNames.indexOf(a) - monthNames.indexOf(b)) ,
+                  data: responseTab2Data_nat.map(item => parseFloat(item["natAvg Treatment success rate"]).toFixed(1)) ,
                   month: responseTab2Data_nat.map(item => item["month"]) ,
                 },
                 {
                   name: ["State Average"],
-                  data: responseTab2Data_state.map(item => parseFloat(item["stAvg Treatment success rate"])),
+                  data: responseTab2Data_state.map(item => parseFloat(item["stAvg Treatment success rate"]).toFixed(1)),
                   month: responseTab2Data_state.map(item => item["month"]) ,
                 },
                 {
                   name: ["District Average"],
-                  data: responseTab2Data_dist.map(item => parseFloat(item["distAvg Treatment success rate"])),
+                  data: responseTab2Data_dist.map(item => parseFloat(item["distAvg Treatment success rate"]).toFixed(1)),
                   month: responseTab2Data_dist.map(item => item["month"]) ,
                 },
                 {
                   name: ["Block Average"],
-                  data: responseTab2Data_block.map(item => parseFloat(item["block_avg_treatment_success"])),
+                  data: responseTab2Data_block.map(item => parseFloat(item["block_avg_treatment_success"]).toFixed(1)),
                   month: responseTab2Data_block.map(item => item["month"]) ,
                 }
               ]
@@ -908,7 +896,9 @@ const handleFilterButtonClick_TAB2 = async () => {
 
 // handling user specific block data (TAB 3)
 const handleFilterButtonClick_TAB3 = async () => {
-  const response = await axios.post('http://localhost:4000/fetch-data-tab3', { selectedState, selectedDistrict, selectedBlock, selectedMonth1, selectedMonth2, selectedFinancialYear })
+  const response = await axios.post('http://localhost:4000/fetch-data-tab3', { selectedState, selectedDistrict, selectedBlock, selectedMonth1: selectedMonth1.value, selectedMonth2: selectedMonth2.value, selectedFinancialYear })
+
+  console.log(response, '-- response tab2 -- ');
 
   const responseTab3Data_block = response.data.block_avg_result_tab3;
   const responseTab3Data_nat = response.data.national_avg_result_tab3;
@@ -927,15 +917,15 @@ const handleFilterButtonClick_TAB3 = async () => {
   temp_trendsDataTab3_1 = [
     {
       label: 'India', 
-      percentage: responseTab3Data_nat.map(item => parseFloat(item["natAvg 1st Trimester Registration"]))[0]
+      percentage: responseTab3Data_nat.map(item => parseFloat(item["natAvg 1st Trimester Registration"]))[0].toFixed(1)
     },
     {
       label: responseTab3Data_block[0].state,
-      percentage: responseTab3Data_state.map(item => parseFloat(item["stAvg 1st Trimester Registration"]))[0]
+      percentage: responseTab3Data_state.map(item => parseFloat(item["stAvg 1st Trimester Registration"]))[0].toFixed(1)
     },
     {
       label: responseTab3Data_block[0].district,
-      percentage: responseTab3Data_dist.map(item => parseFloat(item["distAvg 1st Trimester Registration"]))[0]
+      percentage: responseTab3Data_dist.map(item => parseFloat(item["distAvg 1st Trimester Registration"]))[0].toFixed(1)
     },
     {
       label: responseTab3Data_block[0].block,
@@ -947,15 +937,15 @@ const handleFilterButtonClick_TAB3 = async () => {
   temp_trendsDataTab3_2 = [
     {
     label: 'India', 
-    percentage: responseTab3Data_nat.map(item => parseFloat(item["natAvg Institutional Delivery"]))[0]
+    percentage: responseTab3Data_nat.map(item => parseFloat(item["natAvg Institutional Delivery"]))[0].toFixed(1)
     },
     {
       label: responseTab3Data_block[0].state,
-      percentage: responseTab3Data_state.map(item => parseFloat(item["stAvg Institutional Delivery"]))[0]
+      percentage: responseTab3Data_state.map(item => parseFloat(item["stAvg Institutional Delivery"]))[0].toFixed(1)
     },
     {
       label: responseTab3Data_block[0].district,
-      percentage: responseTab3Data_dist.map(item => parseFloat(item["distAvg Institutional Delivery"]))[0]
+      percentage: responseTab3Data_dist.map(item => parseFloat(item["distAvg Institutional Delivery"]))[0].toFixed(1)
     },
     {
       label: responseTab3Data_block[0].block,
@@ -969,9 +959,9 @@ const handleFilterButtonClick_TAB3 = async () => {
       labels: ['India', responseTab3Data_block[0].state, responseTab3Data_block[0].district, responseTab3Data_block[0].block],
       datasets: [
         {
-          data: [responseTab3Data_nat.map(item => parseFloat(item["natAvg Low Birth Weight"]))[0],
-                  responseTab3Data_state.map(item => parseFloat(item["stAvg Low Birth Weight"]))[0],
-                    responseTab3Data_dist.map(item => parseFloat(item["distAvg Low Birth Weight"]))[0],
+          data: [responseTab3Data_nat.map(item => parseFloat(item["natAvg Low Birth Weight"]))[0].toFixed(1),
+                  responseTab3Data_state.map(item => parseFloat(item["stAvg Low Birth Weight"]))[0].toFixed(1),
+                    responseTab3Data_dist.map(item => parseFloat(item["distAvg Low Birth Weight"]))[0].toFixed(1),
                     responseTab3Data_block.map(item => parseFloat(item["block_avg_low_birth_wt"]).toFixed(1))[0]],
           backgroundColor: ['#00e676', '#DDDDDD'],
           hoverBackgroundColor: ['#00e676', '#DDDDDD']
@@ -984,9 +974,9 @@ const handleFilterButtonClick_TAB3 = async () => {
     labels: ['India', responseTab3Data_block[0].state, responseTab3Data_block[0].district, responseTab3Data_block[0].block],
     datasets: [
       {
-        data: [responseTab3Data_nat.map(item => parseFloat(item["natAvg NQAS"]))[0],
-                responseTab3Data_state.map(item => parseFloat(item["stAvg NQAS"]))[0],
-                  responseTab3Data_dist.map(item => parseFloat(item["distAvg NQAS"]))[0],
+        data: [responseTab3Data_nat.map(item => parseFloat(item["natAvg NQAS"]))[0].toFixed(1),
+                responseTab3Data_state.map(item => parseFloat(item["stAvg NQAS"]))[0].toFixed(1),
+                  responseTab3Data_dist.map(item => parseFloat(item["distAvg NQAS"]))[0].toFixed(1),
                   responseTab3Data_block.map(item => parseFloat(item["block_avg_nqas"]).toFixed(1))[0]],
         backgroundColor: ['#00e676', '#DDDDDD'],
         hoverBackgroundColor: ['#00e676', '#DDDDDD']
@@ -999,9 +989,9 @@ const handleFilterButtonClick_TAB3 = async () => {
     labels: ['India', responseTab3Data_block[0].state, responseTab3Data_block[0].district, responseTab3Data_block[0].block],
     datasets: [
       {
-        data: [responseTab3Data_nat.map(item => parseFloat(item["natAvg Hypertension"]))[0],
-                responseTab3Data_state.map(item => parseFloat(item["stAvg Hypertension"]))[0],
-                  responseTab3Data_dist.map(item => parseFloat(item["distAvg Hypertension"]))[0],
+        data: [responseTab3Data_nat.map(item => parseFloat(item["natAvg Hypertension"]))[0].toFixed(1),
+                responseTab3Data_state.map(item => parseFloat(item["stAvg Hypertension"]))[0].toFixed(1),
+                  responseTab3Data_dist.map(item => parseFloat(item["distAvg Hypertension"]))[0].toFixed(1),
                   responseTab3Data_block.map(item => parseFloat(item["block_avg_hypertension"]).toFixed(1))[0]],
         backgroundColor: ['#00e676', '#DDDDDD'],
         hoverBackgroundColor: ['#00e676', '#DDDDDD']
@@ -1014,9 +1004,9 @@ const handleFilterButtonClick_TAB3 = async () => {
     labels: ['India', responseTab3Data_block[0].state, responseTab3Data_block[0].district, responseTab3Data_block[0].block],
     datasets: [
       {
-        data: [responseTab3Data_nat.map(item => parseFloat(item["natAvg Diabetes "]))[0],
-                responseTab3Data_state.map(item => parseFloat(item["stAvg Diabetes "]))[0],
-                  responseTab3Data_dist.map(item => parseFloat(item["distAvg Diabetes "]))[0],
+        data: [responseTab3Data_nat.map(item => parseFloat(item["natAvg Diabetes "]))[0].toFixed(1),
+                responseTab3Data_state.map(item => parseFloat(item["stAvg Diabetes "]))[0].toFixed(1),
+                  responseTab3Data_dist.map(item => parseFloat(item["distAvg Diabetes "]))[0].toFixed(1),
                   responseTab3Data_block.map(item => parseFloat(item["block_avg_diabetes"]).toFixed(1))[0]],
         backgroundColor: ['#00e676', '#DDDDDD'],
         hoverBackgroundColor: ['#00e676', '#DDDDDD']
@@ -1069,10 +1059,6 @@ const handleFilterButtonClick_TAB3 = async () => {
 
   };
 
-
-  console.log(trendsDataTab3_6, '-- trendsDataTab3_6 --');
-  // console.log(trendsDataTab3_3.datasets[0], '-- trendsDataTab3_3 data --');
-
   
 
   setTrendsDataTab3_1(temp_trendsDataTab3_1);
@@ -1123,6 +1109,50 @@ const handleFilterButtonClick_TAB3 = async () => {
 
   const [tableColumns, setTableColumns] = useState([]);
 
+  const handleToMonthSelect = (selectedValue, selectedIndex) => {
+
+    let monthFormat = {
+      'Apr': 1, 
+      'May': 2,
+      'Jun': 3,
+      'Jul': 4,
+      'Aug': 5,
+      'Sep': 6,
+      'Oct': 7,
+      'Nov': 8,
+      'Dec': 9,
+      'Jan': 10,
+      'Feb': 11,
+      'Mar': 12,
+    }
+
+    let month1 = monthFormat[selectedMonth1.value]
+    let month2 = monthFormat[selectedValue]
+
+    console.log(selectedMonth1.value, selectedValue, month1, month2, '*** test ****');
+
+    console.log(selectedMonth2, '-- selectedMonth2 --');
+    // Check if the selected fromMonth index is after the toMonth index
+    if (month1 > month2) {
+      alert('From Month cannot be greater than To Month!');
+      return
+    } 
+    else {
+      setSelectedMonth2({ index: selectedIndex, value: selectedValue});
+    }
+  };
+
+
+  const handleFromMonthSelect = (selectedValue, selectedIndex) => {
+    console.log(selectedMonth2, '-- selectedMonth2 --');
+    // Check if the selected fromMonth index is after the toMonth index
+    if (selectedMonth2 && selectedMonth2.index <= selectedMonth1.index) {
+      alert('From Month cannot be greater than To Month*');
+    } else {
+      setSelectedMonth1({ index: selectedIndex, value: selectedValue });
+    }
+  };
+
 
   return (
 
@@ -1135,11 +1165,12 @@ const handleFilterButtonClick_TAB3 = async () => {
       <div className="header">
         <div className="header_left">
           <h4 style={{ color: 'DodgerBlue', textAlign: 'left', width: '220px' }}>Aspirational Blocks Programme</h4>
-          <img src={Logo} style={{ width: '30%' }} alt="Logo"/>
+          {/* <img style={{minHeight: "1vh", maxHeight: '10vh', minWidth:"6vw", maxWidth: '12vw'}} src={Logo} alt="Logo"/> */}
+          <img style={{ height:'6vh', width:'12vw'}} src={Logo} alt="Logo"/>
         </div>
 
         <div className="header_right">
-          <img src={hmisLogo} alt="HMIS Logo"/>
+          <img  src={hmisLogo} alt="HMIS Logo"/>
           {/* <img style={{ width: '190px' }} src={g20Logo} alt="G20 Logo" /> */}
           <img src={digitalIndia} alt="Digital India Logo" />
           <img src={nrhmLogo} alt="NRHM Logo" />
@@ -1165,23 +1196,17 @@ const handleFilterButtonClick_TAB3 = async () => {
         </div>
       </div>
            
-      {/* <h2 className="header" style={{ color: 'DodgerBlue' }}> </h2> */}
 
       {/* Tab content */}
       {activeTab === 'home' && (
         <div>
           <label>
-            <h1 style={{ justifyContent: 'center', color: 'white', textAlign: 'center', lineHeight: '0.5', backgroundColor: '#25B7B7', padding: '30px', display: 'flex' }}>100 Lowest Performing Blocks</h1>
+            <h1 style={{ justifyContent: 'center', color: 'white', textAlign: 'center', lineHeight: '0.5', backgroundColor: '#25B7B7', padding: '1.2vw', display: 'flex', fontSize: '2vw' }}>100 Lowest Performing Blocks</h1>
           </label>
-
-
-          <div className="header">
-            <img style={{ width: "100%" }} src="https://abp.championsofchange.gov.in/assets/img/titlebottom.svg"></img>
-          </div>
 
           <div className="header_new">
             {/* <div className="tile_new"> */}
-              <h2 style={{ fontSize:'x-large', width:'50%', padding:'4px',backgroundColor: '#25B7B7' ,color: 'white', textAlign: 'center', lineHeight: '2.5' }} >Top 5 Performer Blocks</h2>
+              <h2 style={{ fontSize:'x-large', width:'50%', padding:'4px',backgroundColor: '#25B7B7' ,color: 'white', textAlign: 'center', lineHeight: '2.5', fontSize: '1.4vw' }} >Top 5 Performer Blocks</h2>
             {/* </div> */}
           </div>
             
@@ -1201,8 +1226,8 @@ const handleFilterButtonClick_TAB3 = async () => {
               </div>
 
               <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: '1vw'}}>
-                {<p>Data Source : <strong>Health Management Inifmation system (HMIS)</strong></p>}
-                {<p>Year : <strong>F.Y. (test)</strong></p>}
+                {<p>Data Source : <strong>Health Management Information system (HMIS)</strong></p>}
+                {<p>Year : <strong>F.Y. (TEST)</strong></p>}
               </div>
             </div>
 
@@ -1216,7 +1241,7 @@ const handleFilterButtonClick_TAB3 = async () => {
               </div>
 
               <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: '1vw'}}>
-                {<p>Data Source : <strong>Health Management Inifmation system (HMIS)</strong></p>}
+                {<p>Data Source : <strong>Health Management Information system (HMIS)</strong></p>}
                 {<p>Year : <strong>F.Y. (test)</strong></p>}
               </div>
             </div>
@@ -1230,7 +1255,7 @@ const handleFilterButtonClick_TAB3 = async () => {
               </div>
 
               <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: '1vw'}}>
-                {<p>Data Source : <strong>Health Management Inifmation system (HMIS)</strong></p>}
+                {<p>Data Source : <strong>Health Management Information system (HMIS)</strong></p>}
                 {<p>Year : <strong>F.Y. (test)</strong></p>}
               </div>
             </div>
@@ -1245,6 +1270,11 @@ const handleFilterButtonClick_TAB3 = async () => {
                   {commonfilteredDataTop5_4 && <BuildingComponent percentages={commonfilteredDataTop5_4.datasets[0].data} labels={commonfilteredDataTop5_4.labels}/>}
                 </div>
               </div>
+
+              <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: '1vw'}}>
+                {<p>Data Source : <strong>National Health Systems Resource Centre (NHSRC)</strong></p>}
+                {<p>Year : <strong>F.Y. (test)</strong></p>}
+              </div>
             </div>
 
             <div className="tile_new">
@@ -1253,6 +1283,10 @@ const handleFilterButtonClick_TAB3 = async () => {
               </div>
               <div className="doughnut-container">
                 {commonfilteredDataTop5_5 && <HumanChart percentages={commonfilteredDataTop5_5.datasets[0].data} labels={commonfilteredDataTop5_5.labels }/>}
+              </div>
+              <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: '1vw'}}>
+                {<p>Data Source : <strong>Non Communicable Diseases (NCD)</strong></p>}
+                {<p>Year : <strong>F.Y. (test)</strong></p>}
               </div>
             </div>
 
@@ -1263,6 +1297,10 @@ const handleFilterButtonClick_TAB3 = async () => {
               <div className="doughnut-container">
               {commonfilteredDataTop5_6 && <HumanChart percentages={commonfilteredDataTop5_6.datasets[0].data} labels={commonfilteredDataTop5_6.labels }/>}
               </div>
+              <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: '1vw'}}>
+                {<p>Data Source : <strong>Non Communicable Diseases (NCD)</strong></p>}
+                {<p>Year : <strong>F.Y. (test)</strong></p>}
+              </div>
             </div>
 
             <div className="tile_new">
@@ -1272,17 +1310,19 @@ const handleFilterButtonClick_TAB3 = async () => {
               <div className="doughnut-container">
                 {commonfilteredDataTop5_7 && <ProgressBarComponent chartData={commonfilteredDataTop5_7}/> }
               </div>
+              <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: '1vw'}}>
+                {<p>Data Source : <strong>National TB Elimination Programme (NTEP)</strong></p>}
+                {<p>Year : <strong>F.Y. (test)</strong></p>}
+              </div>
             </div>
 
         </div>
 
 
-        <div className="header">
-          <img style={{ width: "100%" }} src="https://abp.championsofchange.gov.in/assets/img/titlebottom.svg"></img>
-        </div>
+        &nbsp;
 
         <div className="header_new">
-            <h3 style={{ fontSize:'x-large', width:'50%', padding:'4px',backgroundColor: '#25B7B7' ,color: 'white', textAlign: 'center', lineHeight: '2.5' }} >Bottom 5 Performer Blocks</h3>
+            <h3 style={{ fontSize:'x-large', width:'50%', padding:'4px',backgroundColor: '#25B7B7' ,color: 'white', textAlign: 'center', lineHeight: '2.5', fontSize: '1.4vw' }} >Bottom 5 Performer Blocks</h3>
         </div>
 
         <div className="header_new">
@@ -1297,7 +1337,7 @@ const handleFilterButtonClick_TAB3 = async () => {
               </div>
 
               <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: '1vw'}}>
-                {<p>Data Source : <strong>Health Management Inifmation system (HMIS)</strong></p>}
+                {<p>Data Source : <strong>Health Management Information system (HMIS)</strong></p>}
                 {<p>Year : <strong>F.Y. (test)</strong></p>}
               </div>
             </div>
@@ -1311,7 +1351,7 @@ const handleFilterButtonClick_TAB3 = async () => {
               </div>
 
               <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: '1vw'}}>
-                {<p>Data Source : <strong>Health Management Inifmation system (HMIS)</strong></p>}
+                {<p>Data Source : <strong>Health Management Information system (HMIS)</strong></p>}
                 {<p>Year : <strong>F.Y. (test)</strong></p>}
               </div>
             </div>
@@ -1325,7 +1365,7 @@ const handleFilterButtonClick_TAB3 = async () => {
               </div>
 
               <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: '1vw'}}>
-                {<p>Data Source : <strong>Health Management Inifmation system (HMIS)</strong></p>}
+                {<p>Data Source : <strong>Health Management Information system (HMIS)</strong></p>}
                 {<p>Year : <strong>F.Y. (test)</strong></p>}
               </div>
             </div>
@@ -1339,6 +1379,10 @@ const handleFilterButtonClick_TAB3 = async () => {
                 {/* {commonfilteredDataBottom5_4 && <Speedometer value={commonfilteredDataBottom5_4.datasets[0].data} labels={commonfilteredDataBottom5_4.labels} startColor="blue" endColor="green" maxValue={50} minValue={0}/>} */}
                 {commonfilteredDataBottom5_4 && <BuildingComponent percentages={commonfilteredDataBottom5_4.datasets[0].data} labels={commonfilteredDataBottom5_4.labels}/>}
               </div>
+              <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: '1vw'}}>
+                {<p>Data Source : <strong>National Health Systems Resource Centre (NHSRC)</strong></p>}
+                {<p>Year : <strong>F.Y. (test)</strong></p>}
+              </div>
             </div>
 
             <div className="tile_new">
@@ -1347,6 +1391,10 @@ const handleFilterButtonClick_TAB3 = async () => {
               </div>
               <div className="doughnut-container">
               {commonfilteredDataBottom5_5 && <HumanChart percentages={commonfilteredDataBottom5_5.datasets[0].data} labels={commonfilteredDataBottom5_5.labels }/>}
+              </div>
+              <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: '1vw'}}>
+                {<p>Data Source : <strong>Non Communicable Diseases (NCD)</strong></p>}
+                {<p>Year : <strong>F.Y. (test)</strong></p>}
               </div>
             </div>
 
@@ -1367,17 +1415,21 @@ const handleFilterButtonClick_TAB3 = async () => {
                 {/* {commonfilteredDataBottom5_7 && <Speedometer value={commonfilteredDataBottom5_7.datasets[0].data} labels={commonfilteredDataBottom5_7.labels} startColor="blue" endColor="green" maxValue={50} minValue={0}/>} */}
                 {commonfilteredDataBottom5_7 && <ProgressBarComponent chartData={commonfilteredDataBottom5_7}/> }
               </div>
+              <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: '1vw'}}>
+                {<p>Data Source : <strong>National TB Elimination Programme (NTEP)</strong></p>}
+                {<p>Year : <strong>F.Y. (test)</strong></p>}
+              </div>
             </div>
 
         </div>
 
         <div style={{textAlign: 'center'}}>
+          &nbsp;
+          &nbsp;
           <p>** A blank indicates that either the services was not provided or there were no benefeciaries to avail services during that period</p>
         </div>
 
-        <div className="header">
-          <img style={{ width: "100%" }} src="https://abp.championsofchange.gov.in/assets/img/titlebottom.svg"></img>
-        </div>  
+        &nbsp;
 
         <div className="header_new">
           <div className="tile_new">
@@ -1422,9 +1474,7 @@ const handleFilterButtonClick_TAB3 = async () => {
             </div>
           </div>
 
-          <div className="header">
-            <img style={{ width: "100%" }} src="https://abp.championsofchange.gov.in/assets/img/titlebottom.svg"></img>
-          </div>
+          &nbsp;
 
         </div>
         )}
@@ -1432,10 +1482,9 @@ const handleFilterButtonClick_TAB3 = async () => {
       
         {activeTab === 'relativePosition' && (
           <div>
-
           
             <label>
-              <h1 style={{ justifyContent: 'center', color: 'white', textAlign: 'center', lineHeight: '0.5', backgroundColor: '#25B7B7', padding: '30px', display: 'flex' }}>Present State of Block Nationwide</h1>
+              <h1 style={{ justifyContent: 'center', color: 'white', textAlign: 'center', lineHeight: '0.5', backgroundColor: '#25B7B7', padding: '1vw', display: 'flex', fontSize: '2vw' }}>Present State of Block Nationwide</h1>
             </label>
      
             <div className="tile">
@@ -1443,67 +1492,73 @@ const handleFilterButtonClick_TAB3 = async () => {
               <div className="select-container">
 
                 <div>
-                  <div><p>State</p></div>
+                  <div><strong><p>State</p></strong></div>
                   <div className="select-item">
                     <SingleSelectDropdown
                       options={updatedUserData1.state.map((state) => ({ value: state, label: state }))}
                       buttonText="-- State --"
-                      onSelect={(selectedValue) => setSelectedState(selectedValue)} // Pass a function to setSelectedItem
+                      onSelect={(selectedValue) => setSelectedState(selectedValue)} 
                     />
                   </div>
                 </div>
 
                 <div>
-                  <div><p>District</p></div>
+                  <div><strong><p>District</p></strong></div>
                   <div className="select-item">
                     <SingleSelectDropdown
                       options={updatedUserData1.district.map((district) => ({ value: district, label: district }))}
                       buttonText="-- District --"
-                      onSelect={(selectedValue) => setSelectedDistrict(selectedValue)} // Pass a function to setSelectedItem
+                      onSelect={(selectedValue) => setSelectedDistrict(selectedValue)} 
                     />
                   </div>
                 </div>
 
                 <div>
-                  <div><p>Block</p></div>
+                  <div><strong><p>Block</p></strong></div>
                   <div className="select-item">
                     <SingleSelectDropdown
                       options={updatedUserData1.block.map((block) => ({ value: block, label: block }))}
                       buttonText="-- Block --"
-                      onSelect={(selectedValue) => setSelectedBlock(selectedValue)} // Pass a function to setSelectedItem
+                      onSelect={(selectedValue) => setSelectedBlock(selectedValue)} 
                     />
                   </div>
                 </div>
 
                 <div>
-                  <div><p>From Month</p></div>
+                  <div><strong><p>From Month</p></strong></div>
                   <div className="select-item">
-                    <SingleSelectDropdown
-                      options={updatedUserData1.month.map((month) => ({ value: month, label: month }))}
+                    <Month_Dropdown
+                      options={updatedUserData1.month.map((month, index) => ({ index, value: month, label: month}))}
                       buttonText="-- From Month --"
-                      onSelect={(selectedValue) => setSelectedMonth1(selectedValue)} // Pass a function to setSelectedItem
+                      onSelect={(selectedValue, selectedIndex) => handleFromMonthSelect(selectedValue, selectedIndex)}
+                      selectdMonth1 = {selectedMonth1}
+                      selectdMonth2 = {selectedMonth2}
+                      selected = {1}
                     />
                   </div>
                 </div>
 
                 <div>
-                  <div><p>To Month</p></div>
+                  <div><strong><p>To Month</p></strong></div>
                   <div className="select-item">
-                    <SingleSelectDropdown
-                      options={updatedUserData1.month.map((month) => ({ value: month, label: month }))}
+                    <Month_Dropdown
+                      options={updatedUserData1.month.map((month, index) => ({ index, value: month, label: month }))}
                       buttonText="-- To Month --"
-                      onSelect={(selectedValue) => setSelectedMonth2(selectedValue)} // Pass a function to setSelectedItem
+                      onSelect={(selectedValue, selectedIndex) => handleToMonthSelect(selectedValue, selectedIndex)}
+                      selectdMonth1 = {selectedMonth1}
+                      selectdMonth2 = {selectedMonth2}
+                      selected = {2}
                     />
                   </div>
                 </div>
 
                 <div>
-                  <div><p>Financial Year</p></div>
+                  <div><strong><p>Financial Year</p></strong></div>
                   <div className="select-item">
                     <SingleSelectDropdown
                       options={updatedUserData1.year.map((year) => ({ value: year, label: year }))}
                       buttonText="-- Financial Year --"
-                      onSelect={(selectedValue) => setSelectedFinancialYear(selectedValue)} // Pass a function to setSelectedItem
+                      onSelect={(selectedValue) => setSelectedFinancialYear(selectedValue)} 
                     />
                   </div>
                 </div>
@@ -1518,10 +1573,9 @@ const handleFilterButtonClick_TAB3 = async () => {
               </div>
             </div>
             
-            {/* First Row */}
+       
             <div className="header_new">
 
-              {/* Tile 1 */}
               <div className="tile_new">
                 <div className="title_new">
                 <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#7A63BD'}}>Percentage 1st Trimester to Total ANC Registration</p></strong>
@@ -1531,12 +1585,11 @@ const handleFilterButtonClick_TAB3 = async () => {
                 </div>
 
                 <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: '1vw'}}>
-                  {<p>Data Source : <strong>Health Management Inifmation system (HMIS)</strong></p>}
+                  {<p>Data Source : <strong>Health Management Information system (HMIS)</strong></p>}
                   {<p>Year : <strong>F.Y. (test)</strong></p>}
                 </div>
               </div>
               
-              {/* Tile 2 */}
               <div className="tile_new">
                 <div className="title_new">
                   <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#7A63BD'}}>Percentage Institutional deliveries to total Reported Deliveries</p></strong>
@@ -1546,81 +1599,88 @@ const handleFilterButtonClick_TAB3 = async () => {
                 </div>
 
                 <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: '1vw'}}>
-                  {<p>Data Source : <strong>Health Management Inifmation system (HMIS)</strong></p>}
+                  {<p>Data Source : <strong>Health Management Information system (HMIS)</strong></p>}
                   {<p>Year : <strong>F.Y. (test)</strong></p>}
                 </div>
               </div>
               
-              {/* Tile 3 */}
               <div className="tile_new">
                 <div className="title_new">
                 <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#7A63BD'}}>Percentage Low birth weight babies (less than 2500g)</p></strong>
                 </div>
                 <div className="doughnut-container">
-                  {/* <DoughnutChart chartData={trendsDataTab3_3}/> */}
                   {trendsDataTab3_3 && <ChildChart percentages={trendsDataTab3_3.datasets[0].data} labels={trendsDataTab3_3.labels} />}
                 </div>
 
                 <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: '1vw'}}>
-                  {<p>Data Source : <strong>Health Management Inifmation system (HMIS)</strong></p>}
+                  {<p>Data Source : <strong>Health Management Information system (HMIS)</strong></p>}
                   {<p>Year : <strong>F.Y. (test)</strong></p>}
                 </div>
               </div>
        
-              {/* Tile 4 */}
               <div className="tile_new">
                 <div className="title_new">
                 <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#7A63BD'}}>Percentage of NQAS certified facilities</p></strong>
                 </div>
                 <div className="doughnut-container">
-                  {/* <DoughnutChart chartData={trendsDataTab3_4}/> */}
                   {trendsDataTab3_4 && <BuildingComponent percentages={trendsDataTab3_4.datasets[0].data} labels={trendsDataTab3_4.labels} />}
                 </div>
+                <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: '1vw'}}>
+                {<p>Data Source : <strong>National Health Systems Resource Centre (NHSRC)</strong></p>}
+                {<p>Year : <strong>F.Y. (test)</strong></p>}
+              </div>
               </div>
               
-              {/* Tile 5 */}
               <div className="tile_new">
                 <div className="title_new">
                 <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#7A63BD'}}>Percentage of person screened for Hypertension against targeted population</p></strong>
                 </div>
                 <div className="doughnut-container">
-                  {/* <DoughnutChart chartData={trendsDataTab3_5}/> */}
                   {trendsDataTab3_5 && <HumanChart percentages={trendsDataTab3_5.datasets[0].data} labels={trendsDataTab3_5.labels} />}
                 </div>
+                <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: '1vw'}}>
+                {<p>Data Source : <strong>Non Communicable Diseases (NCD)</strong></p>}
+                {<p>Year : <strong>F.Y. (test)</strong></p>}
+              </div>
               </div>
               
-              {/* Tile 6 */}
               <div className="tile_new">
                 <div className="title_new">
-                <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#7A63BD'}}>Percentage of person screened for Diabetes against targeted population</p></strong>
+                  <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#7A63BD'}}>Percentage of person screened for Diabetes against targeted population</p></strong>
                 </div>
                 <div className="doughnut-container">
-                  {/* <DoughnutChart chartData={trendsDataTab3_6}/> */}
                   {trendsDataTab3_6 && <HumanChart percentages={trendsDataTab3_6.datasets[0].data} labels={trendsDataTab3_6.labels} />}
                 </div>
-              </div>
+                <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: '1vw'}}>
+                  {<p>Data Source : <strong>Non Communicable Diseases (NCD)</strong></p>}
+                  {<p>Year : <strong>F.Y. (test)</strong></p>}
+                </div>
+              </div> 
+
             </div>
 
-            {/* Third Row */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <div style={{ width: '30%', alignItems: 'center' }} className="tile_new">
                 <div className="title_new">
                 <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#7A63BD'}}>Number of TB cases treated successfully in public and private institutionsts</p></strong>
                 </div>
                 <div className="doughnut-container">
-                  {/* <DoughnutChart chartData={trendsDataTab3_7} /> */}
                   {trendsDataTab3_1.length > 0 && <ProgressBarComponent chartData={trendsDataTab3_1}/>}
                 </div>
-                  </div>
+                <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: '1vw'}}>
+                  {<p>Data Source : <strong>National TB Elimination Programme (NTEP)</strong></p>}
+                  {<p>Year : <strong>F.Y. (test)</strong></p>}
+                </div>
+              </div>
             </div>
 
             <div style={{textAlign: 'center'}}>
+              &nbsp;
+              &nbsp;
               <p>** A blank indicates that either the services was not provided or there were no benefeciaries to avail services during that period</p>
             </div>
 
-            <div className="header">
-              <img style={{ width: "100%" }} src="https://abp.championsofchange.gov.in/assets/img/titlebottom.svg"></img>
-            </div>
+            &nbsp;
 
           </div>
         )}
@@ -1633,7 +1693,7 @@ const handleFilterButtonClick_TAB3 = async () => {
 
        
           <label>
-            <h1 style={{ justifyContent: 'center', color: 'white', textAlign: 'center', lineHeight: '0.5', backgroundColor: '#25B7B7', padding: '30px', display: 'flex' }}>Trends of Performance of an Indicator</h1>
+            <h1 style={{ justifyContent: 'center', color: 'white', textAlign: 'center', lineHeight: '0.5', backgroundColor: '#25B7B7', padding: '1vw', display: 'flex', fontSize: '2vw' }}>Trends of Performance of an Indicator</h1>
           </label>
          
             
@@ -1641,14 +1701,14 @@ const handleFilterButtonClick_TAB3 = async () => {
             
               <div className="select-container">
                 <div>
-                  <div><strong><p>KPI</p></strong></div>
+                  <div className="dropdown-header-text"><p>KPI</p></div>
                   <div className="select-item">
                     <MultipleSelectDropdown options={KPI_options} buttonText="-- KPI --" setSelectedKPI={setSelectedKPI} />
                   </div>
                 </div>
 
                 <div>
-                  <div><strong><p>State</p></strong></div>
+                  <div className="dropdown-header-text"><p>State</p></div>
                   <div className="select-item">
                     <SingleSelectDropdown
                       options={updatedUserData1.state.map((state) => ({ value: state, label: state }))}
@@ -1659,7 +1719,7 @@ const handleFilterButtonClick_TAB3 = async () => {
                 </div>
 
                 <div>
-                  <div><strong><p>District</p></strong></div>
+                  <div className="dropdown-header-text"><p>District</p></div>
                   <div className="select-item">
                     <SingleSelectDropdown
                       options={updatedUserData1.district.map((district) => ({ value: district, label: district }))}
@@ -1670,7 +1730,7 @@ const handleFilterButtonClick_TAB3 = async () => {
                 </div>
 
                 <div>
-                  <div><strong><p>Block</p></strong></div>
+                  <div className="dropdown-header-text"><p>Block</p></div>
                   <div className="select-item">
                     <SingleSelectDropdown
                       options={updatedUserData1.block.map((block) => ({ value: block, label: block }))}
@@ -1681,10 +1741,10 @@ const handleFilterButtonClick_TAB3 = async () => {
                 </div>
 
                 <div>
-                  <div><strong><p>From Month</p></strong></div>
+                  <div className="dropdown-header-text"><p>From Month</p></div>
                   <div className="select-item">
                     <SingleSelectDropdown
-                      options={updatedUserData1.month.map((month) => ({ value: month, label: month }))}
+                      options={updatedUserData1.month.map((month, index) => ({index, value: month, label: month }))}
                       buttonText="-- From Month --"
                       onSelect={(selectedValue) => setSelectedMonth1(selectedValue)} // Pass a function to setSelectedItem
                     />
@@ -1692,18 +1752,18 @@ const handleFilterButtonClick_TAB3 = async () => {
                 </div>
 
                 <div>
-                  <div><strong><p>To Month</p></strong></div>
+                  <div className="dropdown-header-text"><p>To Month</p></div>
                   <div className="select-item">
-                    <SingleSelectDropdown
-                      options={updatedUserData1.month.map((month) => ({ value: month, label: month }))}
+                    {/* <SingleSelectDropdown
+                      options={updatedUserData1.month.map((month, index) => ({ index, value: month, label: month }))}
                       buttonText="-- To Month --"
                       onSelect={(selectedValue) => setSelectedMonth2(selectedValue)} // Pass a function to setSelectedItem
-                    />
+                    /> */}
                   </div>
                 </div>
 
                 <div>
-                  <div><strong><p>Financial Year</p></strong></div>
+                  <div className="dropdown-header-text"><p>Financial Year</p></div>
                   <div className="select-item">
                     <SingleSelectDropdown
                       options={updatedUserData1.year.map((year) => ({ value: year, label: year }))}
@@ -1714,7 +1774,7 @@ const handleFilterButtonClick_TAB3 = async () => {
                 </div>
 
                 <div>
-                  <div><p> </p></div>
+                  <div className="dropdown-header-text"><p> </p></div>
                   <div className="select-item">
                     <button className="apply-filter-button" onClick={handleFilterButtonClick_TAB2}> Apply Filter </button>
                   </div>
@@ -1736,13 +1796,13 @@ const handleFilterButtonClick_TAB3 = async () => {
                         <p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#DA5978'}}>Percentage 1st Trimester to Total ANC Registration</p>
                       </strong>
                     </div>
-                    <div className="doughnut-container">
+                    <div style={{padding: '10px'}}>
                       {/* <LineChart chartData={trendsDataTab2_1} /> */}
                       <NewLineChart chartData={trendsDataTab2_1} />
                     </div>
 
                     <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: '1vw'}}>
-                      {<p>Data Source : <strong>Health Management Inifmation system (HMIS)</strong></p>}
+                      {<p>Data Source : <strong>Health Management Information system (HMIS)</strong></p>}
                       {<p>Year : <strong>F.Y. (test)</strong></p>}
                     </div>
                   </div>
@@ -1754,12 +1814,12 @@ const handleFilterButtonClick_TAB3 = async () => {
                   <div className="title_new">
                     <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#DA5978'}}>Percentage Institutional deliveries to total Reported Deliveries</p></strong>
                   </div>
-                  <div className="doughnut-container">
+                  <div style={{padding: '10px'}}>
                     <NewLineChart chartData={trendsDataTab2_2}/>
                   </div>
 
                   <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: '1vw'}}>
-                    {<p>Data Source : <strong>Health Management Inifmation system (HMIS)</strong></p>}
+                    {<p>Data Source : <strong>Health Management Information system (HMIS)</strong></p>}
                     {<p>Year : <strong>F.Y. (test)</strong></p>}
                   </div>
                 </div>}
@@ -1770,12 +1830,12 @@ const handleFilterButtonClick_TAB3 = async () => {
                   <div className="title_new">
                     <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#DA5978'}}>Percentage Low birth weight babies (less than 2500g)</p></strong>
                   </div>
-                  <div className="doughnut-container">
+                  <div style={{padding: '10px'}}>
                     <NewLineChart chartData={trendsDataTab2_3}/>
                   </div>
 
                   <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: '1vw'}}>
-                    {<p>Data Source : <strong>Health Management Inifmation system (HMIS)</strong></p>}
+                    {<p>Data Source : <strong>Health Management Information system (HMIS)</strong></p>}
                     {<p>Year : <strong>F.Y. (test)</strong></p>}
                   </div>
                 </div>}
@@ -1785,8 +1845,12 @@ const handleFilterButtonClick_TAB3 = async () => {
                   <div className="title_new">
                     <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#DA5978'}}>Percentage of NQAS certified facilities</p></strong>
                   </div>
-                  <div className="doughnut-container">
+                  <div style={{padding: '10px'}}>
                     <NewLineChart chartData={trendsDataTab2_4}/>
+                  </div>
+                  <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: '1vw'}}>
+                    {<p>Data Source : <strong>National Health Systems Resource Centre (NHSRC)</strong></p>}
+                    {<p>Year : <strong>F.Y. (test)</strong></p>}
                   </div>
                 </div>}
 
@@ -1795,8 +1859,12 @@ const handleFilterButtonClick_TAB3 = async () => {
                   <div className="title_new">
                     <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#DA5978'}}>Percentage of person screened for Hypertension against targeted population</p></strong>
                   </div>
-                  <div className="doughnut-container">
+                  <div style={{padding: '10px'}}>
                     <NewLineChart chartData={trendsDataTab2_5}/>
+                  </div>
+                  <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: '1vw'}}>
+                    {<p>Data Source : <strong>Non Communicable Diseases (NCD)</strong></p>}
+                    {<p>Year : <strong>F.Y. (test)</strong></p>}
                   </div>
                 </div>}
 
@@ -1805,8 +1873,12 @@ const handleFilterButtonClick_TAB3 = async () => {
                   <div className="title_new">
                     <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#DA5978'}}>Percentage of person screened for Diabetes against targeted population</p></strong>
                   </div>
-                  <div className="doughnut-container">
+                  <div style={{padding: '10px'}}>
                     <NewLineChart chartData={trendsDataTab2_6}/>
+                  </div>
+                  <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: '1vw'}}>
+                    {<p>Data Source : <strong>Non Communicable Diseases (NCD)</strong></p>}
+                    {<p>Year : <strong>F.Y. (test)</strong></p>}
                   </div>
                 </div>}
               {/* </div> */}
@@ -1817,8 +1889,12 @@ const handleFilterButtonClick_TAB3 = async () => {
                   <div className="title_new">
                     <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#DA5978'}}>Number of TB cases treated successfully in public and private institutions</p></strong>
                   </div>
-                  <div className="doughnut-container">
+                  <div style={{padding: '10px'}}>
                     <NewLineChart chartData={trendsDataTab2_7}/>
+                  </div>
+                  <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: '1vw'}}>
+                    {<p>Data Source : <strong>National TB Elimination Programme (NTEP)</strong></p>}
+                    {<p>Year : <strong>F.Y. (test)</strong></p>}
                   </div>
                 </div>}
               
@@ -1827,16 +1903,16 @@ const handleFilterButtonClick_TAB3 = async () => {
           </div>
 
           <div style={{textAlign: 'center'}}>
+            &nbsp;
+            &nbsp;
             <p>** A blank indicates that either the services was not provided or there were no benefeciaries to avail services during that period</p>
           </div>
 
-          <div className="header">
-            <img style={{ width: "100%" }} src="https://abp.championsofchange.gov.in/assets/img/titlebottom.svg"></img>
-          </div>
+          &nbsp;
 
           <div>
             <label>
-              <h1 style={{ justifyContent: 'center', color: 'white', textAlign: 'center', lineHeight: '0.5', backgroundColor: '#25B7B7', padding: '30px', display: 'flex' }}>Data Report</h1>
+              <h1 style={{ justifyContent: 'center', color: 'white', textAlign: 'center', lineHeight: '0.5', backgroundColor: '#25B7B7', padding: '1vw', display: 'flex', fontSize: '2vw' }}>Data Report</h1>
             </label>
           </div>
 
@@ -1852,10 +1928,6 @@ const handleFilterButtonClick_TAB3 = async () => {
 
           &nbsp;
 
-          <div className="header">
-            <img style={{ width: "100%" }} src="https://abp.championsofchange.gov.in/assets/img/titlebottom.svg"></img>
-          </div>
-
         </div>
       )}
 
@@ -1866,7 +1938,7 @@ const handleFilterButtonClick_TAB3 = async () => {
         <div>
 
           <label>
-            <h1 style={{ justifyContent: 'center', color: 'white', textAlign: 'center', lineHeight: '0.5', backgroundColor: '#25B7B7', padding: '30px', display: 'flex' }}>Block Performance of Indicators</h1>
+            <h1 style={{ justifyContent: 'center', color: 'white', textAlign: 'center', lineHeight: '0.5', backgroundColor: '#25B7B7', padding: '1vw', display: 'flex', fontSize: '2vw' }}>Block Performance of Indicators</h1>
           </label>
 
           <div className="tile">
@@ -1910,7 +1982,7 @@ const handleFilterButtonClick_TAB3 = async () => {
                   <div><strong><p>From Month</p></strong></div>
                   <div className="select-item">
                     <SingleSelectDropdown
-                      options={updatedUserData1.month.map((month) => ({ value: month, label: month }))}
+                      options={updatedUserData1.month.map((month, index) => ({ index, value: month, label: month }))}
                       buttonText="-- From Month --"
                       onSelect={(selectedValue) => setSelectedMonth1(selectedValue)} // Pass a function to setSelectedItem
                     />
@@ -1920,11 +1992,11 @@ const handleFilterButtonClick_TAB3 = async () => {
                 <div>
                   <div><strong><p>To Month</p></strong></div>
                   <div className="select-item">
-                    <SingleSelectDropdown
-                      options={updatedUserData1.month.map((month) => ({ value: month, label: month }))}
+                    {/* <SingleSelectDropdown
+                      options={updatedUserData1.month.map((month, index) => ({index, value: month, label: month }))}
                       buttonText="-- To Month --"
                       onSelect={(selectedValue) => setSelectedMonth2(selectedValue)} // Pass a function to setSelectedItem
-                    />
+                    /> */}
                   </div>
                 </div>
 
@@ -1949,9 +2021,6 @@ const handleFilterButtonClick_TAB3 = async () => {
             </div>  
           </div>
 
-
-                     
-
           
           <div className="header_new">
 
@@ -1960,8 +2029,8 @@ const handleFilterButtonClick_TAB3 = async () => {
               <div className="title_new">
                 <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#0066B2'}}>Percentage 1st Trimester to Total ANC Registration</p></strong>
               </div>
-              <div className="tile-content">
-              {filteredData  ? (
+              <div>
+                {filteredData  ? (
                     <ThreeDBarChart data={filteredData[0]}/>
                     ) : (
                         <div className="title_new">
@@ -1971,7 +2040,7 @@ const handleFilterButtonClick_TAB3 = async () => {
               </div>
 
               <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: '1vw'}}>
-                {<p>Data Source : <strong>Health Management Inifmation system (HMIS)</strong></p>}
+                {<p>Data Source : <strong>Health Management Information system (HMIS)</strong></p>}
                 {<p>Year : <strong>F.Y. (test)</strong></p>}
               </div>
             </div>
@@ -1979,7 +2048,7 @@ const handleFilterButtonClick_TAB3 = async () => {
             {/* Tile 2 */}
             <div className="tile_new">
               <div className="title_new">
-              <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#0066B2'}}>Percentage Institutional deliveries to total Reported Deliveries</p></strong>
+                <strong><p style={{ fontSize: '1.5vw', padding: '28px', color:'white', backgroundColor: '#0066B2'}}>Percentage Institutional deliveries to total Reported Deliveries</p></strong>
               </div>
               <div className="doughnut-container">
                 {filteredData  ? (
@@ -1992,7 +2061,7 @@ const handleFilterButtonClick_TAB3 = async () => {
               </div>
 
               <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: '1vw'}}>
-                {<p>Data Source : <strong>Health Management Inifmation system (HMIS)</strong></p>}
+                {<p>Data Source : <strong>Health Management Information system (HMIS)</strong></p>}
                 {<p>Year : <strong>F.Y. (test)</strong></p>}
               </div>
             </div>
@@ -2013,7 +2082,7 @@ const handleFilterButtonClick_TAB3 = async () => {
               </div>
 
               <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: '1vw'}}>
-                {<p>Data Source : <strong>Health Management Inifmation system (HMIS)</strong></p>}
+                {<p>Data Source : <strong>Health Management Information system (HMIS)</strong></p>}
                 {<p>Year : <strong>F.Y. (test)</strong></p>}
               </div>
             </div>
@@ -2032,6 +2101,10 @@ const handleFilterButtonClick_TAB3 = async () => {
                         </div>
                     )}
               </div>
+              <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: '1vw'}}>
+                {<p>Data Source : <strong>National Health Systems Resource Centre (NHSRC)</strong></p>}
+                {<p>Year : <strong>F.Y. (test)</strong></p>}
+              </div>
             </div>
 
             {/* Tile 1 */}
@@ -2047,6 +2120,10 @@ const handleFilterButtonClick_TAB3 = async () => {
                           <h3 style={{ color: '#4286f4', textAlign: 'center', lineHeight: '2.5' }} >data will display after applying filter</h3>
                         </div>
                     )}
+              </div>
+              <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: '1vw'}}>
+                {<p>Data Source : <strong>Non Communicable Diseases (NCD)</strong></p>}
+                {<p>Year : <strong>F.Y. (test)</strong></p>}
               </div>
             </div>
             
@@ -2064,7 +2141,12 @@ const handleFilterButtonClick_TAB3 = async () => {
                         </div>
                     )}
               </div>
+              <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: '1vw'}}>
+                {<p>Data Source : <strong>Non Communicable Diseases (NCD)</strong></p>}
+                {<p>Year : <strong>F.Y. (test)</strong></p>}
+              </div>
             </div>
+
           </div>
 
 
@@ -2083,18 +2165,20 @@ const handleFilterButtonClick_TAB3 = async () => {
                         </div>
                     )}
               </div>
+              <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: '1vw'}}>
+                {<p>Data Source : <strong>National TB Elimination Programme (NTEP)</strong></p>}
+                {<p>Year : <strong>F.Y. (test)</strong></p>}
+              </div>
             </div>
           </div>
 
           <div style={{textAlign: 'center'}}>
+            &nbsp;
+            &nbsp;
             <p>** A blank indicates that either the services was not provided or there were no benefeciaries to avail services during that period</p>
           </div>
 
           &nbsp;
-
-          {/* <div className="header">
-            <img style={{ width: "100%" }} src="https://abp.championsofchange.gov.in/assets/img/titlebottom.svg"></img>
-          </div> */}
 
         </div>
           

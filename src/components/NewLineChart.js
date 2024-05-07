@@ -1,12 +1,34 @@
 import React from 'react';
 import ReactApexChart from 'react-apexcharts';
+import { useRef, useEffect, useState } from 'react';
 
 const NewLineChart = ({ chartData }) => {
 //   const categories = chartData.series;
 
+const [tileNewWidth, setTileNewWidth] = useState(null);
+const tileRef = useRef(null);
+
+useEffect(() => {
+  const updateWidth = () => {
+    if (tileRef.current) {
+      const width = tileRef.current.getBoundingClientRect().width;
+      setTileNewWidth(width);
+    }
+  };
+
+  // Update width on mount and window resize
+  updateWidth();
+  window.addEventListener('resize', updateWidth);
+
+  // Clean up event listener on unmount
+  return () => {
+    window.removeEventListener('resize', updateWidth);
+    };
+  }, []);
+
   const roundedSeries = chartData.series.map(dataSet => ({
     name: dataSet.name,
-    data: dataSet.data.map(value => parseFloat(value).toFixed(2)),
+    data: dataSet.data.map(value => parseFloat(value).toFixed(1)),
     month: dataSet.month,
   }));
 
@@ -74,7 +96,10 @@ const NewLineChart = ({ chartData }) => {
   };
 
   return (
-    <ReactApexChart options={options} series={options.series} type="line" height={450} width={750}/>
+    <div>
+        <ReactApexChart options={options} series={roundedSeries} type="line" width='100%' />
+    </div>
+
   );
 };
 

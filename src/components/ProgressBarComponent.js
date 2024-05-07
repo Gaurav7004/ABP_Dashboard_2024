@@ -8,9 +8,9 @@ const ProgressBarComponent = ({ chartData }) => {
   return (
     <div>
       {chartData.map((item, index) => (
-        <div key={index} style={{ display: 'flex', alignItems: 'center', justifyContent: "space-evenly", marginBottom: '10px' }}>
+        <div key={index} style={{ display: 'flex', alignItems: 'center', justifyContent: "space-between", marginBottom: '10px' }}>
 
-          <p style={{ marginLeft: '1vw', width: '10vw' }}>{`${item.label}`}</p>
+          <p style={{ fontSize: "1vw", marginLeft: '1vw', width: '10vw' }}>{`${item.label}`}</p>
           <div style={{ width: '18vw', marginRight: '1vw' }}>
             <Line percent={item.percentage} strokeWidth="3" strokeColor={labelColors[index]} />
           </div>

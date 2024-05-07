@@ -1,0 +1,16 @@
+.svg-row {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    align-items: center;
+    gap: 1vw;
+    justify-content: space-evenly;
+  }
+
+
+ /* Media query for small screens */
+ @media screen and (max-width: 768px) {
+    .svg-row {
+      flex-direction: column;
+    }
+  }

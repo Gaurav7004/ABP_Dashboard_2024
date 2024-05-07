@@ -1,14 +1,14 @@
 import React from "react";
 import ReactSpeedometer from "react-d3-speedometer";
-import "./HumanChart.css";
+import "./Speedometer.css";
 
 const Speedometer = ({ value, labels, startColor, endColor, maxValue, minValue }) => {
   const needlePointerValues = value.map((val) => (val / maxValue) * 100);
 
   return (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: "24px" }}>
+    <div  className="svg-row">
       {value.map((val, index) => (
-        <div key={index} style={{ textAlign: "center", width: "30%", marginBottom: "20px" }}>
+        <div key={index} >
           <ReactSpeedometer
             maxValue={maxValue}
             minValue={minValue}
@@ -25,7 +25,7 @@ const Speedometer = ({ value, labels, startColor, endColor, maxValue, minValue }
             needlePointerValue={needlePointerValues[index]}
           />
 
-          <strong><p  style={{ color: '#047dc5', marginTop: '0', marginBottom: '0' }}>{labels[index]}</p></strong>
+          <strong><p  style={{textAlign: 'center', color: '#047dc5', marginTop: '0', marginBottom: '0' }}>{labels[index]}</p></strong>
         </div>
       ))}
     </div>

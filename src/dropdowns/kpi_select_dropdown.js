@@ -32,11 +32,13 @@ const MultipleSelectDropdown = ({ options, buttonText, setSelectedKPI }) => {
     setShowPopover(!showPopover);
   };
 
-  console.log(selectedLabels);
+  const handleButtonClick = () => {
+    setShowPopover(!showPopover); // Toggle popover visibility on button click
+  };
 
   return (
-    <div className="dropdown" onMouseEnter={togglePopover} onMouseLeave={togglePopover}>
-      <button className="dropdown-toggle">
+    <div className="dropdown">
+      <button style={{fontSize: '1vw'}} className="dropdown-toggle" onClick={handleButtonClick}>
         {buttonText} 
       </button>
       {showPopover && (
@@ -46,7 +48,7 @@ const MultipleSelectDropdown = ({ options, buttonText, setSelectedKPI }) => {
             checked={selectedOptions.length === options.length}
             onChange={handleSelectAll}
           />
-          <label style={{ color: "red", fontSize: "20px" }}>Select All</label>
+          <label style={{ color: "red", fontSize: "0.8vw" }}>Select All</label>
           {options.map((option) => (
             <div key={option.label} className="option-container">
               <input

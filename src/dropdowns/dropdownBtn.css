@@ -1,11 +1,35 @@
 /* DropdownButton.css */
 
+.dropdown-toggle {
+  background-color: #e7eaf0;
+  color: rgb(11, 1, 1);
+  border: none;
+  padding: 10px;
+  width: 12vw;
+  cursor: pointer;
+  font-size: 5vw;
+}
+
 .dropdown-container {
     position: relative;
     display: inline-block;
   }
+
+.popover-content {
+    position: absolute;
+    top: calc(100% + 5px); /* Adjust vertical position */
+    left: 0;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: block;
+    /* width: auto; */
+    max-width: 20vw;
+  }
   
-  .dropdown-button {
+.dropdown-button {
     background-color: #3498db;
     color: #fff;
     padding: 10px;

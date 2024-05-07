@@ -3,17 +3,20 @@ import * as d3 from 'd3';
 import './ThreeDBarChart.css';
 
 const ThreeDBarChart = ({ data }) => {
-  console.log(data, '-- data --');
+ 
   const svgRef = useRef();
 
   useEffect(() => {
     if (!data) return;
 
     const svg = d3.select(svgRef.current);
-    const containerWidth = svgRef.current.parentElement.clientWidth; // Get the width of the container
-    const containerHeight = svgRef.current.parentElement.clientHeight; // Get the height of the container
+    // const containerWidth = svgRef.current.parentElement.clientWidth; // Get the width of the container
+    // const containerHeight = svgRef.current.parentElement.clientHeight; // Get the height of the container
 
-    const margin = { top: 10, right: 10, bottom: 10, left: 10 };
+    const containerWidth = 950
+    const containerHeight = 600 
+
+    const margin = { top: 20, right: 30, bottom: 30, left: 30 };
     const width = containerWidth - margin.left - margin.right;
     const height = containerHeight - margin.top - margin.bottom;
 
@@ -104,7 +107,7 @@ const ThreeDBarChart = ({ data }) => {
       width="100%"
       height="80%"
       viewBox="0 0 900 600" // Set the viewBox for maintaining aspect ratio
-      // preserveAspectRatio="xMidYMid meet" 
+      preserveAspectRatio="xMidYMid meet" 
     >
       <g>
         {/* Bars will be rendered here */}
