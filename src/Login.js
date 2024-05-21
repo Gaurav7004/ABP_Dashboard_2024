@@ -71,16 +71,20 @@ const handleLogin = async () => {
     <div>
       <div className="header">
         <div className="header_left">
-          <h4 style={{ color: 'DodgerBlue', textAlign: 'left', width: '200px' }}>Aspirational Blocks Programme</h4>
+          <h4 style={{ color: 'DodgerBlue', textAlign: 'center', width: '200px' }}>100 Lowest Performing Aspirational Blocks Programme</h4>
           <img src={Logo} style={{ width: '30%' }} alt="Logo"/>
         </div>
 
-        <div className="header_right">
+        <div>
           <img src={hmisLogo} alt="HMIS Logo"/>
+        </div>
+
+        <div className="header_right">
           {/* <img style={{ width: '190px' }} src={g20Logo} alt="G20 Logo" /> */}
           <img src={digitalIndia} alt="Digital India Logo" />
           <img src={nrhmLogo} alt="NRHM Logo" />
         </div> 
+      
       </div>
 
 

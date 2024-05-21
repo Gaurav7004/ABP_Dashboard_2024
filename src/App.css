@@ -84,7 +84,7 @@
 }
 
 .login-button {
-  display: flex;
+  text-align: center;
   margin-top: 22px; /* Adjust the margin-top value to position the button slightly below */
   width: 100%;
   background-color: #006f96;
@@ -162,7 +162,7 @@ canvas {
 .header_left {
   flex: 1;
   display: flex;
-  justify-content: center;
+  justify-content: space-evenly;
   align-items: center;
   margin-right: 2vw;
   @media (max-width: 991px) {

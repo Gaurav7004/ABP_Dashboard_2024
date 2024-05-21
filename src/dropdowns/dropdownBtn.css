@@ -16,6 +16,7 @@
   }
 
 .popover-content {
+    z-index: 10;
     position: absolute;
     top: calc(100% + 5px); /* Adjust vertical position */
     left: 0;

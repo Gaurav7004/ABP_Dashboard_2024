@@ -37,7 +37,8 @@
     "sweetalert2": "^11.10.8",
     "use-places-autocomplete": "^4.0.1",
     "web-vitals": "^2.1.4",
-    "xlsx": "^0.18.5"
+    "xlsx": "^0.18.5",
+    "react-spinners": "^0.11.0"
   },
   "scripts": {
     "start": "react-scripts start",

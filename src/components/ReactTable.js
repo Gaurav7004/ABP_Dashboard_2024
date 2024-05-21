@@ -1,29 +1,6 @@
 import React, { useState } from "react";
 import { useTable } from "react-table";
 
-const data = [
-  { "1st Trimester Registration (%)": 38.1, "Institutional Delivery (%)": 33.33, "Low Birth Weight (%)": 0, "Percentage Test": 33.33, "Percentage Test": 0  },
-  { "1st Trimester Registration (%)": 80, "Institutional Delivery (%)": null, "Low Birth Weight (%)": null,  "Percentage Test": 33.33, "Percentage Test": 0  },
-  { "1st Trimester Registration (%)": 60, "Institutional Delivery (%)": 0, "Low Birth Weight (%)": 0,  "Percentage Test": 33.33, "Percentage Test": 0  },
-  { "1st Trimester Registration (%)": 80, "Institutional Delivery (%)": 15.15, "Low Birth Weight (%)": 0,  "Percentage Test": 33.33, "Percentage Test": 0  },
-  { "1st Trimester Registration (%)": 67.42, "Institutional Delivery (%)": 53.13, "Low Birth Weight (%)": 6.45,  "Percentage Test": 33.33, "Percentage Test": 0  }
-];
-
-const columns_1 = [
-  {
-    Header: "1st Trimester Registration (%)",
-    accessor: "1st Trimester Registration (%)"
-  },
-  {
-    Header: "Institutional Delivery (%)",
-    accessor: "Institutional Delivery (%)"
-  },
-  {
-    Header: "Low Birth Weight (%)",
-    accessor: "Low Birth Weight (%)"
-  }
-];
-
 
 function ReactTable({ data, columns }) {
 
@@ -34,8 +11,8 @@ function ReactTable({ data, columns }) {
   });
 
   return (
-    <table {...getTableProps()} style={{ overflow: 'scroll', border: "solid 1px blue", width: "100%" }}>
-      <thead>
+    <table {...getTableProps()} style={{ overflow: 'scroll', border: "solid 1px #1e90ff", width: "100%" }}>
+      <thead style={{ backgroundColor: "blue" }}>
         {headerGroups.map(headerGroup => (
           <tr {...headerGroup.getHeaderGroupProps()}>
             {headerGroup.headers.map(column => (
@@ -43,8 +20,8 @@ function ReactTable({ data, columns }) {
                 {...column.getHeaderProps()}
                 style={{
                   borderBottom: "solid 1px red",
-                  background: "aliceblue",
-                  color: "black",
+                  background: "#1e90ff",
+                  color: "white",
                   fontWeight: "bold",
                   textAlign: "left",
                   padding: "8px"
